@@ -4,7 +4,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="text-sm text-zinc-600 hover:text-zinc-950 transition-colors duration-200"
+      className="text-sm font-medium text-zinc-600 transition-colors duration-200 hover:text-zinc-950"
     >
       {children}
     </Link>
@@ -39,7 +39,7 @@ export function Navbar() {
           href="https://apps.apple.com/br/app/anest/id6753714859"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-2xl bg-zinc-950 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 hover:shadow-md"
+          className="rounded-2xl bg-zinc-950 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 hover:shadow-md"
         >
           Baixar
         </a>
