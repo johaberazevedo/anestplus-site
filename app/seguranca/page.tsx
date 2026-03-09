@@ -5,13 +5,16 @@ import {
   ClipboardList,
   Lock,
   CheckCircle2,
+  HardDrive,
+  Scale,
+  Files,
   type LucideIcon,
 } from "lucide-react";
 
 export const metadata = {
   title: "Segurança & Privacidade — Anest+",
   description:
-    "Entenda os princípios de segurança, privacidade e previsibilidade do Anest+.",
+    "Conheça as principais características de segurança documental, privacidade e Trust Layer do Anest+.",
 };
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -85,26 +88,28 @@ export default function SegurancaPage() {
 
         <div className="mx-auto w-full max-w-6xl">
           <div className="flex flex-wrap gap-2">
-            <Pill>Segurança com clareza</Pill>
-            <Pill>Privacidade no uso</Pill>
-            <Pill>Fluxo previsível</Pill>
+            <Pill>Trust Layer ativa</Pill>
+            <Pill>Dados só no dispositivo</Pill>
+            <Pill>Segurança documental</Pill>
           </div>
 
           <div className="mt-8 max-w-5xl">
             <h1 className="text-4xl font-black tracking-tight text-zinc-950 md:text-6xl lg:leading-[0.98]">
-              Segurança e privacidade com clareza e previsibilidade
+              Segurança documental para uma rotina que não pode depender da tranquilidade do plantão, nem da caligrafia
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
-              Em um produto voltado à rotina anestésica, organização e confiança
-              precisam caminhar juntas.
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
+              No Anest+, segurança e privacidade não aparecem só como conceito
+              técnico. Elas se traduzem em ficha legível, documentação mais
+              padronizada, cópias acessíveis e mais confiança no registro
+              anestésico.
             </p>
           </div>
 
           <div className="mt-10 grid gap-3 text-sm sm:grid-cols-3">
             {[
-              "Menos exposição desnecessária",
-              "Fluxo previsível de documentação",
-              "Mais clareza no registro final",
+              "Dados sem comunicação com nuvem ou servidores",
+              "Menos risco de glosa por erros de preenchimento",
+              "Mais clareza e confiança no documento final",
             ].map((item) => (
               <div
                 key={item}
@@ -118,91 +123,134 @@ export default function SegurancaPage() {
         </div>
       </section>
 
-      {/* PRINCIPLES */}
+      {/* PRINCIPAIS CARACTERÍSTICAS */}
       <section className="px-4 py-20 md:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <SectionTitle
-            title="Princípios do Anest+"
-            subtitle="A proposta do app é apoiar o registro anestésico com uma estrutura organizada, reduzindo atrito e favorecendo uma documentação mais consistente."
+            title="Principais características de segurança do Anest+"
+            subtitle="A proposta do app é fortalecer a documentação anestésica com mais legibilidade, previsibilidade e domínio dos dados pelo próprio anestesiologista."
+          />
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card
+              icon={HardDrive}
+              title="Dados no domínio do anestesiologista"
+              desc="Os dados permanecem no próprio dispositivo, sem comunicação com nuvem ou servidores, mantendo o conteúdo sempre sob controle direto do usuário."
+            />
+            <Card
+              icon={ShieldCheck}
+              title="Trust Layer ativa"
+              desc="A Trust Layer adiciona uma camada extra de confiança documental ao material gerado pelo app, reforçando a integridade do registro."
+            />
+            <Card
+              icon={FileText}
+              title="Ficha anestésica legível e padronizada"
+              desc="Ao sair do papel manuscrito, o registro ganha mais clareza visual, menos ambiguidade e uma leitura muito mais consistente."
+            />
+            <Card
+              icon={ClipboardList}
+              title="Menos risco de erro por preenchimento manual"
+              desc="Campos estruturados e fluxo mais organizado ajudam a reduzir falhas comuns da ficha feita à mão, especialmente em contextos de plantões conturbados."
+            />
+            <Card
+              icon={Scale}
+              title="Mais segurança documental"
+              desc="Uma ficha mais clara, organizada e legível fortalece a documentação anestésica e reduz fragilidades típicas do registro manuscrito."
+            />
+            <Card
+              icon={EyeOff}
+              title="Menos exposição desnecessária"
+              desc="O app foi pensado para apoiar a documentação do caso com foco objetivo no registro, sem depender de compartilhamentos ou fluxos externos desnecessários."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* IMPACTO PRÁTICO */}
+      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
+        <div className="mx-auto w-full max-w-6xl">
+          <SectionTitle
+            title="Como isso ajuda na prática"
+            subtitle="No dia a dia do centro cirúrgico, segurança também significa reduzir fragilidades que começam no papel, no plantão agitado e na dificuldade de acessar o registro depois."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
             <Card
               icon={ClipboardList}
-              title="Clareza no preenchimento"
-              desc="A interface foi pensada para reduzir improviso no registro e facilitar uma documentação mais organizada durante o caso."
+              title="Menos risco de glosa"
+              desc="Preenchimento mais claro e estruturado ajuda a reduzir inconsistências, dados mal interpretados e problemas de leitura que podem enfraquecer a ficha."
             />
             <Card
               icon={FileText}
-              title="Previsibilidade no fluxo"
-              desc="O app busca manter um caminho de uso claro, do início da ficha à ficha anestésica finalizada, sem etapas confusas ou desnecessárias."
+              title="Mais legibilidade no registro"
+              desc="Uma ficha anestésica legível facilita revisão, entendimento posterior e leitura por outros profissionais, sem depender da caligrafia ou da urgência do momento."
             />
             <Card
-              icon={EyeOff}
-              title="Menos exposição desnecessária"
-              desc="A lógica do produto prioriza o uso objetivo das informações necessárias para a rotina de documentação anestésica."
+              icon={Scale}
+              title="Menos fragilidade do manuscrito"
+              desc="Fichas feitas à mão podem sofrer com preenchimento incompleto, letra difícil e menor clareza documental. O Anest+ ajuda a estruturar melhor esse processo."
             />
             <Card
-              icon={ShieldCheck}
-              title="Padronização como apoio"
-              desc="Estruturar melhor o registro também ajuda na revisão, no arquivamento e na consistência final dos documentos."
+              icon={Files}
+              title="Cópias acessíveis"
+              desc="Depois que o anestesiologista sai do hospital, ele não precisa depender apenas do papel arquivado na instituição para ter acesso ao próprio registro."
             />
           </div>
         </div>
       </section>
 
-      {/* PRIVACY */}
-      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
+      {/* PRIVACIDADE */}
+      <section className="px-4 py-20 md:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <SectionTitle
-            title="Privacidade na rotina de uso"
-            subtitle="Em saúde, confiança depende de transparência sobre como o fluxo é organizado e como o uso do app se encaixa na realidade do serviço."
+            title="Privacidade por desenho de uso"
+            subtitle="No Anest+, privacidade não é um detalhe escondido. Ela faz parte da própria lógica do produto."
           />
 
           <div className="grid gap-4 md:grid-cols-3">
             <Card
-              icon={FileText}
-              title="Uso orientado à documentação"
-              desc="O foco do Anest+ é apoiar a construção e a organização do registro anestésico ao longo do caso."
-            />
-            <Card
-              icon={ClipboardList}
-              title="Documentos mais consistentes"
-              desc="Ao final do fluxo, o objetivo é entregar um material mais claro, padronizado e fácil de revisar."
-            />
-            <Card
               icon={Lock}
-              title="Transparência no propósito"
-              desc="O Anest+ foi pensado com responsabilidade, previsibilidade de uso e foco na rotina real da documentação anestésica."
+              title="Sem dependência de servidores"
+              desc="O fluxo do app não depende de comunicação com servidores para guardar os dados do anestesiologista e das fichas."
+            />
+            <Card
+              icon={HardDrive}
+              title="Uso local"
+              desc="As informações permanecem no dispositivo do próprio usuário, reforçando autonomia e controle sobre o conteúdo gerado."
+            />
+            <Card
+              icon={ShieldCheck}
+              title="Responsabilidade no contexto real"
+              desc="A experiência foi pensada para unir praticidade, privacidade e confiança documental no cenário real da anestesiologia."
             />
           </div>
         </div>
       </section>
 
-      {/* EXPORT / FINAL DOCUMENT */}
-      <section className="px-4 py-20 md:py-24">
+      {/* DOCUMENTO FINAL */}
+      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
         <div className="mx-auto w-full max-w-6xl">
           <SectionTitle
-            title="Ficha anestésica finalizada com mais organização"
-            subtitle="O resultado esperado ao final do fluxo é um registro mais claro, consistente e preparado para arquivamento, impressão ou compartilhamento."
+            title="Ficha anestésica finalizada com mais confiança"
+            subtitle="Segurança também aparece no resultado final: um documento mais claro, consistente e preparado para o fluxo real de revisão, impressão e guarda."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
             <Card
               icon={FileText}
               title="Estrutura padronizada"
-              desc="Cabeçalho, sinais, parâmetros, descrição e medicamentos organizados em um formato mais uniforme."
+              desc="Cabeçalho, sinais, parâmetros, descrição e medicamentos aparecem organizados em um formato mais uniforme e previsível."
             />
             <Card
               icon={CheckCircle2}
-              title="Melhor legibilidade"
-              desc="Uma ficha anestésica mais clara facilita revisão posterior e reduz a sensação de registro fragmentado."
+              title="Melhor leitura e rastreabilidade"
+              desc="Uma ficha anestésica mais clara e apoiada pela Trust Layer reforça a confiança documental no material final gerado pelo app."
             />
           </div>
         </div>
       </section>
 
-      {/* CLOSING */}
+      {/* FECHAMENTO */}
       <section className="px-4 pb-16 pt-4 md:pb-24">
         <div className="mx-auto w-full max-w-6xl">
           <div className="rounded-[40px] border border-[#b9963b]/15 bg-[#f6f7f1] p-8 shadow-sm md:p-12">
@@ -211,13 +259,13 @@ export default function SegurancaPage() {
                 Fechamento
               </p>
               <h2 className="mt-4 text-3xl font-black tracking-tight text-zinc-950 md:text-5xl lg:leading-[1.02]">
-                Segurança e privacidade também fazem parte de um bom fluxo
+                Mais do que digitalizar a ficha: fortalecer a documentação anestésica
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-zinc-600">
-                No Anest+, organização, padronização e clareza caminham junto
-                com uma proposta de uso responsável e previsível no contexto da
-                documentação anestésica.
+                No Anest+, segurança significa dados no domínio do anestesiologista,
+                ficha legível, menos fragilidade do papel manuscrito, cópias
+                acessíveis e mais confiança documental com apoio da Trust Layer.
               </p>
             </div>
           </div>

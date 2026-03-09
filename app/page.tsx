@@ -119,7 +119,7 @@ export default function Home() {
   return (
     <div className="-mx-4 bg-white text-zinc-950 selection:bg-[#22331d] selection:text-white">
       {/* HERO */}
-      <section className="relative overflow-hidden px-4 pb-16 pt-4 md:pb-24 md:pt-8">
+      <section className="relative overflow-hidden px-4 pb-12 pt-4 md:pb-6 md:pt-8">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-44 left-1/2 h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-[#22331d]/10 blur-3xl" />
           <div className="absolute top-8 right-[-100px] h-[420px] w-[420px] rounded-full bg-[#8f9c69]/12 blur-3xl" />
@@ -127,7 +127,7 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto max-w-6xl">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -144,17 +144,17 @@ export default function Home() {
                 <span className="text-[#7b8461]">do jeito que a rotina pede.</span>
               </h1>
 
-              <div className="mt-8 space-y-4">
+              <div className="mt-6 space-y-3">
                 <p className="text-[1.7rem] font-medium tracking-tight text-zinc-800 md:text-2xl">
                   Você cuida do paciente. O Anest+ cuida do resto.
                 </p>
                 <p className="max-w-lg text-lg leading-8 text-zinc-500">
-                  Fluxo rápido, padronizado e pronto para evoluir a ficha anestésica
-                  com mais clareza no centro cirúrgico.
-                </p>
+  Fluxo rápido, padronizado e pensado para trazer mais clareza,
+  legibilidade e confiança ao registro anestésico no centro cirúrgico.
+</p>
               </div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
+              <div className="mt-6 flex flex-wrap items-center gap-4">
                 <a
                   href={APPSTORE_URL}
                   target="_blank"
@@ -176,14 +176,29 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] p-1.5 pr-4 shadow-sm">
-                <span className="flex h-8 items-center rounded-xl bg-[#1a2718] px-3 text-xs font-bold text-[#e0bf62] shadow-sm">
-                  ANESTFRIEND
-                </span>
-                <span className="text-sm font-medium text-zinc-600">
-                  Ative 7 dias grátis com este código
-                </span>
-              </div>
+              <div className="mt-6 space-y-3">
+  <div className="inline-flex items-center gap-3 rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] p-1.5 pr-4 shadow-sm">
+    <span className="flex h-8 items-center rounded-xl bg-[#1a2718] px-3 text-xs font-bold text-[#e0bf62] shadow-sm">
+      ANESTFRIEND
+    </span>
+    <span className="text-sm font-medium text-zinc-600">
+      Ative 7 dias grátis com este código
+    </span>
+  </div>
+
+  <p className="text-sm leading-6 text-zinc-500">
+  Quer ver o app em uso? No{" "}
+  <a
+    href="https://instagram.com/anestplus"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="font-semibold text-zinc-800 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:text-zinc-950 hover:decoration-[#b9963b]"
+  >
+    Instagram do Anest+
+  </a>{" "}
+  você encontra vários vídeos mostrando o fluxo real do app.
+</p>
+</div>
 
               <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-3">
                 {[
@@ -201,9 +216,14 @@ export default function Home() {
                 ))}
               </div>
 
-              <p className="mt-8 text-xs font-bold uppercase tracking-widest text-zinc-400">
-                De anestesiologista, para anestesiologistas.
-              </p>
+              <div className="mt-8 space-y-2">
+  <p className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+    De anestesiologista, para anestesiologista.
+  </p>
+  <p className="text-sm font-medium text-zinc-500">
+    Anest+. Seu assistente pessoal em anestesia.
+  </p>
+</div>
             </motion.div>
 
             <motion.div
@@ -249,7 +269,7 @@ export default function Home() {
       </section>
 
       {/* VALUE */}
-      <section className="px-4 py-20 md:py-24">
+      <section className="px-4 py-12 md:py-6">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
@@ -257,12 +277,13 @@ export default function Home() {
                 Valor central
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-950 md:text-5xl">
-                Mais produtividade, mais clareza, menos atrito.
-              </h2>
-              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                O Anest+ foi desenhado para faciliatar o registro anestésico sem
-complicar a rotina real do centro cirúrgico.
-              </p>
+  Mais produtividade, mais clareza e mais confiança documental.
+</h2>
+<p className="mt-6 text-lg leading-relaxed text-zinc-600">
+  O Anest+ foi desenhado para facilitar o registro anestésico com mais
+  legibilidade, menos fragilidade do manuscrito e uma estrutura mais
+  confiável para o dia a dia do centro cirúrgico.
+</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
@@ -287,7 +308,7 @@ complicar a rotina real do centro cirúrgico.
       </section>
 
       {/* PRODUCT DEPTH */}
-      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
+      <section className="bg-zinc-50/50 px-4 py-14 md:py-16">
         <div className="mx-auto max-w-6xl">
           <SectionTitle
             title="Mais do que uma ficha digital"
@@ -301,18 +322,19 @@ complicar a rotina real do centro cirúrgico.
                 Ficha anestésica completa, com evolução durante o caso
               </h3>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                Cabeçalho, sinais vitais, parâmetros, fluidos, medicamentos e
-                descrição clínica em um único fluxo, pensado para acompanhar o
-                intraoperatório com menos retrabalho.
-              </p>
+  Cabeçalho, sinais vitais, parâmetros, fluidos, medicamentos e
+  descrição clínica em um único fluxo, pensado para acompanhar o
+  intraoperatório com mais clareza, menos retrabalho e mais consistência
+  no seu prontuário anestésico.
+</p>
 
               <div className="mt-10 grid gap-4 md:grid-cols-2">
                 {[
-                  "Perfil e hospitais com identidade visual",
-                  "Linha do tempo criada automaticamente",
-                  "Medicações e fluidos estruturados",
-                  "Ficha anestésica completa ao final",
-                ].map((f) => (
+  "Perfil e hospitais com identidade visual",
+  "Linha do tempo criada automaticamente",
+  "Medicações e fluidos estruturados",
+  "Ficha anestésica mais clara ao final",
+].map((f) => (
                   <div
                     key={f}
                     className="flex items-center gap-4 rounded-3xl border border-[#b9963b]/15 bg-white p-6 text-sm font-semibold text-zinc-800 transition-all hover:bg-zinc-50 hover:shadow-md"
@@ -351,8 +373,8 @@ complicar a rotina real do centro cirúrgico.
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="px-4 py-20 md:py-24">
-        <div className="mx-auto max-w-6xl">
+      <section className="px-4 py-6 md:py-2">
+  <div className="mx-auto max-w-6xl">
           <SectionTitle
             title="Como funciona"
             subtitle="Um fluxo simples para começar rápido e terminar com uma ficha anestésica clara e organizada."
@@ -452,9 +474,9 @@ complicar a rotina real do centro cirúrgico.
                 Estrutura para acompanhar o caso com mais fluidez
               </h3>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                O foco é registrar durante o caso, com menos improviso, menos retrabalho
-e mais clareza ao final.
-              </p>
+  O foco é registrar durante o caso, com menos improviso, menos retrabalho
+  e mais clareza ao final.
+</p>
 
               <div className="mt-10 space-y-4">
                 {[
@@ -494,42 +516,42 @@ e mais clareza ao final.
                 desc="Use descrições, monitores e fármacos base como ponto de partida para diferentes técnicas anestésicas."
               />
               <Card
-                icon={CheckCircle2}
-                title="Ficha anestésica completa"
-                desc="Ao final, você tem um registro limpo, padronizado e pronto para imprimir, exportar ou compartilhar."
-              />
-              <Card
-                icon={Activity}
-                title="Fluxo em tempo real"
-                desc="A proposta é documentar o caso enquanto ele acontece, e não reconstruí-lo depois."
-              />
+  icon={CheckCircle2}
+  title="Sua ficha anestésica ideal"
+  desc="Ao final, você tem um registro limpo, padronizado, legível e pronto para impressão, exportação ou compartilhamento."
+/>
+<Card
+  icon={Activity}
+  title="Fluxo em tempo real"
+  desc="Documente o seu caso enquanto ele acontece, mantendo mais consistência no registro ao longo dos seus procedimentos."
+/>
             </div>
           </div>
         </div>
       </section>
 
       {/* INSTITUTIONAL CTA */}
-      <section className="px-4 py-20 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[48px] bg-[#162014] px-8 py-14 text-white shadow-2xl md:px-16 md:py-20"
-          >
+      <section className="px-4 py-14 md:py-20">
+  <div className="mx-auto max-w-6xl">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="relative overflow-hidden rounded-[48px] bg-[#162014] px-8 py-10 text-white shadow-2xl md:px-14 md:py-14"
+    >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,180,74,0.14),transparent_35%)]" />
             <div className="absolute inset-0 opacity-15 [background-image:radial-gradient(#d9b44a_1px,transparent_1px)] [background-size:24px_24px]" />
 
             <div className="relative z-10">
               <p className="mb-6 text-[11px] font-black uppercase tracking-[0.4em] text-[#d9c57d]">Modelo institucional</p>
               <h3 className="text-4xl font-black tracking-tight md:text-6xl lg:leading-[1.04]">
-                Leve o Anest+ para a rotina da sua instituição.
-              </h3>
-              <p className="mt-8 text-lg leading-8 text-[#d8dccf] md:text-xl">
-                Implantação orientada ao fluxo local, com padronização do registro
-                anestésico, identidade visual institucional e estrutura pronta para o
-                uso da equipe.
-              </p>
+  Leve mais clareza e padronização para sua instituição.
+</h3>
+<p className="mt-8 text-lg leading-8 text-[#d8dccf] md:text-xl">
+  Implantação orientada ao fluxo local, com ficha anestésica mais legível,
+  padronização do registro e uma estrutura pronta para fortalecer a
+  documentação da equipe.
+</p>
 
               <div className="mt-12 flex flex-wrap gap-4">
                 {[
@@ -588,25 +610,25 @@ e mais clareza ao final.
             />
             <Card
               title="O app ajuda só no final ou durante o caso também?"
-              desc="Durante o caso. A proposta é registrar e evoluir a ficha em tempo real, com menos atrito no intraoperatório."
+              desc="Durante o caso. A proposta é registrar e evoluir a ficha em tempo real, com mais clareza e consistência no intraoperatório."
             />
             <div className="group rounded-[36px] border border-[#b9963b]/20 bg-[#fbfaf5] p-8 shadow-sm transition-all hover:border-[#b9963b]/40">
               <p className="text-xl font-bold tracking-tight text-zinc-950">
                 Quero levar para o meu hospital. Como faço?
               </p>
               <p className="mt-4 text-base leading-relaxed text-zinc-600">
-                Fale comigo no{" "}
-                <a
-                  className="font-bold text-zinc-950 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:decoration-[#b9963b]"
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  WhatsApp
-                </a>{" "}
-                e eu explico o modelo institucional, a implantação e a adaptação do
-Anest+ ao fluxo da sua instituição.
-              </p>
+  Fale comigo no{" "}
+  <a
+    className="font-bold text-zinc-950 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:decoration-[#b9963b]"
+    href={WHATSAPP_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    WhatsApp
+  </a>{" "}
+  e eu explico o modelo institucional, a implantação e a adaptação do
+  Anest+ ao fluxo da sua instituição.
+</p>
             </div>
           </div>
         </div>
@@ -619,9 +641,14 @@ Anest+ ao fluxo da sua instituição.
     viewport={{ once: true }}
     className="mx-auto max-w-md"
   >
-    <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-zinc-300">
-      De anestesiologista, para anestesiologistas.
-    </p>
+    <div className="space-y-2">
+      <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-zinc-300">
+        De anestesiologista, para anestesiologista.
+      </p>
+      <p className="text-sm font-medium text-zinc-500">
+        Anest+. Seu assistente pessoal em anestesia.
+      </p>
+    </div>
   </motion.div>
 </section>
     </div>
