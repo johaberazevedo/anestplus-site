@@ -18,6 +18,7 @@ import {
   ClipboardPen,
   Wallet,
   FileCheck2,
+  Lock, // <-- Novo ícone adicionado
   type LucideIcon,
 } from "lucide-react";
 
@@ -155,8 +156,8 @@ export default function ProdutoClient() {
                 className="mt-6 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl"
               >
                 Do perfil à ficha anestésica finalizada, o app organiza o registro
-                com mais clareza, menos retrabalho e um fluxo pensado para o
-                intraoperatório.
+com mais clareza, organização e um fluxo pensado para o
+intraoperatório.
               </motion.p>
 
               <motion.div
@@ -258,13 +259,15 @@ export default function ProdutoClient() {
                   "Paciente, idade, sexo e registro",
                   "ASA, cirurgia e anestesia",
                   "Hospital e plano",
+                  "Scanner de cabeçalho de exames",
+                  "Registro de alergias detalhadas",
                   "Base pronta para começar o caso",
                 ].map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-3 rounded-2xl border border-[#b9963b]/15 bg-white px-5 py-4 text-sm font-semibold text-zinc-800 shadow-sm"
                   >
-                    <CheckCircle2 size={18} className="text-[#b9963b]" />
+                    <CheckCircle2 size={18} className="text-[#b9963b] shrink-0" />
                     {item}
                   </div>
                 ))}
@@ -310,7 +313,7 @@ export default function ProdutoClient() {
               <StepCard
                 step="Etapa 3"
                 title="Evolua o caso durante o intraoperatório"
-                desc="Atualize sinais vitais, monitores, parâmetros, fluidos, diurese e descrição clínica conforme o caso acontece, sem reconstruir tudo no final."
+                desc="Atualize sinais vitais com um simples deslizar de dedos. Monitore parâmetros, fluidos, diurese e descrição clínica conforme o caso acontece."
               />
               <StepCard
                 step="Etapa 4"
@@ -347,18 +350,18 @@ export default function ProdutoClient() {
             <div className="grid gap-6 md:grid-cols-2">
               <Card
                 icon={Activity}
-                title="Sinais vitais"
-                desc="A linha do tempo é criada automaticamente para facilitar a evolução intraoperatória com mais fluidez."
+                title="Sinais vitais em um deslizar dos dedos"
+                desc="Ajuste os valores de sinais vitais apenas deslizando os campos, sem precisar digitar, mantendo o registro fiel à monitorização em tempo real."
               />
               <Card
                 icon={Settings2}
-                title="Monitores e parâmetros"
-                desc="Adicione gases, capnografia, saturação, oxigênio, acessos, diurese e outros dados conforme a necessidade do caso."
+                title="Monitores, parâmetros e alergias"
+                desc="Adicione gases, acessos, registre e detalhe alergias e crie colunas adicionais conforme a necessidade do caso clínico."
               />
               <Card
                 icon={Clock}
-                title="Fluidos distribuídos"
-                desc="Informe o volume total e o app distribui os dados nas colunas de forma proporcional e ordenada."
+                title="Fluidos e infusões contínuas"
+                desc="Informe o volume total e o app distribui a diurese e os fluidos. Marque facilmente as soluções de infusão contínua, como noradrenalina."
               />
               <Card
                 icon={FileText}
@@ -474,12 +477,12 @@ export default function ProdutoClient() {
                 <Card
                   icon={Activity}
                   title="Grade de monitores"
-                  desc="Aplique estruturas prontas conforme a técnica anestésica escolhida."
+                  desc="Aplique estruturas prontas conforme a técnica anestésica escolhida (Geral, Raqui, Sedação)."
                 />
                 <Card
                   icon={Settings2}
                   title="Presets próprios"
-                  desc="Além dos padrões, você pode criar seus próprios fluxos para diferentes rotinas."
+                  desc="Além dos protocolos padrão do app, você pode criar seus próprios presets para diferentes rotinas e procedimentos."
                 />
               </div>
             </div>
@@ -516,17 +519,17 @@ export default function ProdutoClient() {
             <Card
               icon={QrCode}
               title="QR Code entre usuários"
-              desc="Facilite a continuidade de casos em andamento na passagem de plantão entre anestesiologistas."
+              desc="Facilite a passagem de plantão. Leia o QR Code e transfira o caso em andamento para outro anestesiologista com um toque."
             />
             <Card
               icon={Scan}
               title="Scanner inteligente"
-              desc="Leia identificações e documentos para preencher dados iniciais do paciente com mais rapidez."
+              desc="Apontou, preencheu. O OCR lê identificações ou cabeçalhos de exames para extrair instantaneamente Nome, Idade e Registro."
             />
             <Card
               icon={Calendar}
               title="Calendário e financeiro"
-              desc="Organize plantões, recorrências e acompanhamento financeiro no mesmo ecossistema de trabalho."
+              desc="Organize plantões, crie escalas com recorrência automática e gerencie o acompanhamento financeiro por hospital."
             />
           </div>
         </div>
@@ -540,22 +543,26 @@ export default function ProdutoClient() {
               Organização além da ficha
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              O Anest+ também ajuda a visualizar plantões, recorrências e pagamentos
-              no mesmo ecossistema de trabalho.
+              O Anest+ também ajuda a visualizar plantões, automatizar escalas e acompanhar sua produção financeira no mesmo ecossistema, com privacidade total e 100% local.
             </p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
-            <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-start">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
               <Card
                 icon={Calendar}
                 title="Calendário de plantões"
-                desc="Visualize a escala em uma estrutura clara, com recorrências e datas organizadas no mesmo ambiente."
+                desc="Configure a recorrência (ex: plantão a cada 15 dias) e o app preenche sua escala automaticamente. Visualize suas datas organizadas no mesmo ambiente."
               />
               <Card
                 icon={Wallet}
                 title="Controle financeiro"
-                desc="Acompanhe pagamentos, valores pendentes e uma visão mais clara da produção por período."
+                desc="Acesse o painel de Produção por hospital. Acompanhe os turnos trabalhados, valores recebidos e o que ainda tem pendente a receber."
+              />
+              <Card
+                icon={Lock}
+                title="Privacidade 100% Local"
+                desc="Não temos banco de dados na nuvem. Todos os seus plantões, fichas de pacientes e seu faturamento ficam armazenados apenas no seu próprio celular."
               />
             </div>
 
@@ -594,7 +601,7 @@ export default function ProdutoClient() {
 </h2>
 <p className="mt-8 text-lg leading-8 text-[#d8dccf] md:text-xl">
   Organize casos, crie fichas anestésicas, aplique protocolos, acompanhe seu calendário de
-  plantões e visualize seu relatório financeiro, tudo em um só lugar.
+  plantões e visualize sua produção financeira, tudo em um só lugar.
 </p>
 
               <div className="mt-12 flex flex-wrap gap-4">

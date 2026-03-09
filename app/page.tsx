@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Droplets,
+  Lock, // <-- Novo ícone adicionado
   Layout as LayoutIcon,
   type LucideIcon,
 } from "lucide-react";
@@ -286,7 +287,7 @@ export default function Home() {
 </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card
                 icon={Zap}
                 title="Produtividade"
@@ -301,6 +302,11 @@ export default function Home() {
                 icon={ShieldCheck}
                 title="Padronização"
                 desc="Um registro mais consistente, limpo e fácil de revisar, imprimir ou compartilhar."
+              />
+              <Card
+                icon={Lock}
+                title="100% Privado"
+                desc="Sem banco de dados na nuvem. Suas fichas, plantões e dados financeiros ficam armazenados apenas no seu dispositivo."
               />
             </div>
           </div>
@@ -360,12 +366,12 @@ export default function Home() {
               <Card
                 icon={Scan}
                 title="Scanner inteligente"
-                desc="Leia identificações e documentos para preencher dados iniciais do paciente com mais rapidez."
+                desc="Leia identificações e cabeçalhos de exames para preencher Nome, Idade e Registro na hora."
               />
               <Card
                 icon={Calendar}
                 title="Calendário e financeiro"
-                desc="Organize plantões, recorrências e acompanhamento financeiro no mesmo ecossistema de trabalho."
+                desc="Configure escalas com recorrência automática e acompanhe sua Produção financeira por hospital."
               />
             </div>
           </div>
@@ -485,11 +491,11 @@ export default function Home() {
                     i: Clock,
                   },
                   {
-                    t: "Monitores e parâmetros editáveis conforme a necessidade do procedimento",
+                    t: "Ajuste os sinais vitais apenas deslizando o dedo, sem precisar digitar",
                     i: SlidersHorizontal,
                   },
                   {
-                    t: "Fluidos distribuídos automaticamente nas colunas",
+                    t: "Fluidos, diurese e infusões contínuas (como noradrenalina) distribuídos automaticamente",
                     i: Droplets,
                   },
                 ].map((item) => (
@@ -497,8 +503,8 @@ export default function Home() {
                     key={item.t}
                     className="flex items-center gap-4 rounded-2xl border border-[#b9963b]/15 bg-white px-5 py-4 text-sm font-semibold text-zinc-800 shadow-sm"
                   >
-                    <item.i size={20} className="text-[#7a865f]" />
-                    {item.t}
+                    <item.i size={20} className="text-[#7a865f] shrink-0" />
+                    <span className="leading-snug">{item.t}</span>
                   </div>
                 ))}
               </div>

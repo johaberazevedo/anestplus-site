@@ -9,25 +9,25 @@ export const metadata: Metadata = {
     template: "%s | Anest+",
   },
   description:
-    "O Anest+ simplifica o registro anestésico com fluxo rápido, padronizado e ficha anestésica digital pronta para imprimir, exportar ou compartilhar.",
+    "O Anest+ fortalece o registro anestésico com ficha anestésica digital, mais segurança no preenchimento, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
   metadataBase: new URL("https://anestplus.com"),
 
   openGraph: {
-  type: "website",
-  url: "https://anestplus.com",
-  siteName: "Anest+",
-  title: "Anest+ — Ficha anestésica digital, sem complicação",
-  description:
-    "Fluxo rápido, claro e padronizado para evoluir casos e finalizar a ficha anestésica com menos retrabalho e mais tranquilidade no centro cirúrgico.",
-  locale: "pt_BR",
-},
+    type: "website",
+    url: "https://anestplus.com",
+    siteName: "Anest+",
+    title: "Anest+ — Ficha anestésica digital com mais segurança e padronização",
+    description:
+      "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
+    locale: "pt_BR",
+  },
 
   twitter: {
-  card: "summary_large_image",
-  title: "Anest+ — Ficha anestésica digital, sem complicação",
-  description:
-    "Fluxo rápido, claro e padronizado para evoluir casos e finalizar a ficha anestésica com menos retrabalho e mais tranquilidade no centro cirúrgico.",
-},
+    card: "summary_large_image",
+    title: "Anest+ — Ficha anestésica digital com mais segurança e padronização",
+    description:
+      "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
+  },
 
   icons: {
     icon: "/favicon.ico",
@@ -38,10 +38,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pt-BR">
-      <body className="min-h-screen bg-white text-zinc-900 antialiased">
+    <html lang="pt-BR" className="scroll-smooth">
+      <body className="min-h-screen bg-white text-zinc-900 antialiased flex flex-col">
         <Navbar />
-        <main className="w-full px-4">
+        <main className="w-full px-4 flex-grow">
           {children}
         </main>
         <Footer />

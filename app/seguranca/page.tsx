@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, Variants } from "framer-motion";
 import {
   ShieldCheck,
   EyeOff,
@@ -11,17 +14,43 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+// ⚠️ AVISO: O Next.js não permite exportar metadata em arquivos "use client".
+// Recomendado criar um arquivo app/seguranca/layout.tsx para esta metadata:
+/*
 export const metadata = {
   title: "Segurança & Privacidade — Anest+",
   description:
     "Conheça as principais características de segurança documental, privacidade e Trust Layer do Anest+.",
 };
+*/
+
+// --- VARIANTS DE ANIMAÇÃO ---
+const fadeUpVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: "spring", stiffness: 100, damping: 20 } 
+  },
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-[#b9963b]/25 bg-[#f6f7f1] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[#506047] shadow-sm">
+    <motion.span 
+      whileHover={{ scale: 1.05, backgroundColor: "#eef0e5" }}
+      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      className="inline-flex cursor-default items-center rounded-full border border-[#b9963b]/25 bg-[#f6f7f1] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#506047] shadow-sm backdrop-blur-md"
+    >
       {children}
-    </span>
+    </motion.span>
   );
 }
 
@@ -35,16 +64,22 @@ function SectionTitle({
   align?: "left" | "center";
 }) {
   return (
-    <div className={`mb-10 md:mb-14 ${align === "center" ? "mx-auto text-center" : ""}`}>
-      <h2 className="max-w-4xl text-4xl font-black tracking-tight text-zinc-950 md:text-5xl lg:text-6xl lg:leading-[0.98]">
+    <motion.div 
+      variants={staggerContainer}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className={`mb-10 md:mb-14 ${align === "center" ? "mx-auto text-center" : ""}`}
+    >
+      <motion.h2 variants={fadeUpVariants} className="max-w-4xl text-4xl font-black tracking-tight text-zinc-950 md:text-5xl lg:text-6xl lg:leading-[0.98]">
         {title}
-      </h2>
+      </motion.h2>
       {subtitle ? (
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500">
+        <motion.p variants={fadeUpVariants} className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500">
           {subtitle}
-        </p>
+        </motion.p>
       ) : null}
-    </div>
+    </motion.div>
   );
 }
 
@@ -60,42 +95,67 @@ function Card({
   className?: string;
 }) {
   return (
-    <div
-      className={`group relative overflow-hidden rounded-[32px] border border-zinc-200/80 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#b9963b]/35 hover:shadow-md ${className}`}
+    <motion.div
+      variants={fadeUpVariants}
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className={`group relative overflow-hidden rounded-[32px] border border-zinc-200/80 bg-white p-8 shadow-sm transition-all hover:border-[#b9963b]/30 hover:shadow-xl hover:shadow-[#b9963b]/5 ${className}`}
     >
-      <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-[#b9963b]/5 blur-2xl transition-all group-hover:bg-[#b9963b]/10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#b9963b]/0 to-[#b9963b]/[0.03] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#b9963b]/5 blur-2xl transition-all duration-700 group-hover:bg-[#b9963b]/15" />
+      
       {Icon ? (
-        <Icon className="mb-5 text-[#7a865f]" size={24} strokeWidth={1.5} />
+        <div className="mb-6 inline-flex rounded-2xl bg-zinc-50 p-3 transition-colors duration-500 group-hover:bg-[#b9963b]/10">
+          <Icon className="text-[#7a865f] transition-colors duration-500 group-hover:text-[#b9963b]" size={28} strokeWidth={1.5} />
+        </div>
       ) : null}
-      <h3 className="text-lg font-semibold tracking-tight text-zinc-950">
+      
+      <h3 className="relative z-10 text-xl font-bold tracking-tight text-zinc-950">
         {title}
       </h3>
-      <p className="mt-3 text-sm leading-7 text-zinc-500">{desc}</p>
-    </div>
+      <p className="relative z-10 mt-3 text-base leading-7 text-zinc-500 transition-colors group-hover:text-zinc-600">{desc}</p>
+    </motion.div>
   );
 }
 
 export default function SegurancaPage() {
   return (
-    <div className="-mx-4 bg-white text-zinc-950">
+    <div className="-mx-4 bg-white text-zinc-950 selection:bg-[#162014] selection:text-[#e0bf62]">
       {/* HERO */}
       <section className="relative overflow-hidden px-4 pb-14 pt-4 md:pb-20 md:pt-8">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-44 left-1/2 h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-[#22331d]/10 blur-3xl" />
-          <div className="absolute top-8 right-[-100px] h-[420px] w-[420px] rounded-full bg-[#8f9c69]/12 blur-3xl" />
-          <div className="absolute left-[8%] top-[22%] h-[220px] w-[220px] rounded-full bg-[#d7b65a]/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <motion.div 
+            animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.15, 0.1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-44 left-1/2 h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-[#22331d] blur-3xl" 
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.18, 0.12] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute top-8 right-[-100px] h-[420px] w-[420px] rounded-full bg-[#8f9c69] blur-3xl" 
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.15, 1], opacity: [0.1, 0.2, 0.1] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute left-[8%] top-[22%] h-[220px] w-[220px] rounded-full bg-[#d7b65a] blur-3xl" 
+          />
         </div>
 
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="flex flex-wrap gap-2">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="mx-auto w-full max-w-6xl"
+        >
+          <motion.div variants={fadeUpVariants} className="flex flex-wrap gap-2">
             <Pill>Trust Layer ativa</Pill>
             <Pill>Dados só no dispositivo</Pill>
-            <Pill>Segurança documental</Pill>
-          </div>
+            <Pill>Mais segurança no registro</Pill>
+          </motion.div>
 
-          <div className="mt-8 max-w-5xl">
+          <motion.div variants={fadeUpVariants} className="mt-8 max-w-5xl">
             <h1 className="text-4xl font-black tracking-tight text-zinc-950 md:text-6xl lg:leading-[0.98]">
-              Segurança documental para uma rotina que não pode depender da tranquilidade do plantão, nem da caligrafia
+              Segurança nos documentos para uma rotina que não pode depender nem da calma do plantão nem da caligrafia
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
               No Anest+, segurança e privacidade não aparecem só como conceito
@@ -103,9 +163,9 @@ export default function SegurancaPage() {
               padronizada, cópias acessíveis e mais confiança no registro
               anestésico.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="mt-10 grid gap-3 text-sm sm:grid-cols-3">
+          <motion.div variants={fadeUpVariants} className="mt-10 grid gap-3 text-sm sm:grid-cols-3">
             {[
               "Dados sem comunicação com nuvem ou servidores",
               "Menos risco de glosa por erros de preenchimento",
@@ -113,14 +173,14 @@ export default function SegurancaPage() {
             ].map((item) => (
               <div
                 key={item}
-                className="flex items-center gap-2 rounded-2xl border border-[#b9963b]/20 bg-[#fafaf7] px-4 py-3 font-semibold text-zinc-700 shadow-sm"
+                className="flex items-center gap-2 rounded-2xl border border-zinc-200/80 bg-white/60 px-4 py-3 font-semibold text-zinc-700 shadow-sm backdrop-blur-md"
               >
-                <CheckCircle2 size={16} className="text-[#7a865f]" />
-                {item}
+                <CheckCircle2 size={16} className="text-[#7a865f] shrink-0" />
+                <span className="leading-snug">{item}</span>
               </div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* PRINCIPAIS CARACTERÍSTICAS */}
@@ -131,7 +191,13 @@ export default function SegurancaPage() {
             subtitle="A proposta do app é fortalecer a documentação anestésica com mais legibilidade, previsibilidade e domínio dos dados pelo próprio anestesiologista."
           />
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          >
             <Card
               icon={HardDrive}
               title="Dados no domínio do anestesiologista"
@@ -162,19 +228,26 @@ export default function SegurancaPage() {
               title="Menos exposição desnecessária"
               desc="O app foi pensado para apoiar a documentação do caso com foco objetivo no registro, sem depender de compartilhamentos ou fluxos externos desnecessários."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* IMPACTO PRÁTICO */}
-      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
+      <section className="relative px-4 py-20 md:py-24">
+        <div className="absolute inset-0 -z-10 bg-zinc-50/50" />
         <div className="mx-auto w-full max-w-6xl">
           <SectionTitle
             title="Como isso ajuda na prática"
             subtitle="No dia a dia do centro cirúrgico, segurança também significa reduzir fragilidades que começam no papel, no plantão agitado e na dificuldade de acessar o registro depois."
           />
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-6 md:grid-cols-2"
+          >
             <Card
               icon={ClipboardList}
               title="Menos risco de glosa"
@@ -188,14 +261,14 @@ export default function SegurancaPage() {
             <Card
               icon={Scale}
               title="Menos fragilidade do manuscrito"
-              desc="Fichas feitas à mão podem sofrer com preenchimento incompleto, letra difícil e menor clareza documental. O Anest+ ajuda a estruturar melhor esse processo."
+              desc="Fichas feitas à mão podem sofrer com preenchimento incompleto, letra difícil e menor segurança no registro. O Anest+ ajuda a estruturar melhor esse processo."
             />
             <Card
               icon={Files}
               title="Cópias acessíveis"
               desc="Depois que o anestesiologista sai do hospital, ele não precisa depender apenas do papel arquivado na instituição para ter acesso ao próprio registro."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -207,7 +280,13 @@ export default function SegurancaPage() {
             subtitle="No Anest+, privacidade não é um detalhe escondido. Ela faz parte da própria lógica do produto."
           />
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-6 md:grid-cols-3"
+          >
             <Card
               icon={Lock}
               title="Sem dependência de servidores"
@@ -221,21 +300,28 @@ export default function SegurancaPage() {
             <Card
               icon={ShieldCheck}
               title="Responsabilidade no contexto real"
-              desc="A experiência foi pensada para unir praticidade, privacidade e confiança documental no cenário real da anestesiologia."
+              desc="A experiência foi pensada para unir praticidade, privacidade e mais segurança no registro dentro da rotina real da anestesiologia."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* DOCUMENTO FINAL */}
-      <section className="bg-zinc-50/50 px-4 py-20 md:py-24">
+      <section className="relative px-4 py-20 md:py-24">
+        <div className="absolute inset-0 -z-10 bg-zinc-50/50" />
         <div className="mx-auto w-full max-w-6xl">
           <SectionTitle
             title="Ficha anestésica finalizada com mais confiança"
             subtitle="Segurança também aparece no resultado final: um documento mais claro, consistente e preparado para o fluxo real de revisão, impressão e guarda."
           />
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-6 md:grid-cols-2"
+          >
             <Card
               icon={FileText}
               title="Estrutura padronizada"
@@ -246,15 +332,23 @@ export default function SegurancaPage() {
               title="Melhor leitura e rastreabilidade"
               desc="Uma ficha anestésica mais clara e apoiada pela Trust Layer reforça a confiança documental no material final gerado pelo app."
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* FECHAMENTO */}
-      <section className="px-4 pb-16 pt-4 md:pb-24">
+      {/* FECHAMENTO CTA */}
+      <section className="px-4 pb-16 pt-10 md:pb-24 md:pt-16">
         <div className="mx-auto w-full max-w-6xl">
-          <div className="rounded-[40px] border border-[#b9963b]/15 bg-[#f6f7f1] p-8 shadow-sm md:p-12">
-            <div className="max-w-3xl">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 100 }}
+            className="group relative overflow-hidden rounded-[40px] border border-[#b9963b]/20 bg-gradient-to-br from-[#fbfaf5] to-white p-8 shadow-lg md:p-14"
+          >
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#b9963b]/10 blur-3xl transition-opacity duration-700 group-hover:opacity-50" />
+            
+            <div className="relative z-10 max-w-4xl">
               <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#7a865f]">
                 Fechamento
               </p>
@@ -263,12 +357,12 @@ export default function SegurancaPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-zinc-600">
-                No Anest+, segurança significa dados no domínio do anestesiologista,
-                ficha legível, menos fragilidade do papel manuscrito, cópias
-                acessíveis e mais confiança documental com apoio da Trust Layer.
+                NNo Anest+, segurança significa dados no domínio do anestesiologista,
+ficha legível, menos fragilidade do papel manuscrito, cópias
+acessíveis e mais segurança no registro com apoio da Trust Layer.
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
