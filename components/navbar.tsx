@@ -53,7 +53,7 @@ export function Navbar() {
               Anest+
             </span>
             <span className="mt-1 hidden text-[10px] uppercase tracking-[0.16em] text-zinc-400 sm:block">
-              ficha anestésica digital
+              Seu assistente pessoal em anestesiologia
             </span>
           </div>
         </Link>

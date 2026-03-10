@@ -18,7 +18,9 @@ import {
   ClipboardPen,
   Wallet,
   FileCheck2,
-  Lock, // <-- Novo ícone adicionado
+  Lock,
+  SlidersHorizontal,
+  Droplets,
   type LucideIcon,
 } from "lucide-react";
 
@@ -136,7 +138,7 @@ export default function ProdutoClient() {
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <motion.div initial="hidden" animate="visible" variants={containerVariants}>
               <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
-                <Pill>Fluxo clínico completo</Pill>
+                <Pill>Assistente pessoal em anestesia</Pill>
                 <Pill>Ficha anestésica digital</Pill>
                 <Pill>Feito por anestesiologista</Pill>
               </motion.div>
@@ -145,9 +147,10 @@ export default function ProdutoClient() {
                 variants={itemVariants}
                 className="mt-8 text-4xl font-black tracking-tight text-zinc-950 md:text-5xl lg:text-6xl lg:leading-[1.05]"
               >
-                Entenda como o Anest+ funciona na <br />
+                Entenda como o Anest+ acompanha sua rotina
+                <br />
                 <span className="bg-gradient-to-r from-[#7b8461] to-[#b9963b] bg-clip-text text-transparent">
-                  rotina real do centro cirúrgico
+                  antes, durante e depois do plantão
                 </span>
               </motion.h1>
 
@@ -155,9 +158,8 @@ export default function ProdutoClient() {
                 variants={itemVariants}
                 className="mt-6 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl"
               >
-                Do perfil à ficha anestésica finalizada, o app organiza o registro
-com mais clareza, organização e um fluxo pensado para o
-intraoperatório.
+                O Anest+ organiza plantões, facilita o registro anestésico e reduz
+                a carga mental da rotina com um fluxo pensado para a prática real do centro cirúrgico.
               </motion.p>
 
               <motion.div
@@ -165,9 +167,9 @@ intraoperatório.
                 className="mt-8 grid gap-3 text-sm sm:grid-cols-3"
               >
                 {[
-                  "Fluxo rápido e padronizado",
-                  "Evolução durante o caso",
-                  "Ficha anestésica finalizada",
+                  "Rotina mais organizada",
+                  "Registro durante o caso",
+                  "Ficha anestésica mais clara",
                 ].map((item) => (
                   <div
                     key={item}
@@ -198,16 +200,33 @@ intraoperatório.
         </div>
       </section>
 
-      {/* BASE PRONTA */}
+      {/* POSICIONAMENTO */}
+      <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#b9963b]">
+            Mais do que uma ficha digital
+          </p>
+          <h2 className="mt-5 text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
+            O assistente pessoal do anestesiologista
+          </h2>
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-zinc-600 md:text-xl">
+            O Anest+ reúne em um só lugar aquilo que realmente pesa na rotina:
+            organização dos plantões, registro do caso, acompanhamento intraoperatório
+            e uma ficha anestésica final mais clara, padronizada e profissional.
+          </p>
+        </div>
+      </section>
+
+      {/* BASE PROFISSIONAL */}
       <section className="px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14">
             <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
-              Comece com sua base pronta
+              Comece de maneira simples
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              Antes da primeira ficha, você organiza o que é fixo na sua rotina:
-              perfil, assinatura e hospitais.
+              Antes do primeiro caso, você organiza o que é fixo na sua rotina:
+              perfil, hospitais e contexto de trabalho.
             </p>
           </div>
 
@@ -241,24 +260,69 @@ intraoperatório.
         </div>
       </section>
 
-      {/* NOVO CASO */}
+      {/* CALENDÁRIO */}
       <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr] lg:items-center">
             <div>
               <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
-                Crie sua ficha anestésica com rapidez
+                Organize seus plantões com mais clareza
               </h2>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
-                Os dados do paciente e do procedimento entram em uma estrutura
-                clara, validada e pronta para acompanhar o caso desde o início.
+                Com o calendário de plantões, o Anest+ passa a fazer parte da sua rotina
+                profissional antes mesmo do caso começar, centralizando compromissos,
+                recorrências e contexto de trabalho.
+              </p>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                {[
+                  "Visualização clara da agenda",
+                  "Recorrência automática de plantões",
+                  "Organização por hospital",
+                  "Menos rotina espalhada",
+                  "Mais previsibilidade no dia a dia",
+                  "Base pronta antes do caso",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3 rounded-2xl border border-[#b9963b]/15 bg-white px-5 py-4 text-sm font-semibold text-zinc-800 shadow-sm"
+                  >
+                    <CheckCircle2 size={18} className="text-[#b9963b] shrink-0" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-center lg:justify-end">
+              <ScreenFrame
+                src="/screens/produto-calendario.jpg"
+                alt="Calendário de plantões no Anest+"
+                className="max-w-[320px]"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NOVO CASO */}
+      <section className="px-6 py-20 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-10 lg:grid-cols-[1fr_0.95fr] lg:items-center">
+            <div>
+              <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
+                Crie a ficha anestésica com rapidez
+              </h2>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
+                Os dados do paciente e do procedimento entram em uma estrutura clara,
+                validada e pronta para acompanhar o caso desde o início.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {[
                   "Paciente, idade, sexo e registro",
                   "ASA, cirurgia e anestesia",
-                  "Hospital e plano",
+                  "Hospital e plano anestésico",
                   "Scanner de cabeçalho de exames",
                   "Registro de alergias detalhadas",
                   "Base pronta para começar o caso",
@@ -286,15 +350,15 @@ intraoperatório.
       </section>
 
       {/* FLUXO */}
-      <section className="px-6 py-20 md:py-24">
+      <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14">
             <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
-              O fluxo principal do app
+              Um fluxo pensado para a rotina real da anestesia
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              Cada etapa foi desenhada para acompanhar o anestesiologista do
-              início do caso até a ficha anestésica finalizada.
+              Cada etapa foi desenhada para acompanhar o anestesiologista antes,
+              durante e depois do plantão.
             </p>
           </div>
 
@@ -302,23 +366,23 @@ intraoperatório.
             <div className="grid gap-6 md:grid-cols-2">
               <StepCard
                 step="Etapa 1"
-                title="Perfil e hospitais"
-                desc="Cadastre nome, CRM e RQE uma vez. Depois, organize os hospitais com nome e identidade visual para usar nas fichas e relatórios."
+                title="Organize sua rotina"
+                desc="Configure perfil, hospitais e calendário para deixar o app pronto para acompanhar seu contexto profissional."
               />
               <StepCard
                 step="Etapa 2"
-                title="Criação da ficha anestésica"
-                desc="Preencha os dados do paciente, ASA, anestesia, cirurgia, registro e plano em uma estrutura direta, validada e pronta para começar o caso."
+                title="Inicie a ficha com clareza"
+                desc="Preencha paciente, ASA, anestesia, cirurgia, registro e plano em uma estrutura rápida, validada e objetiva."
               />
               <StepCard
                 step="Etapa 3"
-                title="Evolua o caso durante o intraoperatório"
-                desc="Atualize sinais vitais com um simples deslizar de dedos. Monitore parâmetros, fluidos, diurese e descrição clínica conforme o caso acontece."
+                title="Acompanhe o intraoperatório"
+                desc="Atualize sinais vitais, parâmetros, fluidos, diurese, descrição clínica e medicações conforme o caso acontece."
               />
               <StepCard
                 step="Etapa 4"
-                title="Ficha anestésica finalizada"
-                desc="Ao término, o app consolida o registro em uma ficha anestésica clara, organizada e pronta para imprimir, exportar ou compartilhar."
+                title="Termine com um registro mais claro"
+                desc="Ao término, o app consolida as informações em uma ficha anestésica mais legível, organizada e consistente."
               />
             </div>
 
@@ -334,15 +398,15 @@ intraoperatório.
       </section>
 
       {/* DURANTE O CASO */}
-      <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
+      <section className="px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14">
             <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
               O que o Anest+ organiza durante o caso
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              O foco é diminuir atrito no preenchimento e manter clareza no
-              registro anestésico.
+              O foco é facilitar o preenchimento e manter clareza na ficha anestésica
+              enquanto o caso acontece.
             </p>
           </div>
 
@@ -351,7 +415,7 @@ intraoperatório.
               <Card
                 icon={Activity}
                 title="Sinais vitais em um deslizar dos dedos"
-                desc="Ajuste os valores de sinais vitais apenas deslizando os campos, sem precisar digitar, mantendo o registro fiel à monitorização em tempo real."
+                desc="Ajuste os valores apenas deslizando os campos, sem precisar digitar, mantendo o registro fiel à monitorização em tempo real."
               />
               <Card
                 icon={Settings2}
@@ -361,7 +425,7 @@ intraoperatório.
               <Card
                 icon={Clock}
                 title="Fluidos e infusões contínuas"
-                desc="Informe o volume total e o app distribui a diurese e os fluidos. Marque facilmente as soluções de infusão contínua, como noradrenalina."
+                desc="Informe o volume total e o app distribui diurese, fluidos e soluções contínuas de forma mais prática."
               />
               <Card
                 icon={FileText}
@@ -375,8 +439,8 @@ intraoperatório.
               />
               <Card
                 icon={CheckCircle2}
-                title="Ficha anestésica finalizada"
-                desc="O caso inteiro é consolidado em uma visualização clara ao final, pronta para revisão, impressão, exportação ou compartilhamento."
+                title="Ficha anestésica final mais clara"
+                desc="O caso inteiro é consolidado em uma visualização mais organizada, pronta para revisão e uso no fluxo real."
               />
             </div>
 
@@ -394,26 +458,25 @@ intraoperatório.
             </div>
           </div>
         </div>
-            </section>
+      </section>
 
-      {/* FICHA FINALIZADA */}
-      <section className="px-6 py-20 md:py-24">
+      {/* FECHAMENTO DA FICHA */}
+      <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.98fr_1.02fr] lg:items-center">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#b9963b]">
-                Ficha anestésica finalizada
+                Registro final do caso
               </p>
 
               <h2 className="mt-4 text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
-                Do intraoperatório ao documento final, sem complicação
+                Uma ficha anestésica mais clara, organizada e fácil de revisar
               </h2>
 
               <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
-                Ao término do caso, o Anest+ consolida cabeçalho, parâmetros,
-                fármacos, sinais vitais e descrição anestésica em uma ficha
-                anestésica clara, padronizada e pronta para impressão,
-                exportação ou compartilhamento.
+                Ao término do caso, o Anest+ organiza cabeçalho, parâmetros, fármacos,
+                sinais vitais e descrição anestésica em uma estrutura mais limpa,
+                padronizada e profissional.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -429,13 +492,13 @@ intraoperatório.
                 />
                 <Card
                   icon={CheckCircle2}
-                  title="Pronta para o fluxo real"
-                  desc="Você pode imprimir, exportar ou compartilhar conforme a necessidade do serviço."
+                  title="Pensada para o fluxo real"
+                  desc="A ficha final se mantém clara e utilizável dentro da rotina prática do serviço."
                 />
                 <Card
                   icon={Activity}
                   title="Resumo fiel do caso"
-                  desc="O documento final reflete a evolução registrada durante o intraoperatório."
+                  desc="O registro final reflete a evolução acompanhada durante o intraoperatório, com mais continuidade e clareza."
                 />
               </div>
             </div>
@@ -459,14 +522,14 @@ intraoperatório.
                 Protocolos que aceleram a ficha
               </h2>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
-                Use padrões prontos de anestesia como ponto de partida e mantenha
-                mais consistência no registro, sem abrir mão da personalização do caso.
+                Use modelos de descrição de anestesia como ponto de partida e mantenha mais
+                consistência no registro, sem abrir mão da personalização do caso.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 <Card
                   icon={ClipboardPen}
-                  title="Descrição pronta"
+                  title="Descrição dinâmica"
                   desc="Textos-base ajudam a iniciar a ficha com mais rapidez e padronização."
                 />
                 <Card
@@ -477,7 +540,7 @@ intraoperatório.
                 <Card
                   icon={Activity}
                   title="Grade de monitores"
-                  desc="Aplique estruturas prontas conforme a técnica anestésica escolhida (Geral, Raqui, Sedação)."
+                  desc="Aplique estruturas prontas conforme a técnica anestésica escolhida, como Geral, Raqui ou Sedação."
                 />
                 <Card
                   icon={Settings2}
@@ -498,15 +561,16 @@ intraoperatório.
         </div>
       </section>
 
-      {/* EXTRA FEATURES */}
+      {/* RECURSOS EXTRAS */}
       <section className="bg-zinc-50/50 px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
             <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
-              Recursos que aceleram o dia a dia
+              Recursos que deixam o dia a dia mais leve
             </h2>
             <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-zinc-500 md:text-xl">
-              Além da ficha anestésica, o app reúne funções que tornam a rotina mais prática.
+              Além da ficha anestésica, o app reúne funções que encurtam etapas e ajudam
+              a manter a rotina mais prática.
             </p>
           </div>
 
@@ -524,18 +588,18 @@ intraoperatório.
             <Card
               icon={Scan}
               title="Scanner inteligente"
-              desc="Apontou, preencheu. O OCR lê identificações ou cabeçalhos de exames para extrair instantaneamente Nome, Idade e Registro."
+              desc="O OCR lê identificações ou cabeçalhos de exames para extrair Nome, Idade e Registro na hora."
             />
             <Card
               icon={Calendar}
               title="Calendário e financeiro"
-              desc="Organize plantões, crie escalas com recorrência automática e gerencie o acompanhamento financeiro por hospital."
+              desc="Organize plantões, crie escalas com recorrência automática e acompanhe sua produção por hospital."
             />
           </div>
         </div>
       </section>
 
-      {/* CALENDÁRIO + FINANCEIRO */}
+      {/* FINANCEIRO + PRIVACIDADE */}
       <section className="px-6 py-20 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14">
@@ -543,7 +607,8 @@ intraoperatório.
               Organização além da ficha
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              O Anest+ também ajuda a visualizar plantões, automatizar escalas e acompanhar sua produção financeira no mesmo ecossistema, com privacidade total e 100% local.
+              O Anest+ também ajuda a visualizar plantões, automatizar escalas e acompanhar
+              sua produção financeira no mesmo ecossistema, com privacidade total e armazenamento local.
             </p>
           </div>
 
@@ -552,17 +617,17 @@ intraoperatório.
               <Card
                 icon={Calendar}
                 title="Calendário de plantões"
-                desc="Configure a recorrência (ex: plantão a cada 15 dias) e o app preenche sua escala automaticamente. Visualize suas datas organizadas no mesmo ambiente."
+                desc="Configure recorrência e deixe o app preencher sua escala automaticamente, mantendo a rotina mais organizada."
               />
               <Card
                 icon={Wallet}
                 title="Controle financeiro"
-                desc="Acesse o painel de Produção por hospital. Acompanhe os turnos trabalhados, valores recebidos e o que ainda tem pendente a receber."
+                desc="Acompanhe turnos trabalhados, valores recebidos e pendências por hospital de forma prática."
               />
               <Card
                 icon={Lock}
-                title="Privacidade 100% Local"
-                desc="Não temos banco de dados na nuvem. Todos os seus plantões, fichas de pacientes e seu faturamento ficam armazenados apenas no seu próprio celular."
+                title="Privacidade 100% local"
+                desc="Plantões, fichas de pacientes e faturamento ficam armazenados apenas no seu próprio dispositivo."
               />
             </div>
 
@@ -582,7 +647,7 @@ intraoperatório.
         </div>
       </section>
 
-      {/* CLOSING CTA */}
+      {/* CTA FINAL */}
       <section className="px-6 pb-24 pt-8">
         <div className="mx-auto max-w-7xl">
           <motion.div
@@ -597,12 +662,12 @@ intraoperatório.
 
             <div className="relative z-10 max-w-4xl">
               <h2 className="text-4xl font-black tracking-tight md:text-6xl lg:leading-[1.04]">
-  Anest+. Seu assistente pessoal em anestesia.
-</h2>
-<p className="mt-8 text-lg leading-8 text-[#d8dccf] md:text-xl">
-  Organize casos, crie fichas anestésicas, aplique protocolos, acompanhe seu calendário de
-  plantões e visualize sua produção financeira, tudo em um só lugar.
-</p>
+                Anest+. Seu assistente pessoal em anestesia.
+              </h2>
+              <p className="mt-8 text-lg leading-8 text-[#d8dccf] md:text-xl">
+                Organize seus plantões, registre seus casos com mais fluidez e reduza a
+                carga mental da rotina com uma plataforma criada para a realidade da anestesia.
+              </p>
 
               <div className="mt-12 flex flex-wrap gap-4">
                 <a
