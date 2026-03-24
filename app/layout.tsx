@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -11,7 +9,6 @@ export const metadata: Metadata = {
   description:
     "O Anest+ fortalece o registro anestésico com ficha anestésica digital, mais segurança no preenchimento, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
   metadataBase: new URL("https://anestplus.com"),
-
   openGraph: {
     type: "website",
     url: "https://anestplus.com",
@@ -21,14 +18,12 @@ export const metadata: Metadata = {
       "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
     locale: "pt_BR",
   },
-
   twitter: {
     card: "summary_large_image",
     title: "Anest+ — Ficha anestésica digital com mais segurança e padronização",
     description:
       "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
   },
-
   icons: {
     icon: "/favicon.ico",
   },
@@ -39,12 +34,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR" className="scroll-smooth">
-      <body className="min-h-screen bg-white text-zinc-900 antialiased flex flex-col">
-        <Navbar />
-        <main className="w-full px-4 flex-grow">
-          {children}
-        </main>
-        <Footer />
+      <body className="min-h-screen bg-white text-zinc-900 antialiased">
+        {children}
       </body>
     </html>
   );
