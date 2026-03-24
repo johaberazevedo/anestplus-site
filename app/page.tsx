@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 
 const APPSTORE_URL = "https://apps.apple.com/br/app/anest/id6753714859";
+const OFFER_CODE_URL =
+  "https://apps.apple.com/redeem?ctx=offercodes&id=6753714859&code=ANESTFRIEND";
 const WHATSAPP_URL = "https://wa.me/5571992288755";
 const INSTAGRAM_URL = "https://instagram.com/anestplus";
 const EMAIL = "anestplus@outlook.com";
@@ -449,30 +451,32 @@ export default function Home() {
               <div className="mt-8">
   <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:flex-wrap">
     <a
-  href={APPSTORE_URL}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] sm:text-base font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d]"
->
-  Baixar na App Store
-  <ChevronRight className="ml-2" size={18} />
-</a>
-    <a
-      href="#como-funciona"
-      className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-white px-7 text-[15px] sm:text-base font-bold text-zinc-900 shadow-sm transition-all hover:bg-zinc-50"
+      href={APPSTORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
     >
-      Ver como funciona <ChevronRight size={16} />
+      Baixar na App Store
+      <ChevronRight className="ml-2" size={18} />
+    </a>
+
+    <a
+      href={OFFER_CODE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex h-14 items-center justify-center rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] px-7 text-[15px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#f6f4eb] sm:text-base"
+    >
+      Ativar 7 dias grátis
     </a>
   </div>
 
   <p className="mt-3 text-[13px] sm:text-sm text-zinc-500">
-  Disponível para iPhone e iPad.
-</p>
+    Disponível para iPhone e iPad.
+  </p>
 
-<p className="mt-2 text-[13px] sm:text-sm text-zinc-500">
-  Ative 7 dias grátis com o código{" "}
-  <span className="font-bold text-zinc-800">ANESTFRIEND</span>.
-</p>
+  <p className="mt-2 text-[13px] sm:text-sm text-zinc-500">
+    O código <span className="font-bold text-zinc-800">ANESTFRIEND</span> já vai aplicado no resgate.
+  </p>
 </div>
 
               <div className="mt-8 flex flex-wrap gap-2 sm:gap-3 text-[13px] sm:text-sm">
@@ -567,32 +571,65 @@ export default function Home() {
         </div>
       </section>
 
-{/* PROVA SOCIAL */}
-<section className="bg-zinc-50/60 px-5 sm:px-6 py-14 md:py-20">
-  <div className="mx-auto max-w-6xl">
-    <SectionHeading
-      center
-      eyebrow="Quem usa percebe na rotina"
-      title="O que muda quando o Anest+ entra no plantão"
-      desc="Relatos curtos, práticos e diretos sobre o impacto no dia a dia do anestesiologista."
-    />
+{/* VALIDAÇÃO EM HOSPITAIS */}
+<section className="px-5 pt-12 pb-4 sm:px-6 md:pt-16">
+  <div className="mx-auto max-w-5xl text-center">
+    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
+      Validado na prática nos hospitais
+    </p>
 
-    <div className="mt-8 sm:mt-10 grid gap-4 md:grid-cols-3">
-      <TestimonialCard
-        quote="Parei de terminar caso pensando na ficha que ainda faltava organizar."
-        author="Anestesiologista"
-      />
-      <TestimonialCard
-        quote="A passagem de plantão ficou mais simples e a continuidade do caso ficou muito melhor."
-        author="Anestesiologista"
-      />
-      <TestimonialCard
-        quote="A ficha ficou mais clara, mais rápida de revisar e com muito menos retrabalho no final."
-        author="Anestesiologista"
-      />
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6">
+      <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+        <Image
+          src="/brand/logo-hgvc2.png"
+          alt="HGVC"
+          width={320}
+          height={110}
+          className="h-auto max-h-[180px] w-auto object-contain"
+        />
+      </div>
+
+      <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+        <Image
+          src="/brand/logo-afranio-peixoto2.png"
+          alt="Hospital Afrânio Peixoto"
+          width={320}
+          height={110}
+          className="h-auto max-h-[160px] w-auto object-contain"
+        />
+      </div>
     </div>
   </div>
 </section>
+
+      {/* PROVA SOCIAL */}
+      <section className="bg-zinc-50/60 px-5 sm:px-6 py-14 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading
+            center
+            eyebrow="Quem usa percebe na rotina"
+            title="O que muda quando o Anest+ entra no plantão"
+            desc="Relatos curtos, práticos e diretos sobre o impacto no dia a dia do anestesiologista."
+          />
+
+          <div className="mt-8 sm:mt-10 grid gap-4 md:grid-cols-3">
+            <TestimonialCard
+              quote="Parei de terminar caso pensando na ficha que ainda faltava organizar. O fluxo do plantão ficou muito mais leve."
+              author="Daniel M. — Anestesiologista"
+            />
+            <TestimonialCard
+  quote="O calendário de plantões me ajudou a organizar melhor a rotina e trouxe muito mais clareza para os meus compromissos."
+  author="Isabela T. — Anestesiologista."
+/>
+            <TestimonialCard
+              quote="A ficha final ficou mais clara, mais rápida de revisar e com muito menos retrabalho no fim do caso."
+              author="Iago G. — Anestesiologista"
+            />
+          </div>
+        </div>
+      </section>
+
+
 
       {/* ORIGEM DO PRODUTO */}
       <section id="problema" className="bg-zinc-50/60 px-5 sm:px-6 py-12 md:py-24">
@@ -1179,9 +1216,9 @@ desc="Uma ficha mais clara e organizada fortalece o registro e reduz fragilidade
               </h2>
 
               <p className="mt-4 sm:mt-6 text-[15px] sm:text-lg leading-relaxed sm:leading-8 text-[#d8dccf] md:text-xl">
-                Organize seus plantões, registre seus casos com mais fluidez e fortaleça
-                sua documentação anestésica com um app criado para a rotina real da anestesia.
-              </p>
+  Teste no seu fluxo real por 7 dias e veja como fica mais leve criar a ficha,
+  registrar o caso durante o intraoperatório e terminar o plantão sem retrabalho.
+</p>
 
               {/* PRIORIDADE 2: REFORÇO DO TRIAL */}
               <div className="mt-8 flex flex-col items-center justify-center">
@@ -1196,21 +1233,24 @@ desc="Uma ficha mais clara e organizada fortalece o registro e reduz fragilidade
               </div>
 
               <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
-                <a
-                  href={APPSTORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-[14px] sm:rounded-2xl bg-[#d9b44a] px-6 py-3.5 sm:px-8 sm:py-4 text-[15px] sm:text-base font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02]"
-                >
-                  Baixar e testar grátis
-                </a>
-                <Link
-                  href="/institucional"
-                  className="rounded-[14px] sm:rounded-2xl border border-white/10 bg-white/5 px-6 py-3.5 sm:px-8 sm:py-4 text-[15px] sm:text-base font-bold backdrop-blur-md transition-colors hover:bg-white/10"
-                >
-                  Ver solução para hospitais
-                </Link>
-              </div>
+  <a
+    href={OFFER_CODE_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-[14px] bg-[#d9b44a] px-6 py-3.5 text-[15px] font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
+  >
+    Ativar 7 dias grátis
+  </a>
+
+  <a
+    href={APPSTORE_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-[14px] border border-white/10 bg-white/5 px-6 py-3.5 text-[15px] font-bold text-white backdrop-blur-md transition-colors hover:bg-white/10 sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
+  >
+    Ver na App Store
+  </a>
+</div>
             </div>
           </motion.div>
         </div>
