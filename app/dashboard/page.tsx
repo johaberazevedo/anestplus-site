@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
 type Ficha = {
   id: string;
@@ -26,51 +27,63 @@ function todayISO() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
+  
   const [hospitalId, setHospitalId] = useState<string>("hgvitoria");
   const [crm, setCrm] = useState<string>("");
   const [date, setDate] = useState<string>(todayISO());
   const [fichas, setFichas] = useState<Ficha[]>([]);
+  
   const [loading, setLoading] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
+  const [hasSearched, setHasSearched] = useState(false);
 
   const hospitalLabel = useMemo(
     () => HOSPITAIS.find((h) => h.id === hospitalId)?.label ?? hospitalId,
     [hospitalId]
   );
 
-  async function buscarFichas() {
-    setLoading(true);
-    setError("");
+  async function buscarFichas(e?: FormEvent) {
+  if (e) e.preventDefault();
 
-    try {
-      const params = new URLSearchParams({
-        hospitalId,
-        crm: crm.trim(),
-        date,
-      });
+  setHasSearched(true);
+  setLoading(true);
+  setError("");
+  setFichas([]);
 
-      const response = await fetch(`/api/fichas/listar?${params.toString()}`, {
-        method: "GET",
-        cache: "no-store",
-      });
+  try {
+    const params = new URLSearchParams({
+      hospitalId,
+      crm: crm.trim(),
+      date,
+    });
 
-      const json = await response.json();
+    const response = await fetch(`/api/fichas/listar?${params.toString()}`, {
+      method: "GET",
+      cache: "no-store",
+    });
 
-      if (!response.ok) {
-        throw new Error(json.error || "Erro ao buscar fichas.");
-      }
+    const json = await response.json();
 
-      setFichas(json.fichas ?? []);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Erro inesperado.";
-      setError(message);
-      setFichas([]);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(json.error || "Erro ao buscar fichas.");
     }
+
+    setFichas(json.fichas ?? []);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Erro inesperado ao buscar.";
+    setError(message);
+    setFichas([]);
+  } finally {
+    setLoading(false);
   }
+}
 
   async function baixarFicha(ficha: Ficha) {
+    setDownloadingId(ficha.id);
+    setError("");
+    
     try {
       const response = await fetch("/api/fichas/download", {
         method: "POST",
@@ -86,13 +99,15 @@ export default function DashboardPage() {
       const json = await response.json();
 
       if (!response.ok) {
-        throw new Error(json.error || "Erro ao gerar download.");
+        throw new Error(json.error || "Erro ao gerar link de download.");
       }
 
       window.open(json.downloadUrl, "_blank");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erro ao baixar.";
-      alert(message);
+      const message = err instanceof Error ? err.message : "Erro ao baixar a ficha.";
+      setError(message);
+    } finally {
+      setDownloadingId(null);
     }
   }
 
@@ -102,7 +117,8 @@ export default function DashboardPage() {
         method: "POST",
       });
     } finally {
-      window.location.href = "/login";
+      router.replace("/login");
+      router.refresh();
     }
   }
 
@@ -127,7 +143,7 @@ export default function DashboardPage() {
               <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
                 <span className="font-medium text-slate-900">{hospitalLabel}</span>
                 <span className="mx-2 text-slate-400">•</span>
-                <span>{date}</span>
+                <span>{date.split("-").reverse().join("/")}</span>
               </div>
 
               <button
@@ -141,7 +157,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mb-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <form 
+          onSubmit={buscarFichas}
+          className="mb-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <div>
             <label className="mb-3 block text-sm font-medium text-slate-700">
               Hospital
@@ -150,7 +169,6 @@ export default function DashboardPage() {
             <div className="flex flex-wrap gap-3">
               {HOSPITAIS.map((hospital) => {
                 const active = hospital.id === hospitalId;
-
                 return (
                   <button
                     key={hospital.id}
@@ -172,22 +190,25 @@ export default function DashboardPage() {
 
           <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="crm-input" className="mb-2 block text-sm font-medium text-slate-700">
                 CRM
               </label>
               <input
+                id="crm-input"
                 className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
                 value={crm}
                 onChange={(e) => setCrm(e.target.value)}
                 placeholder="Digite seu CRM"
+                autoComplete="off"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="date-input" className="mb-2 block text-sm font-medium text-slate-700">
                 Data
               </label>
               <input
+                id="date-input"
                 type="date"
                 className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
                 value={date}
@@ -197,15 +218,15 @@ export default function DashboardPage() {
 
             <div className="flex items-end">
               <button
+                type="submit"
                 className="w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
-                onClick={buscarFichas}
                 disabled={loading || crm.trim().length === 0}
               >
                 {loading ? "Buscando..." : "Buscar"}
               </button>
             </div>
           </div>
-        </div>
+        </form>
 
         {error ? (
           <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm">
@@ -213,7 +234,17 @@ export default function DashboardPage() {
           </div>
         ) : null}
 
-        {!loading && !error && fichas.length === 0 ? (
+        {!hasSearched ? (
+          <div className="rounded-3xl border border-slate-200 bg-white px-6 py-12 text-center shadow-sm">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl">
+              🔎
+            </div>
+            <h2 className="text-lg font-semibold">Busque as fichas do dia</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Selecione o hospital, informe o CRM e clique em buscar.
+            </p>
+          </div>
+        ) : !loading && !error && fichas.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-6 py-12 text-center shadow-sm">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl">
               📄
@@ -247,41 +278,46 @@ export default function DashboardPage() {
                 </thead>
 
                 <tbody>
-                  {fichas.map((ficha, index) => (
-                    <tr
-                      key={ficha.id}
-                      className={index !== fichas.length - 1 ? "border-b border-slate-100" : ""}
-                    >
-                      <td className="px-5 py-4">
-                        <div className="font-medium text-slate-900">
-                          {ficha.patient_name}
-                        </div>
-                      </td>
+                  {fichas.map((ficha, index) => {
+                    const isDownloadingThis = downloadingId === ficha.id;
+                    
+                    return (
+                      <tr
+                        key={ficha.id}
+                        className={index !== fichas.length - 1 ? "border-b border-slate-100" : ""}
+                      >
+                        <td className="px-5 py-4">
+                          <div className="font-medium text-slate-900">
+                            {ficha.patient_name}
+                          </div>
+                        </td>
 
-                      <td className="px-5 py-4 text-sm text-slate-700">
-                        {ficha.record_number}
-                      </td>
+                        <td className="px-5 py-4 text-sm text-slate-700">
+                          {ficha.record_number}
+                        </td>
 
-                      <td className="px-5 py-4 text-sm text-slate-600">
-                        <span className="rounded-full bg-slate-100 px-3 py-1">
-                          {new Date(ficha.procedure_date + "T00:00:00").toLocaleDateString("pt-BR")}
-                        </span>
-                      </td>
+                        <td className="px-5 py-4 text-sm text-slate-600">
+                          <span className="rounded-full bg-slate-100 px-3 py-1 whitespace-nowrap">
+                            {new Date(ficha.procedure_date + "T00:00:00").toLocaleDateString("pt-BR")}
+                          </span>
+                        </td>
 
-                      <td className="px-5 py-4 text-sm text-slate-600">
-                        {new Date(ficha.uploaded_at).toLocaleString("pt-BR")}
-                      </td>
+                        <td className="px-5 py-4 text-sm text-slate-600 whitespace-nowrap">
+                          {new Date(ficha.uploaded_at).toLocaleString("pt-BR")}
+                        </td>
 
-                      <td className="px-5 py-4">
-                        <button
-                          className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                          onClick={() => baixarFicha(ficha)}
-                        >
-                          Baixar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        <td className="px-5 py-4">
+                          <button
+                            className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 disabled:cursor-wait w-[90px]"
+                            onClick={() => baixarFicha(ficha)}
+                            disabled={isDownloadingThis}
+                          >
+                            {isDownloadingThis ? "Gerando..." : "Baixar"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
