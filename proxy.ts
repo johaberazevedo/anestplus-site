@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtected =
+  const isInstitutionalProtected =
     pathname.startsWith("/dashboard") ||
     pathname === "/api/fichas/listar" ||
     pathname === "/api/fichas/download";
 
-  if (!isProtected) {
+  if (!isInstitutionalProtected) {
     return NextResponse.next();
   }
 
