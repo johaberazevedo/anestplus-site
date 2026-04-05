@@ -1,14 +1,12 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
-import { getAuthenticatedProUser } from "@/lib/pro-auth";
 
 function sanitizeSegment(value: string) {
   return value
     .trim()
     .replace(/[^\w.-]+/g, "_")
-    .replace(/_+/g, "_")
-    .slice(0, 120);
+    .replace(/_+/g, "_");
 }
 
 function buildSafePdfName(fileName?: string) {
@@ -18,8 +16,7 @@ function buildSafePdfName(fileName?: string) {
     .trim()
     .replace(/\.pdf$/i, "")
     .replace(/[^\w.-]+/g, "_")
-    .replace(/_+/g, "_")
-    .slice(0, 120);
+    .replace(/_+/g, "_");
 
   return `${cleaned || "ficha"}.pdf`;
 }
@@ -54,39 +51,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const { user } = await getAuthenticatedProUser(request);
+    const body = await request.json();
+    const { crm, fileName } = body ?? {};
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "Não autenticado." },
-        { status: 401 }
-      );
-    }
-
-    const body = await request.json().catch(() => null);
-    const crmRaw = body?.crm;
-    const fileNameRaw = body?.fileName;
-
-    if (typeof crmRaw !== "string" || !crmRaw.trim()) {
+    if (!crm) {
       return NextResponse.json(
         { error: "crm é obrigatório." },
         { status: 400 }
       );
     }
 
-    if (
-      fileNameRaw !== undefined &&
-      (typeof fileNameRaw !== "string" || fileNameRaw.length > 200)
-    ) {
-      return NextResponse.json(
-        { error: "fileName inválido." },
-        { status: 400 }
-      );
-    }
-
-    const safeCrm = sanitizeSegment(crmRaw);
+    const safeCrm = sanitizeSegment(String(crm));
     const safeFileName = buildSafePdfName(
-      typeof fileNameRaw === "string" ? fileNameRaw : undefined
+      typeof fileName === "string" ? fileName : undefined
     );
 
     const hoje = new Date();
@@ -94,8 +71,8 @@ export async function POST(request: Request) {
       hoje.getMonth() + 1
     ).padStart(2, "0")}/${String(hoje.getDate()).padStart(2, "0")}`;
 
-    const finalFileName = `${Date.now()}_${safeFileName}`;
-    const fileKey = `pro/${user.id}/${pastaData}/${finalFileName}`;
+    const finalFileName = `${safeCrm}_${Date.now()}_${safeFileName}`;
+    const fileKey = `pro/${safeCrm}/${pastaData}/${finalFileName}`;
 
     const s3 = getR2Client();
 
@@ -103,10 +80,6 @@ export async function POST(request: Request) {
       Bucket: bucketName,
       Key: fileKey,
       ContentType: "application/pdf",
-      Metadata: {
-        owner_user_id: user.id,
-        crm: safeCrm,
-      },
     });
 
     const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
