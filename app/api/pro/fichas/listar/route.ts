@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     let query = supabaseAdmin
       .from("pro_fichas_uploads")
       .select(
-        "id, patient_name, record_number, procedure_date, anesthesia_type, start_date_time, end_date_time, file_key, file_name, uploaded_at"
+        "id, patient_name, record_number, procedure_date, anesthesia_type, start_date_time, end_date_time, file_key, file_name, uploaded_at, expires_at"
       )
       .eq("user_id", user.id)
       .is("deleted_at", null)

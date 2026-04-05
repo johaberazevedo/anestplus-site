@@ -16,6 +16,7 @@ type Ficha = {
   file_key: string;
   file_name: string;
   uploaded_at: string;
+  expires_at?: string;
 };
 
 function todayISO() {
@@ -37,6 +38,35 @@ function shiftISO(baseDate: string, days: number) {
   return `${y}-${m}-${d}`;
 }
 
+function formatDateBR(date: string) {
+  return new Date(date).toLocaleDateString("pt-BR");
+}
+
+function formatDateTimeBR(date: string) {
+  return new Date(date).toLocaleString("pt-BR");
+}
+
+function getExpiryTone(expiresAt?: string) {
+  if (!expiresAt) {
+    return "bg-slate-100 text-slate-600";
+  }
+
+  const now = new Date();
+  const expiry = new Date(expiresAt);
+  const diffMs = expiry.getTime() - now.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+  if (diffDays <= 3) {
+    return "bg-red-50 text-red-700";
+  }
+
+  if (diffDays <= 7) {
+    return "bg-amber-50 text-amber-700";
+  }
+
+  return "bg-slate-100 text-slate-600";
+}
+
 export default function ProDashboardPage() {
   const router = useRouter();
   const today = todayISO();
@@ -56,6 +86,7 @@ export default function ProDashboardPage() {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -212,6 +243,54 @@ export default function ProDashboardPage() {
     }
   }
 
+  async function excluirFicha(ficha: Ficha) {
+    const confirmed = window.confirm(
+      `Deseja remover a ficha de ${ficha.patient_name} do painel?`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingId(ficha.id);
+    setError("");
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const accessToken = session?.access_token?.trim();
+
+      if (!accessToken) {
+        throw new Error("Sessão inválida. Entre novamente.");
+      }
+
+      const response = await fetch("/api/pro/fichas/excluir", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          fichaId: ficha.id,
+        }),
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.error || "Erro ao excluir a ficha.");
+      }
+
+      setFichas((prev) => prev.filter((item) => item.id !== ficha.id));
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Erro ao excluir a ficha.";
+      setError(message);
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   async function sair() {
     setError("");
 
@@ -287,6 +366,10 @@ export default function ProDashboardPage() {
                   </>
                 )}
               </p>
+
+              <p className="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+  Fichas sincronizadas ficam disponíveis no painel por tempo limitado.
+</p>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -401,11 +484,11 @@ export default function ProDashboardPage() {
               </div>
 
               <div>
-                <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-slate-700">
+                <label htmlFor="search-input-range" className="mb-2 block text-sm font-medium text-slate-700">
                   Buscar por paciente ou prontuário
                 </label>
                 <input
-                  id="search-input"
+                  id="search-input-range"
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -440,11 +523,11 @@ export default function ProDashboardPage() {
               </div>
 
               <div>
-                <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-slate-700">
+                <label htmlFor="search-input-day" className="mb-2 block text-sm font-medium text-slate-700">
                   Buscar por paciente ou prontuário
                 </label>
                 <input
-                  id="search-input"
+                  id="search-input-day"
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -500,76 +583,104 @@ export default function ProDashboardPage() {
 
         {fichasFiltradas.length > 0 ? (
           <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 px-5 py-4 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-base font-semibold">
-                {fichasFiltradas.length} ficha{fichasFiltradas.length === 1 ? "" : "s"} encontrada
-                {fichasFiltradas.length === 1 ? "" : "s"}
-              </h2>
-              {search.trim() ? (
-                <p className="text-sm text-slate-500">
-                  Filtro: <span className="font-medium text-slate-700">{search}</span>
-                </p>
-              ) : null}
-            </div>
+            <div className="flex flex-col gap-2 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+  <h2 className="text-base font-semibold text-slate-900">
+    {fichasFiltradas.length} {fichasFiltradas.length === 1 ? "ficha encontrada" : "fichas encontradas"}
+  </h2>
+  {search.trim() ? (
+    <p className="text-sm text-slate-500">
+      Filtro ativo: <span className="font-medium text-slate-700">{search}</span>
+    </p>
+  ) : null}
+</div>
 
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead className="bg-slate-50">
-                  <tr className="text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    <th className="px-5 py-4">Paciente</th>
-                    <th className="px-5 py-4">Prontuário</th>
-                    <th className="px-5 py-4">Anestesia</th>
-                    <th className="px-5 py-4">Data da ficha</th>
-                    <th className="px-5 py-4">Enviado em</th>
-                    <th className="px-5 py-4">Ação</th>
-                  </tr>
+                  <tr className="text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+  <th className="px-5 py-4">Paciente</th>
+  <th className="px-5 py-4">Anestesia</th>
+  <th className="px-5 py-4">Data da ficha</th>
+  <th className="px-5 py-4">Enviado em</th>
+  <th className="px-5 py-4">Disponível até</th>
+  <th className="px-5 py-4 text-right">Ações</th>
+</tr>
                 </thead>
 
                 <tbody>
                   {fichasFiltradas.map((ficha, index) => {
-                    const isDownloadingThis = downloadingId === ficha.id;
+  const isDownloadingThis = downloadingId === ficha.id;
+  const isDeletingThis = deletingId === ficha.id;
+  const expiryTone = getExpiryTone(ficha.expires_at);
 
-                    return (
-                      <tr
-                        key={ficha.id}
-                        className={index !== fichasFiltradas.length - 1 ? "border-b border-slate-100" : ""}
-                      >
-                        <td className="px-5 py-4">
-                          <div className="font-medium text-slate-900">
-                            {ficha.patient_name}
-                          </div>
-                        </td>
+  return (
+    <tr
+      key={ficha.id}
+      className={index !== fichasFiltradas.length - 1 ? "border-b border-slate-100" : ""}
+    >
+      <td className="px-5 py-4">
+        <div className="min-w-[220px]">
+          <div className="text-[15px] font-semibold text-slate-900">
+            {ficha.patient_name}
+          </div>
+          <div className="mt-1 text-sm text-slate-500">
+            Prontuário: <span className="font-medium text-slate-700">{ficha.record_number}</span>
+          </div>
+        </div>
+      </td>
 
-                        <td className="px-5 py-4 text-sm text-slate-700">
-                          {ficha.record_number}
-                        </td>
+      <td className="px-5 py-4 text-sm text-slate-700">
+        {ficha.anesthesia_type ? (
+          <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
+            {ficha.anesthesia_type}
+          </span>
+        ) : (
+          <span className="text-slate-400">—</span>
+        )}
+      </td>
 
-                        <td className="px-5 py-4 text-sm text-slate-700">
-                          {ficha.anesthesia_type || "—"}
-                        </td>
+      <td className="px-5 py-4 text-sm text-slate-600">
+        <span className="inline-flex whitespace-nowrap rounded-full bg-slate-100 px-3 py-1 text-slate-700">
+          {formatDateBR(ficha.procedure_date + "T00:00:00")}
+        </span>
+      </td>
 
-                        <td className="px-5 py-4 text-sm text-slate-600">
-                          <span className="rounded-full bg-slate-100 px-3 py-1 whitespace-nowrap">
-                            {new Date(ficha.procedure_date + "T00:00:00").toLocaleDateString("pt-BR")}
-                          </span>
-                        </td>
+      <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
+        {formatDateTimeBR(ficha.uploaded_at)}
+      </td>
 
-                        <td className="px-5 py-4 text-sm text-slate-600 whitespace-nowrap">
-                          {new Date(ficha.uploaded_at).toLocaleString("pt-BR")}
-                        </td>
+      <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
+        {ficha.expires_at ? (
+          <span className={`inline-flex rounded-full px-3 py-1 font-medium ${expiryTone}`}>
+            {formatDateBR(ficha.expires_at)}
+          </span>
+        ) : (
+          "—"
+        )}
+      </td>
 
-                        <td className="px-5 py-4">
-                          <button
-                            className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 disabled:cursor-wait w-[90px]"
-                            onClick={() => baixarFicha(ficha)}
-                            disabled={isDownloadingThis}
-                          >
-                            {isDownloadingThis ? "Gerando..." : "Baixar"}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+      <td className="px-5 py-4">
+        <div className="flex justify-end gap-2 whitespace-nowrap">
+          <button
+            className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-50"
+            onClick={() => baixarFicha(ficha)}
+            disabled={isDownloadingThis || isDeletingThis}
+          >
+            {isDownloadingThis ? "Gerando..." : "Baixar"}
+          </button>
+
+          <button
+            className="rounded-xl px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:cursor-wait disabled:opacity-50"
+            onClick={() => excluirFicha(ficha)}
+            disabled={isDeletingThis || isDownloadingThis}
+          >
+            {isDeletingThis ? "Excluindo..." : "Excluir"}
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+})}
                 </tbody>
               </table>
             </div>
