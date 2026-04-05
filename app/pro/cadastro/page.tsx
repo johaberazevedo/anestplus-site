@@ -47,17 +47,18 @@ export default function ProCadastroPage() {
     setSuccessMsg(null);
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            full_name: fullName.trim(),
-            crm: crm.trim(),
-            rqe: rqe.trim(),
-          },
-        },
-      });
+const { error } = await supabase.auth.signUp({
+  email: email.trim(),
+  password,
+  options: {
+    emailRedirectTo: "https://anestplus.com/pro/confirmado",
+    data: {
+      full_name: fullName.trim(),
+      crm: crm.trim(),
+      rqe: rqe.trim(),
+    },
+  },
+});
 
       if (error) {
         throw new Error(error.message || "Não foi possível criar a conta.");
