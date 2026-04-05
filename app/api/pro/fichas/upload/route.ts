@@ -1,7 +1,7 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { NextResponse } from "next/server";
-import { createServerSupabase } from "@/lib/supabase-server";
+import { getAuthenticatedProUser } from "@/lib/pro-auth";
 
 function sanitizeSegment(value: string) {
   return value
@@ -54,13 +54,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = await createServerSupabase();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { user } = await getAuthenticatedProUser(request);
 
-    if (authError || !user) {
+    if (!user) {
       return NextResponse.json(
         { error: "Não autenticado." },
         { status: 401 }

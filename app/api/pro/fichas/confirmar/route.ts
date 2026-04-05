@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { createServerSupabase } from "@/lib/supabase-server";
+import { getAuthenticatedProUser } from "@/lib/pro-auth";
 
 function isNonEmptyString(value: unknown) {
   return typeof value === "string" && value.trim().length > 0;
@@ -13,13 +13,9 @@ function isValidDateLike(value: unknown) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createServerSupabase();
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const { user } = await getAuthenticatedProUser(request);
 
-    if (authError || !user) {
+    if (!user) {
       return NextResponse.json(
         { error: "Não autenticado." },
         { status: 401 }
