@@ -27,7 +27,7 @@ export default function ProRedefinirSenhaPage() {
       if (!mounted) return;
 
       if (!session) {
-        setErrorMsg("Sessão de recuperação inválida ou expirada. Solicite um novo link.");
+        setErrorMsg("O link de recuperação é inválido ou expirou. Solicite um novo link para continuar.");
       }
 
       setCheckingSession(false);
@@ -66,7 +66,7 @@ export default function ProRedefinirSenhaPage() {
         throw new Error(error.message || "Não foi possível redefinir a senha.");
       }
 
-      setSuccessMsg("Senha atualizada com sucesso.");
+      setSuccessMsg("Sua senha foi atualizada com sucesso.");
       setTimeout(() => {
         router.replace("/pro/login");
       }, 1200);
@@ -103,11 +103,11 @@ export default function ProRedefinirSenhaPage() {
               className="rounded-xl shadow-sm"
             />
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-              Redefinir senha
-            </h1>
-            <p className="text-sm text-slate-500">
-              Escolha sua nova senha de acesso
-            </p>
+  Conta Anest+
+</h1>
+<p className="text-sm text-slate-500">
+  Defina uma nova senha para acessar sua conta
+</p>
           </div>
         </div>
 

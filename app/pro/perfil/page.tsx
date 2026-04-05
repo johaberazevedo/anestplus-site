@@ -95,22 +95,22 @@ export default function ProPerfilPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Conta
-              </p>
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Meu perfil
-              </h1>
-              <p className="mt-2 text-sm text-slate-600">
-                Atualize os dados da sua conta conectada no Anest+ Pro.
-              </p>
+  Conta Anest+
+</p>
+<h1 className="text-2xl font-semibold tracking-tight">
+  Minha conta
+</h1>
+<p className="mt-2 text-sm text-slate-600">
+  Atualize seus dados de acesso e identificação profissional.
+</p>
             </div>
 
             <Link
-              href="/pro/dashboard"
-              className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 text-center"
-            >
-              Voltar
-            </Link>
+  href="/pro/dashboard"
+  className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 text-center"
+>
+  Voltar para fichas
+</Link>
           </div>
         </div>
 

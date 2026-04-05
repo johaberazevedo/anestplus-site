@@ -71,7 +71,7 @@ const { error } = await supabase.auth.signUp({
         throw new Error(error.message || "Não foi possível criar a conta.");
       }
 
-      setSuccessMsg("Conta criada com sucesso. Você receberá um e-mail para confirmar seu cadastro antes de acessar o Anest+ Pro.");
+      setSuccessMsg("Conta criada com sucesso. Você receberá um e-mail para confirmar seu cadastro antes de acessar sua conta.");
       setTimeout(() => {
         router.replace("/pro/login");
       }, 1200);
@@ -98,11 +98,11 @@ const { error } = await supabase.auth.signUp({
               className="rounded-xl shadow-sm"
             />
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-              Criar conta
-            </h1>
-            <p className="text-sm text-slate-500">
-              Configure seu acesso ao Anest+ Pro
-            </p>
+  Conta Anest+
+</h1>
+<p className="text-sm text-slate-500">
+  Configure seu acesso seguro às suas fichas
+</p>
           </div>
         </div>
 
@@ -238,12 +238,12 @@ const { error } = await supabase.auth.signUp({
 
         <div className="mt-5 text-center text-sm text-slate-600">
           Já tem conta?{" "}
-          <Link
-            href="/pro/login"
-            className="font-semibold text-slate-900 hover:underline"
-          >
-            Entrar
-          </Link>
+<Link
+  href="/pro/login"
+  className="font-semibold text-slate-900 hover:underline"
+>
+  Acessar conta
+</Link>
         </div>
       </div>
     </div>
