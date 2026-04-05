@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 function getBearerToken(request: Request) {
-  const authHeader = request.headers.get("authorization") || request.headers.get("Authorization");
+  const authHeader =
+    request.headers.get("authorization") ||
+    request.headers.get("Authorization");
+
   if (!authHeader) return null;
 
   const [type, token] = authHeader.split(" ");
@@ -15,13 +18,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get("date");
-
-    if (!date) {
-      return NextResponse.json(
-        { error: "date é obrigatório." },
-        { status: 400 }
-      );
-    }
+    const dateFrom = searchParams.get("date_from");
+    const dateTo = searchParams.get("date_to");
 
     const token = getBearerToken(request);
 
@@ -44,14 +42,38 @@ export async function GET(request: Request) {
       );
     }
 
-    const { data, error } = await supabaseAdmin
+    const nowIso = new Date().toISOString();
+
+    let query = supabaseAdmin
       .from("pro_fichas_uploads")
       .select(
         "id, patient_name, record_number, procedure_date, anesthesia_type, start_date_time, end_date_time, file_key, file_name, uploaded_at"
       )
       .eq("user_id", user.id)
-      .eq("procedure_date", date)
-      .order("uploaded_at", { ascending: false });
+      .is("deleted_at", null)
+      .gt("expires_at", nowIso);
+
+    if (date) {
+      query = query.eq("procedure_date", date);
+    } else if (dateFrom && dateTo) {
+      if (dateFrom > dateTo) {
+        return NextResponse.json(
+          { error: "A data inicial não pode ser maior que a data final." },
+          { status: 400 }
+        );
+      }
+
+      query = query
+        .gte("procedure_date", dateFrom)
+        .lte("procedure_date", dateTo);
+    } else {
+      return NextResponse.json(
+        { error: "Informe date ou date_from + date_to." },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await query.order("uploaded_at", { ascending: false });
 
     if (error) {
       console.error("Erro ao listar fichas do Pro:", error);

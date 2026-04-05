@@ -14,6 +14,7 @@ export default function ProCadastroPage() {
   const [rqe, setRqe] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -45,6 +46,12 @@ export default function ProCadastroPage() {
     setLoading(true);
     setErrorMsg(null);
     setSuccessMsg(null);
+
+    if (password !== confirmPassword) {
+      setErrorMsg("As senhas não coincidem.");
+      setLoading(false);
+      return;
+    }
 
     try {
 const { error } = await supabase.auth.signUp({
@@ -110,6 +117,15 @@ const { error } = await supabase.auth.signUp({
             {successMsg}
           </div>
         )}
+
+        {confirmPassword.length > 0 &&
+  password.length >= 6 &&
+  confirmPassword.length >= password.length &&
+  password !== confirmPassword && (
+    <div className="mb-4 bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-100">
+      As senhas não coincidem.
+    </div>
+)}
 
         <form onSubmit={handleSignUp} className="space-y-4">
           <div>
@@ -187,9 +203,33 @@ const { error } = await supabase.auth.signUp({
             />
           </div>
 
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Confirmar senha
+            </label>
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-slate-500 focus:outline-none"
+              placeholder="Repita sua senha"
+              autoComplete="new-password"
+            />
+          </div>
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={
+              loading ||
+              !fullName.trim() ||
+              !crm.trim() ||
+              !email.trim() ||
+              password.length < 6 ||
+              !confirmPassword ||
+              password !== confirmPassword
+            }
             className="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 disabled:opacity-70 transition-colors"
           >
             {loading ? "Criando..." : "Criar conta"}

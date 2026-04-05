@@ -75,11 +75,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const nowIso = new Date().toISOString();
+
     const { data: ficha, error: fichaError } = await supabaseAdmin
       .from("pro_fichas_uploads")
-      .select("id, user_id, file_key, file_name")
+      .select("id, user_id, file_key, file_name, expires_at, deleted_at")
       .eq("user_id", user.id)
       .eq("file_key", fileKey)
+      .is("deleted_at", null)
+      .gt("expires_at", nowIso)
       .maybeSingle();
 
     if (fichaError) {
@@ -92,7 +96,7 @@ export async function POST(request: Request) {
 
     if (!ficha) {
       return NextResponse.json(
-        { error: "Ficha não encontrada ou sem permissão de acesso." },
+        { error: "Ficha não encontrada, expirada ou sem permissão de acesso." },
         { status: 403 }
       );
     }
@@ -107,6 +111,16 @@ export async function POST(request: Request) {
     });
 
     const downloadUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
+
+    const { error: updateError } = await supabaseAdmin
+      .from("pro_fichas_uploads")
+      .update({ last_downloaded_at: nowIso })
+      .eq("id", ficha.id)
+      .eq("user_id", user.id);
+
+    if (updateError) {
+      console.error("Erro ao atualizar last_downloaded_at:", updateError);
+    }
 
     return NextResponse.json({ downloadUrl });
   } catch (error) {

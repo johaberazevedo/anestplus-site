@@ -26,13 +26,30 @@ function todayISO() {
   return `${year}-${month}-${day}`;
 }
 
+function shiftISO(baseDate: string, days: number) {
+  const [year, month, day] = baseDate.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  date.setDate(date.getDate() + days);
+
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export default function ProDashboardPage() {
   const router = useRouter();
+  const today = todayISO();
 
   const [userId, setUserId] = useState<string>("");
   const [crm, setCrm] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
-  const [date, setDate] = useState<string>(todayISO());
+
+  const [useRange, setUseRange] = useState(false);
+  const [date, setDate] = useState<string>(today);
+  const [dateFrom, setDateFrom] = useState<string>(today);
+  const [dateTo, setDateTo] = useState<string>(today);
+
   const [search, setSearch] = useState<string>("");
   const [fichas, setFichas] = useState<Ficha[]>([]);
 
@@ -89,6 +106,14 @@ export default function ProDashboardPage() {
     };
   }, [router]);
 
+  function aplicarPeriodoRapido(days: number) {
+    const end = todayISO();
+    const start = shiftISO(end, -(days - 1));
+    setDateFrom(start);
+    setDateTo(end);
+    setUseRange(true);
+  }
+
   async function buscarFichas(e?: FormEvent) {
     if (e) e.preventDefault();
 
@@ -108,9 +133,18 @@ export default function ProDashboardPage() {
         throw new Error("Sessão inválida. Entre novamente.");
       }
 
-      const params = new URLSearchParams({
-        date,
-      });
+      const params = new URLSearchParams();
+
+      if (useRange) {
+        if (dateFrom > dateTo) {
+          throw new Error("A data inicial não pode ser maior que a data final.");
+        }
+
+        params.set("date_from", dateFrom);
+        params.set("date_to", dateTo);
+      } else {
+        params.set("date", date);
+      }
 
       const response = await fetch(`/api/pro/fichas/listar?${params.toString()}`, {
         method: "GET",
@@ -257,9 +291,18 @@ export default function ProDashboardPage() {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
-                <span className="font-medium text-slate-900">Data</span>
+                <span className="font-medium text-slate-900">
+                  {useRange ? "Período" : "Data"}
+                </span>
                 <span className="mx-2 text-slate-400">•</span>
-                <span>{date.split("-").reverse().join("/")}</span>
+                <span>
+                  {useRange
+                    ? `${dateFrom.split("-").reverse().join("/")} até ${dateTo
+                        .split("-")
+                        .reverse()
+                        .join("/")}`
+                    : date.split("-").reverse().join("/")}
+                </span>
               </div>
 
               <Link
@@ -284,44 +327,143 @@ export default function ProDashboardPage() {
           onSubmit={buscarFichas}
           className="mb-8 grid gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
         >
-          <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
-            <div>
-              <label htmlFor="date-input" className="mb-2 block text-sm font-medium text-slate-700">
-                Data
-              </label>
-              <input
-                id="date-input"
-                type="date"
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
+          <div className="mb-1 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setUseRange((prev) => !prev);
+                setError("");
+              }}
+              className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+            >
+              {useRange ? "Usar busca por dia" : "Buscar por período"}
+            </button>
 
-            <div>
-              <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-slate-700">
-                Buscar por paciente ou prontuário
-              </label>
-              <input
-                id="search-input"
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Ex.: Maria ou 123456"
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
-              />
-            </div>
+            {useRange ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const today = todayISO();
+                    setDateFrom(today);
+                    setDateTo(today);
+                  }}
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                >
+                  Hoje
+                </button>
 
-            <div className="flex items-end">
-              <button
-                type="submit"
-                className="w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={loading || !userId.trim()}
-              >
-                {loading ? "Buscando..." : "Buscar"}
-              </button>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => aplicarPeriodoRapido(7)}
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                >
+                  7 dias
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => aplicarPeriodoRapido(30)}
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-50"
+                >
+                  30 dias
+                </button>
+              </>
+            ) : null}
           </div>
+
+          {useRange ? (
+            <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.2fr_auto]">
+              <div>
+                <label htmlFor="date-from-input" className="mb-2 block text-sm font-medium text-slate-700">
+                  Data inicial
+                </label>
+                <input
+                  id="date-from-input"
+                  type="date"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="date-to-input" className="mb-2 block text-sm font-medium text-slate-700">
+                  Data final
+                </label>
+                <input
+                  id="date-to-input"
+                  type="date"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-slate-700">
+                  Buscar por paciente ou prontuário
+                </label>
+                <input
+                  id="search-input"
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Ex.: Maria ou 123456"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={loading || !userId.trim()}
+                >
+                  {loading ? "Buscando..." : "Buscar"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-[1fr_1.2fr_auto]">
+              <div>
+                <label htmlFor="date-input" className="mb-2 block text-sm font-medium text-slate-700">
+                  Data
+                </label>
+                <input
+                  id="date-input"
+                  type="date"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="search-input" className="mb-2 block text-sm font-medium text-slate-700">
+                  Buscar por paciente ou prontuário
+                </label>
+                <input
+                  id="search-input"
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Ex.: Maria ou 123456"
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900"
+                />
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={loading || !userId.trim()}
+                >
+                  {loading ? "Buscando..." : "Buscar"}
+                </button>
+              </div>
+            </div>
+          )}
         </form>
 
         {error ? (
@@ -337,7 +479,9 @@ export default function ProDashboardPage() {
             </div>
             <h2 className="text-lg font-semibold">Busque suas fichas</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Escolha a data e, se quiser, filtre por paciente ou prontuário.
+              {useRange
+                ? "Escolha um período e, se quiser, filtre por paciente ou prontuário."
+                : "Escolha a data e, se quiser, filtre por paciente ou prontuário."}
             </p>
           </div>
         ) : !loading && !error && fichasFiltradas.length === 0 ? (
@@ -347,7 +491,9 @@ export default function ProDashboardPage() {
             </div>
             <h2 className="text-lg font-semibold">Nenhuma ficha encontrada</h2>
             <p className="mt-2 text-sm text-slate-600">
-              Verifique a data selecionada ou ajuste o termo de busca.
+              {useRange
+                ? "Verifique o período selecionado ou ajuste o termo de busca."
+                : "Verifique a data selecionada ou ajuste o termo de busca."}
             </p>
           </div>
         ) : null}
