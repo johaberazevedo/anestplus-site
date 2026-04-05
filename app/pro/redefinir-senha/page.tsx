@@ -81,76 +81,87 @@ export default function ProRedefinirSenhaPage() {
 
   if (checkingSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
-        <div className="max-w-sm w-full bg-white border rounded-2xl p-8 shadow-sm text-center text-sm text-slate-600">
-          Carregando…
+      <div className="min-h-screen flex items-center justify-center bg-[#fafaf7] px-4 font-sans selection:bg-[#22331d] selection:text-white">
+        <div className="w-full max-w-sm rounded-[28px] border border-zinc-200 bg-white p-8 shadow-sm text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#b9963b]/10">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#b9963b]/30 border-t-[#b9963b]" />
+          </div>
+          <p className="text-sm font-bold text-zinc-950">Carregando…</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
-      <div className="max-w-sm w-full bg-white border rounded-2xl p-8 shadow-sm">
-        <div className="text-center mb-6">
-          <div className="flex flex-col items-center gap-3 mb-1">
+    <div className="min-h-screen flex items-center justify-center bg-[#fafaf7] px-4 font-sans selection:bg-[#22331d] selection:text-white">
+      <div className="w-full max-w-sm rounded-[28px] border border-zinc-200 bg-white p-8 shadow-sm">
+        <div className="mb-6 text-center">
+          <div className="mb-1 flex flex-col items-center gap-3">
             <Image
               src="/brand/anest-symbol.png"
               alt="Anest+ Pro"
               width={72}
               height={72}
               priority
-              className="rounded-xl shadow-sm"
+              className="h-[72px] w-[72px] rounded-2xl object-contain"
             />
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">
-  Conta Anest+
-</h1>
-<p className="text-sm text-slate-500">
-  Defina uma nova senha para acessar sua conta
-</p>
+            <h1 className="text-2xl font-black tracking-tight text-zinc-950">
+              Conta Anest+
+            </h1>
+            <p className="text-sm text-zinc-500">
+              Defina uma nova senha para acessar sua conta
+            </p>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-100">
+          <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm">
             {errorMsg}
           </div>
         )}
 
         {successMsg && (
-          <div className="mb-4 bg-green-50 text-green-700 text-xs p-3 rounded-lg border border-green-100">
+          <div className="mb-4 rounded-2xl border border-[#b9963b]/30 bg-[#b9963b]/5 px-4 py-3 text-sm font-medium text-[#7a865f] shadow-sm">
             {successMsg}
           </div>
         )}
 
-        <form onSubmit={handleUpdatePassword} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">
+        <form onSubmit={handleUpdatePassword} className="space-y-5">
+          <div className="relative group">
+            <label
+              htmlFor="password"
+              className="absolute -top-2.5 left-3 bg-white px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-500 transition-colors group-focus-within:text-[#b9963b]"
+            >
               Nova senha
             </label>
             <input
+              id="password"
               type="password"
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-slate-500 focus:outline-none"
+              className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10 placeholder:text-zinc-400"
               placeholder="Mínimo de 6 caracteres"
               autoComplete="new-password"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">
+          <div className="relative group">
+            <label
+              htmlFor="confirmPassword"
+              className="absolute -top-2.5 left-3 bg-white px-1 text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-500 transition-colors group-focus-within:text-[#b9963b]"
+            >
               Confirmar nova senha
             </label>
             <input
+              id="confirmPassword"
               type="password"
               required
               minLength={6}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-slate-500 focus:outline-none"
+              className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10 placeholder:text-zinc-400"
               placeholder="Repita a nova senha"
               autoComplete="new-password"
             />
@@ -159,7 +170,7 @@ export default function ProRedefinirSenhaPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-900 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-800 disabled:opacity-70 transition-colors"
+            className="w-full rounded-2xl bg-[#1a2718] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#1a2718]/20 transition hover:bg-[#22331d] disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? "Salvando..." : "Salvar nova senha"}
           </button>
