@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
   const [hasSearched, setHasSearched] = useState(false);
+  const [copiedRecordId, setCopiedRecordId] = useState<string | null>(null);
 
   const hospitalLabel = useMemo(
     () => HOSPITAIS.find((h) => h.id === hospitalId)?.label ?? hospitalId,
@@ -119,6 +120,19 @@ export default function DashboardPage() {
       setDownloadingId(null);
     }
   }
+
+async function copiarProntuario(ficha: Ficha) {
+  try {
+    await navigator.clipboard.writeText(ficha.record_number);
+    setCopiedRecordId(ficha.id);
+
+    window.setTimeout(() => {
+      setCopiedRecordId((current) => (current === ficha.id ? null : current));
+    }, 1600);
+  } catch {
+    setError("Não foi possível copiar o número do prontuário.");
+  }
+}
 
   async function sair() {
     try {
@@ -322,9 +336,46 @@ export default function DashboardPage() {
                           </div>
                         </td>
 
-                        <td className="px-6 py-5 text-sm font-medium text-zinc-700">
-                          {ficha.record_number}
-                        </td>
+                        <td className="px-6 py-5">
+  <div className="flex items-center gap-2">
+    <span className="text-sm font-medium text-zinc-700">
+      {ficha.record_number}
+    </span>
+
+    <button
+  type="button"
+  onClick={() => copiarProntuario(ficha)}
+  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#b9963b]/20 bg-[#f6f7f1] text-[#8f7740] shadow-sm transition hover:border-[#b9963b]/35 hover:bg-[#f3f1e8] hover:text-[#7f6937]"
+  aria-label={`Copiar prontuário ${ficha.record_number}`}
+  title={copiedRecordId === ficha.id ? "Copiado!" : "Copiar prontuário"}
+>
+  {copiedRecordId === ficha.id ? (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.3"
+      className="h-4 w-4"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  ) : (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      className="h-4 w-4"
+    >
+      <rect x="9" y="9" width="10" height="10" rx="2.2" />
+      <path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+    </svg>
+  )}
+</button>
+  </div>
+</td>
 
                         <td className="px-6 py-5 text-sm text-zinc-600">
                           <span className="inline-flex whitespace-nowrap rounded-lg border border-zinc-200 bg-white px-3 py-1 text-xs font-bold text-zinc-700 shadow-sm">
