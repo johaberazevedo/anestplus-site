@@ -303,11 +303,15 @@ async function copiarProntuario(ficha: Ficha) {
         {fichas.length > 0 ? (
           <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
             <div className="border-b border-zinc-200 px-6 py-5">
-              <h2 className="text-base font-bold text-zinc-950">
-                {fichas.length} ficha{fichas.length === 1 ? "" : "s"} encontrada
-                {fichas.length === 1 ? "" : "s"}
-              </h2>
-            </div>
+  <h2 className="text-base font-bold text-zinc-950">
+    {fichas.length} ficha{fichas.length === 1 ? "" : "s"} encontrada
+    {fichas.length === 1 ? "" : "s"}
+  </h2>
+
+  <p className="mt-2 text-xs font-medium text-zinc-500">
+    Toque no ícone ao lado do prontuário para copiar o número.
+  </p>
+</div>
 
             <div className="overflow-x-auto">
               <table className="min-w-full">
