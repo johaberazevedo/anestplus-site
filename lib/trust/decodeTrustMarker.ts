@@ -19,6 +19,14 @@ export type AnestplusTrustPayload = {
   payload?: {
     json?: string;
   };
+  authContext?: TrustAuthContext;
+};
+
+export type TrustAuthContext = {
+  authMethod?: string;
+  signatureProvider?: string;
+  signerUserId?: string;
+  deviceMode?: string;
 };
 
 export type DecodedTrustPayload = {
