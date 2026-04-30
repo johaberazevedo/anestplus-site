@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, FormEvent } from "react";
+import { Fragment, useMemo, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -12,6 +12,11 @@ type Ficha = {
   file_key: string;
   file_name: string;
   uploaded_at: string;
+};
+
+type FichaAgrupada = Ficha & {
+  versionCount: number;
+  versions: Ficha[];
 };
 
 const HOSPITAIS = [
@@ -48,11 +53,67 @@ export default function DashboardPage() {
   const [error, setError] = useState<string>("");
   const [hasSearched, setHasSearched] = useState(false);
   const [copiedRecordId, setCopiedRecordId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const hospitalLabel = useMemo(
     () => HOSPITAIS.find((h) => h.id === hospitalId)?.label ?? hospitalId,
     [hospitalId]
   );
+
+  const fichasAgrupadas = useMemo<FichaAgrupada[]>(() => {
+    const groups = new Map<string, Ficha[]>();
+
+    for (const ficha of fichas) {
+      const key = [
+        ficha.procedure_date,
+        ficha.record_number.trim().toLowerCase(),
+        ficha.patient_name.trim().toLowerCase(),
+      ].join("|");
+
+      const current = groups.get(key) ?? [];
+      current.push(ficha);
+      groups.set(key, current);
+    }
+
+    return Array.from(groups.values())
+      .map((group) => {
+        const sorted = [...group].sort(
+          (a, b) =>
+            new Date(b.uploaded_at).getTime() -
+            new Date(a.uploaded_at).getTime()
+        );
+
+        return {
+          ...sorted[0],
+          versionCount: sorted.length,
+          versions: sorted,
+        };
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.uploaded_at).getTime() -
+          new Date(a.uploaded_at).getTime()
+      );
+  }, [fichas]);
+
+  const totalVersoesExtras = fichasAgrupadas.reduce(
+    (total, ficha) => total + Math.max(0, ficha.versionCount - 1),
+    0
+  );
+
+  function toggleExpanded(id: string) {
+    setExpandedIds((current) => {
+      const next = new Set(current);
+
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+
+      return next;
+    });
+  }
 
   async function buscarFichas(e?: FormEvent) {
     if (e) e.preventDefault();
@@ -61,6 +122,7 @@ export default function DashboardPage() {
     setLoading(true);
     setError("");
     setFichas([]);
+    setExpandedIds(new Set());
 
     try {
       const params = new URLSearchParams({
@@ -82,7 +144,8 @@ export default function DashboardPage() {
 
       setFichas(json.fichas ?? []);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erro inesperado ao buscar.";
+      const message =
+        err instanceof Error ? err.message : "Erro inesperado ao buscar.";
       setError(message);
       setFichas([]);
     } finally {
@@ -114,25 +177,26 @@ export default function DashboardPage() {
 
       window.open(json.downloadUrl, "_blank");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Erro ao baixar a ficha.";
+      const message =
+        err instanceof Error ? err.message : "Erro ao baixar a ficha.";
       setError(message);
     } finally {
       setDownloadingId(null);
     }
   }
 
-async function copiarProntuario(ficha: Ficha) {
-  try {
-    await navigator.clipboard.writeText(ficha.record_number);
-    setCopiedRecordId(ficha.id);
+  async function copiarProntuario(ficha: Ficha) {
+    try {
+      await navigator.clipboard.writeText(ficha.record_number);
+      setCopiedRecordId(ficha.id);
 
-    window.setTimeout(() => {
-      setCopiedRecordId((current) => (current === ficha.id ? null : current));
-    }, 1600);
-  } catch {
-    setError("Não foi possível copiar o número do prontuário.");
+      window.setTimeout(() => {
+        setCopiedRecordId((current) => (current === ficha.id ? null : current));
+      }, 1600);
+    } catch {
+      setError("Não foi possível copiar o número do prontuário.");
+    }
   }
-}
 
   async function sair() {
     try {
@@ -278,12 +342,43 @@ async function copiarProntuario(ficha: Ficha) {
           </div>
         ) : null}
 
+        {fichasAgrupadas.length > 0 ? (
+          <div className="mb-6 grid gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">
+                Casos únicos
+              </p>
+              <p className="mt-2 text-3xl font-black">
+                {fichasAgrupadas.length}
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">
+                Versões extras
+              </p>
+              <p className="mt-2 text-3xl font-black text-orange-600">
+                {totalVersoesExtras}
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">
+                Arquivos encontrados
+              </p>
+              <p className="mt-2 text-3xl font-black">{fichas.length}</p>
+            </div>
+          </div>
+        ) : null}
+
         {!hasSearched ? (
           <div className="rounded-[28px] border border-zinc-200 bg-white px-6 py-14 text-center shadow-sm">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#b9963b]/10 bg-[#f6f7f1] text-2xl">
               <span className="text-xl">🔎</span>
             </div>
-            <h2 className="text-lg font-bold text-zinc-950">Busque as fichas do dia</h2>
+            <h2 className="text-lg font-bold text-zinc-950">
+              Busque as fichas do dia
+            </h2>
             <p className="mt-2 text-sm text-zinc-500">
               Selecione o hospital, informe o CRM e clique em buscar.
             </p>
@@ -293,114 +388,196 @@ async function copiarProntuario(ficha: Ficha) {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl border border-[#b9963b]/10 bg-[#f6f7f1] text-2xl">
               <span className="text-2xl">📄</span>
             </div>
-            <h2 className="text-lg font-bold text-zinc-950">Nenhuma ficha encontrada</h2>
+            <h2 className="text-lg font-bold text-zinc-950">
+              Nenhuma ficha encontrada
+            </h2>
             <p className="mt-2 text-sm text-zinc-500">
               Verifique o hospital, o CRM e a data selecionada.
             </p>
           </div>
         ) : null}
 
-        {fichas.length > 0 ? (
+        {fichasAgrupadas.length > 0 ? (
           <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
             <div className="border-b border-zinc-200 px-6 py-5">
-  <h2 className="text-base font-bold text-zinc-950">
-    {fichas.length} ficha{fichas.length === 1 ? "" : "s"} encontrada
-    {fichas.length === 1 ? "" : "s"}
-  </h2>
+              <h2 className="text-base font-bold text-zinc-950">
+                {fichasAgrupadas.length} caso
+                {fichasAgrupadas.length === 1 ? "" : "s"} único
+                {fichasAgrupadas.length === 1 ? "" : "s"}
+              </h2>
 
-  <p className="mt-2 text-xs font-medium text-zinc-500">
-    Toque no ícone ao lado do prontuário para copiar o número.
-  </p>
-</div>
+              <p className="mt-2 text-xs font-medium text-zinc-500">
+                A linha principal usa sempre a versão mais recente. Casos com
+                múltiplas exportações podem ser expandidos para baixar versões
+                anteriores.
+              </p>
+            </div>
 
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead className="bg-zinc-50/70">
                   <tr className="text-left text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-500">
-                    <th className="border-b border-zinc-200 px-6 py-4">Paciente</th>
-                    <th className="border-b border-zinc-200 px-6 py-4">Prontuário</th>
-                    <th className="border-b border-zinc-200 px-6 py-4">Data da ficha</th>
-                    <th className="border-b border-zinc-200 px-6 py-4">Enviado em</th>
-                    <th className="border-b border-zinc-200 px-6 py-4 text-right">Ação</th>
+                    <th className="border-b border-zinc-200 px-6 py-4">
+                      Paciente
+                    </th>
+                    <th className="border-b border-zinc-200 px-6 py-4">
+                      Prontuário
+                    </th>
+                    <th className="border-b border-zinc-200 px-6 py-4">
+                      Data da ficha
+                    </th>
+                    <th className="border-b border-zinc-200 px-6 py-4">
+                      Enviado em
+                    </th>
+                    <th className="border-b border-zinc-200 px-6 py-4 text-right">
+                      Ação
+                    </th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {fichas.map((ficha, index) => {
+                  {fichasAgrupadas.map((ficha, index) => {
                     const isDownloadingThis = downloadingId === ficha.id;
 
                     return (
-                      <tr
-                        key={ficha.id}
-                        className={index !== fichas.length - 1 ? "border-b border-zinc-100 transition-colors hover:bg-zinc-50/50" : "transition-colors hover:bg-zinc-50/50"}
-                      >
-                        <td className="px-6 py-5">
-                          <div className="font-bold text-zinc-950">
-                            {ficha.patient_name}
-                          </div>
-                        </td>
+                      <Fragment key={ficha.id}>
+                        <tr
+                          className={
+                            index !== fichasAgrupadas.length - 1
+                              ? "border-b border-zinc-100 transition-colors hover:bg-zinc-50/50"
+                              : "transition-colors hover:bg-zinc-50/50"
+                          }
+                        >
+                          <td className="px-6 py-5">
+                            <div className="font-bold text-zinc-950">
+                              {ficha.patient_name}
+                            </div>
 
-                        <td className="px-6 py-5">
-  <div className="flex items-center gap-2">
-    <span className="text-sm font-medium text-zinc-700">
-      {ficha.record_number}
-    </span>
+                            {ficha.versionCount > 1 ? (
+                              <button
+                                type="button"
+                                onClick={() => toggleExpanded(ficha.id)}
+                                className="mt-2 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-xs font-bold text-orange-700 transition hover:bg-orange-100"
+                              >
+                                {expandedIds.has(ficha.id)
+                                  ? "Ocultar versões"
+                                  : `${ficha.versionCount} versões`}
+                              </button>
+                            ) : null}
+                          </td>
 
-    <button
-  type="button"
-  onClick={() => copiarProntuario(ficha)}
-  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#b9963b]/20 bg-[#f6f7f1] text-[#8f7740] shadow-sm transition hover:border-[#b9963b]/35 hover:bg-[#f3f1e8] hover:text-[#7f6937]"
-  aria-label={`Copiar prontuário ${ficha.record_number}`}
-  title={copiedRecordId === ficha.id ? "Copiado!" : "Copiar prontuário"}
->
-  {copiedRecordId === ficha.id ? (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.3"
-      className="h-4 w-4"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  ) : (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      className="h-4 w-4"
-    >
-      <rect x="9" y="9" width="10" height="10" rx="2.2" />
-      <path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-    </svg>
-  )}
-</button>
-  </div>
-</td>
+                          <td className="px-6 py-5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-zinc-700">
+                                {ficha.record_number}
+                              </span>
 
-                        <td className="px-6 py-5 text-sm text-zinc-600">
-                          <span className="inline-flex whitespace-nowrap rounded-lg border border-zinc-200 bg-white px-3 py-1 text-xs font-bold text-zinc-700 shadow-sm">
-                            {formatDateBR(ficha.procedure_date + "T00:00:00")}
-                          </span>
-                        </td>
+                              <button
+                                type="button"
+                                onClick={() => copiarProntuario(ficha)}
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#b9963b]/20 bg-[#f6f7f1] text-[#8f7740] shadow-sm transition hover:border-[#b9963b]/35 hover:bg-[#f3f1e8] hover:text-[#7f6937]"
+                                aria-label={`Copiar prontuário ${ficha.record_number}`}
+                                title={
+                                  copiedRecordId === ficha.id
+                                    ? "Copiado!"
+                                    : "Copiar prontuário"
+                                }
+                              >
+                                {copiedRecordId === ficha.id ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.3"
+                                    className="h-4 w-4"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.9"
+                                    className="h-4 w-4"
+                                  >
+                                    <rect
+                                      x="9"
+                                      y="9"
+                                      width="10"
+                                      height="10"
+                                      rx="2.2"
+                                    />
+                                    <path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                          </td>
 
-                        <td className="whitespace-nowrap px-6 py-5 text-sm font-medium text-zinc-600">
-                          {formatDateTimeBR(ficha.uploaded_at)}
-                        </td>
+                          <td className="px-6 py-5 text-sm text-zinc-600">
+                            <span className="inline-flex whitespace-nowrap rounded-lg border border-zinc-200 bg-white px-3 py-1 text-xs font-bold text-zinc-700 shadow-sm">
+                              {formatDateBR(
+                                ficha.procedure_date + "T00:00:00"
+                              )}
+                            </span>
+                          </td>
 
-                        <td className="px-6 py-5 text-right">
-                          <button
-                            className="w-[96px] rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-bold text-zinc-800 shadow-sm transition hover:border-[#b9963b] hover:bg-[#fafaf7] hover:text-[#7a865f] disabled:cursor-wait disabled:opacity-50"
-                            onClick={() => baixarFicha(ficha)}
-                            disabled={isDownloadingThis}
-                          >
-                            {isDownloadingThis ? "Gerando..." : "Baixar"}
-                          </button>
-                        </td>
-                      </tr>
+                          <td className="whitespace-nowrap px-6 py-5 text-sm font-medium text-zinc-600">
+                            {formatDateTimeBR(ficha.uploaded_at)}
+                          </td>
+
+                          <td className="px-6 py-5 text-right">
+                            <button
+                              className="w-[96px] rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-bold text-zinc-800 shadow-sm transition hover:border-[#b9963b] hover:bg-[#fafaf7] hover:text-[#7a865f] disabled:cursor-wait disabled:opacity-50"
+                              onClick={() => baixarFicha(ficha)}
+                              disabled={isDownloadingThis}
+                            >
+                              {isDownloadingThis ? "Gerando..." : "Baixar"}
+                            </button>
+                          </td>
+                        </tr>
+
+                        {expandedIds.has(ficha.id) && ficha.versions.length > 1
+                          ? ficha.versions.slice(1).map((version) => (
+                              <tr key={version.id} className="bg-orange-50/30">
+                                <td colSpan={5} className="px-6 py-3">
+                                  <div className="flex flex-col gap-2 rounded-2xl border border-orange-100 bg-white p-3 text-xs text-zinc-600 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                      <span className="font-bold text-orange-700">
+                                        Versão anterior
+                                      </span>
+                                      <span className="mx-2">•</span>
+                                      <span>
+                                        Enviada em{" "}
+                                        {formatDateTimeBR(version.uploaded_at)}
+                                      </span>
+                                      <span className="mx-2">•</span>
+                                      <span>Arquivo: {version.file_name}</span>
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => baixarFicha(version)}
+                                      disabled={downloadingId === version.id}
+                                      className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-xs font-bold text-zinc-800 shadow-sm transition hover:border-[#b9963b] hover:bg-[#fafaf7] disabled:cursor-wait disabled:opacity-50"
+                                    >
+                                      {downloadingId === version.id
+                                        ? "Gerando..."
+                                        : "Baixar versão"}
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          : null}
+                      </Fragment>
                     );
                   })}
                 </tbody>
