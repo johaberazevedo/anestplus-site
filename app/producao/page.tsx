@@ -89,16 +89,16 @@ export default function ProducaoPage() {
     );
   }, [fichas]);
 
-  const linhasParaColar = useMemo(() => {
+    const linhasParaColar = useMemo(() => {
     return fichasValidas
       .map((ficha) =>
         [
           ficha.data,
           ficha.turno === "REVISAR" ? "" : ficha.turno,
           ficha.registro,
-          ficha.paciente,
+          ficha.paciente.toLocaleUpperCase("pt-BR"),
           ficha.empresa,
-          ficha.anestesista,
+          ficha.anestesista.toLocaleUpperCase("pt-BR"),
           ficha.tipoAnestesiaProducao.startsWith("REVISAR")
             ? ""
             : ficha.tipoAnestesiaProducao,

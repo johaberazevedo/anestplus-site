@@ -3,6 +3,7 @@
 import { Fragment, useMemo, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Script from "next/script";
 
 type Ficha = {
   id: string;
@@ -38,6 +39,48 @@ function formatDateBR(date: string) {
 
 function formatDateTimeBR(date: string) {
   return new Date(date).toLocaleString("pt-BR");
+}
+
+function ChatbaseWidget() {
+  return (
+    <Script id="chatbase-widget" strategy="afterInteractive">
+      {`
+        (function(){
+          if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+            window.chatbase = (...arguments) => {
+              if(!window.chatbase.q){
+                window.chatbase.q = [];
+              }
+              window.chatbase.q.push(arguments);
+            };
+
+            window.chatbase = new Proxy(window.chatbase, {
+              get(target, prop){
+                if(prop === "q"){
+                  return target.q;
+                }
+                return (...args) => target(prop, ...args);
+              }
+            });
+          }
+
+          const onLoad = function(){
+            const script = document.createElement("script");
+            script.src = "https://www.chatbase.co/embed.min.js";
+            script.id = "R2J3_ELVlJegVZVCFMxr_";
+            script.domain = "www.chatbase.co";
+            document.body.appendChild(script);
+          };
+
+          if(document.readyState === "complete"){
+            onLoad();
+          } else {
+            window.addEventListener("load", onLoad);
+          }
+        })();
+      `}
+    </Script>
+  );
 }
 
 export default function DashboardPage() {
@@ -585,7 +628,15 @@ export default function DashboardPage() {
             </div>
           </div>
         ) : null}
+
+        <div className="mt-8 rounded-2xl border border-zinc-200/80 bg-white/60 px-4 py-3 text-center text-xs font-medium text-zinc-500 shadow-sm">
+          Dúvidas no uso? O assistente no canto inferior direito pode ajudar com
+          Anest+, MedTurn, sincronização, impressão, validação, Wi-Fi e envio de
+          prints.
+        </div>
       </div>
+
+      <ChatbaseWidget />
     </main>
   );
 }
