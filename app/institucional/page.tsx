@@ -175,6 +175,7 @@ function ScreenFrame({
 
 export default function Institucional() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showStickyCta, setShowStickyCta] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
@@ -182,6 +183,19 @@ export default function Institucional() {
       document.body.style.overflow = "unset";
     };
   }, [isMenuOpen]);
+
+useEffect(() => {
+  function handleScroll() {
+    setShowStickyCta(window.scrollY > 620);
+  }
+
+  handleScroll();
+  window.addEventListener("scroll", handleScroll, { passive: true });
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
 const navLinks = [
   { href: "#vantagens", label: "Vantagens" },
@@ -292,6 +306,17 @@ const navLinks = [
         </div>
       </header>
 
+{showStickyCta && !isMenuOpen ? (
+  <a
+    href={WHATSAPP_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[90] flex h-12 items-center justify-center rounded-2xl bg-[#162014] text-sm font-black text-white shadow-xl shadow-black/20 transition-all lg:hidden"
+  >
+    Agendar demonstração
+  </a>
+) : null}
+
       <section className="relative overflow-hidden px-5 pb-14 pt-28 sm:px-6 md:pb-24 md:pt-36">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute -top-44 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#b9963b]/10 blur-3xl sm:h-[620px] sm:w-[620px]" />
@@ -305,9 +330,9 @@ const navLinks = [
             transition={{ duration: 0.5 }}
           >
             <div className="mb-6 flex flex-wrap justify-center gap-2">
-              <Pill>Hospitais</Pill>
-              <Pill>Clínicas</Pill>
-              <Pill>Grupos de Anestesia</Pill>
+              <Pill>Para hospitais e grupos</Pill>
+<Pill>Registro padronizado</Pill>
+<Pill>Produção e conferência</Pill>
             </div>
 
             <h1 className="mt-6 text-[2.5rem] font-black leading-[1.05] tracking-tight text-zinc-950 sm:mt-7 sm:text-5xl md:text-[5rem]">
@@ -319,10 +344,11 @@ const navLinks = [
             </h1>
 
             <p className="mx-auto mt-6 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:text-base sm:leading-7 md:text-[1.25rem] md:leading-8">
-              Leve o Anest+ para sua instituição e ofereça à equipe uma forma
-              mais rápida, clara e padronizada de criar, assinar, revisar e
-              encaminhar fichas anestésicas ao fluxo documental do hospital.
-            </p>
+  Leve o Anest+ para sua instituição e padronize o registro anestésico
+  do centro cirúrgico: fichas mais claras, produção mais organizada,
+  assinatura do profissional e envio mais simples para o fluxo documental
+  do hospital.
+</p>
 
             <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
               <a
@@ -334,10 +360,50 @@ const navLinks = [
                 Agendar demonstração
                 <ArrowRight className="ml-2" size={18} />
               </a>
+<p className="mt-3 text-[13px] leading-6 text-zinc-500 sm:text-sm">
+  Demonstração focada no fluxo real do seu centro cirúrgico, incluindo ficha,
+  assinatura, validação, produção e conferência.
+</p>
             </div>
           </motion.div>
         </div>
       </section>
+
+<section className="px-5 pb-4 pt-8 sm:px-6 md:pt-10">
+  <div className="mx-auto max-w-5xl text-center">
+    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
+      Em uso real no centro cirúrgico
+    </p>
+
+    <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6">
+      <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+        <Image
+          src="/brand/logo-hgvc2.png"
+          alt="HGVC"
+          width={320}
+          height={110}
+          sizes="(max-width: 640px) 260px, 320px"
+          className="h-auto max-h-[180px] w-auto object-contain"
+        />
+      </div>
+
+      <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+        <Image
+          src="/brand/logo-afranio-peixoto2.png"
+          alt="Hospital Afrânio Peixoto"
+          width={320}
+          height={110}
+          sizes="(max-width: 640px) 260px, 320px"
+          className="h-auto max-h-[160px] w-auto object-contain"
+        />
+      </div>
+    </div>
+
+    <p className="mx-auto mt-5 max-w-2xl text-sm font-medium leading-6 text-zinc-500 sm:text-base">
+      Mais de 10 mil fichas anestésicas já registradas em fluxos individuais e institucionais.
+    </p>
+  </div>
+</section>
 
       <section id="producao" className="bg-zinc-50/60 px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
@@ -349,18 +415,19 @@ const navLinks = [
           />
 
           <div className="mt-12 grid gap-6 sm:grid-cols-3">
-            <div className="rounded-[24px] border border-red-500/10 bg-white p-6 shadow-sm">
-              <div className="mb-4 inline-flex rounded-2xl bg-red-500/10 p-3 text-red-500">
-                <TrendingUp size={24} className="rotate-180" />
-              </div>
-              <h3 className="text-xl font-bold text-zinc-950">
-                Conferência mais lenta
-              </h3>
-              <p className="mt-2 text-[15px] leading-relaxed text-zinc-600">
-                Fichas incompletas, rasuradas ou pouco legíveis tornam a revisão
-                mais demorada e aumentam o retrabalho da equipe administrativa.
-              </p>
-            </div>
+<div className="rounded-[24px] border border-red-500/10 bg-white p-6 shadow-sm">
+  <div className="mb-4 inline-flex rounded-2xl bg-red-500/10 p-3 text-red-500">
+    <TrendingUp size={24} className="rotate-180" />
+  </div>
+  <h3 className="text-xl font-bold text-zinc-950">
+    Conferência mais lenta
+  </h3>
+  <p className="mt-2 text-[15px] leading-relaxed text-zinc-600">
+    Fichas incompletas, rasuradas ou pouco legíveis atrasam a conferência,
+    aumentam o tempo da equipe administrativa e podem gerar pendências no
+    faturamento, incluindo glosas por falta de dados ou dificuldade de leitura.
+  </p>
+</div>
 
             <div className="rounded-[24px] border border-orange-500/10 bg-white p-6 shadow-sm">
               <div className="mb-4 inline-flex rounded-2xl bg-orange-500/10 p-3 text-orange-500">
@@ -527,12 +594,12 @@ const navLinks = [
               desc="Mais consistência entre os registros da equipe, menos variação de preenchimento e uma rotina mais padronizada no serviço."
             />
 
-            <FeatureCard
-              compact
-              icon={ClipboardList}
-              title="Para auditoria e faturamento"
-              desc="Mais clareza na leitura das fichas, menos inconsistências de preenchimento e mais agilidade na conferência e cobrança."
-            />
+<FeatureCard
+  compact
+  icon={ClipboardList}
+  title="Para auditoria e faturamento"
+  desc="Fichas mais legíveis e estruturadas ajudam a acelerar a conferência, organizar a cobrança e reduzir inconsistências que podem gerar glosas por rasura, ausência de dados ou dificuldade de leitura."
+/>
           </div>
         </div>
       </section>
@@ -543,7 +610,7 @@ const navLinks = [
       <div>
         <SectionHeading
           eyebrow="Produção e conferência de faturamento"
-          title="Da ficha anestésica à produção do dia, sem retrabalho"
+          title="Da ficha anestésica à produção do dia, com mais eficiência."
           desc="O Anest+ também pode consolidar as fichas geradas pela equipe em um painel de produção por hospital e data, facilitando conferência, auditoria, cópia para planilhas e acesso aos PDFs quando necessário."
         />
 
@@ -558,8 +625,8 @@ const navLinks = [
           <FeatureCard
             compact
             icon={FileCheck2}
-            title="Linhas prontas para planilha"
-            desc="O painel organiza os dados em formato copiável, reduzindo digitação manual e acelerando a rotina de produção."
+            title="Dados prontos para conferência"
+desc="O painel organiza os principais dados em formato copiável, reduzindo lançamentos manuais e acelerando a rotina de produção."
           />
 
           <FeatureCard
@@ -657,7 +724,7 @@ const navLinks = [
           </div>
 
 <div className="mt-4 rounded-2xl bg-[#1a2718] px-4 py-3 text-center text-sm font-bold text-white">
-  Linhas prontas para copiar para planilha
+  Dados organizados para conferência e produção
 </div>
         </div>
       </div>
@@ -812,13 +879,13 @@ const navLinks = [
               </div>
 
               <h2 className="text-[2rem] font-black leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[3.2rem] lg:leading-[1.04]">
-                Veja o Anest+ funcionando no fluxo do seu hospital.
+                Veja como o Anest+ pode padronizar o registro anestésico do seu hospital.
               </h2>
 
               <p className="mt-4 text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
-                Agende uma demonstração para entender como o Anest+ pode se
-                adaptar à rotina do seu centro cirúrgico, aos modelos de ficha
-                do serviço e ao fluxo de envio para o prontuário do hospital.
+                Agende uma demonstração para avaliar o Anest+ no fluxo real do seu centro
+cirúrgico: ficha anestésica, assinatura, validação, produção, conferência
+e envio para o prontuário do hospital.
               </p>
 
               <div className="mt-8 flex flex-col flex-wrap justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">

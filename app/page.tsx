@@ -40,7 +40,7 @@ const EMAIL = "anestplus@outlook.com";
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-[#b9963b]/25 bg-[#f6f7f1] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#506047] shadow-sm backdrop-blur-sm sm:text-[11px]">
+    <span className="inline-flex items-center rounded-full border border-[#B9963B]/25 bg-[#FAFAF7] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#506047] shadow-sm backdrop-blur-sm sm:text-[11px]">
       {children}
     </span>
   );
@@ -66,7 +66,7 @@ function SectionHeading({
       {eyebrow ? (
         <p
           className={`text-[10px] font-semibold uppercase tracking-[0.22em] sm:text-[11px] ${
-            light ? "text-[#d9c57d]" : "text-[#7a865f]"
+            light ? "text-[#D9C57D]" : "text-[#7A865F]"
           }`}
         >
           {eyebrow}
@@ -86,7 +86,7 @@ function SectionHeading({
       {desc ? (
         <p
           className={`mt-4 text-[14px] leading-relaxed sm:text-base md:text-lg md:leading-8 ${
-            light ? "text-zinc-300" : "text-zinc-500"
+            light ? "text-zinc-300" : "text-[#71717A]"
           } ${center ? "mx-auto max-w-3xl" : "max-w-3xl"}`}
         >
           {desc}
@@ -113,22 +113,22 @@ function FeatureCard({
     <div
       className={`group relative overflow-hidden rounded-[24px] border shadow-sm transition-colors duration-300 md:rounded-[28px] ${
         light
-          ? "border-white/10 bg-white/5 hover:border-[#b9963b]/35 hover:bg-white/[0.07]"
-          : "border-zinc-200/80 bg-white hover:border-[#b9963b]/35"
+          ? "border-white/10 bg-white/5 hover:border-[#B9963B]/35 hover:bg-white/[0.07]"
+          : "border-zinc-200/80 bg-white hover:border-[#B9963B]/35"
       } ${compact ? "p-5" : "p-6 md:p-7"}`}
     >
       {!light ? (
         <>
-          <div className="absolute inset-0 bg-gradient-to-br from-[#b9963b]/0 to-[#b9963b]/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#b9963b]/5 blur-2xl transition-colors duration-300 group-hover:bg-[#b9963b]/10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#B9963B]/0 to-[#B9963B]/[0.03] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-[#B9963B]/5 blur-2xl transition-colors duration-300 group-hover:bg-[#B9963B]/10" />
         </>
       ) : null}
 
       <div
         className={`relative z-10 mb-4 inline-flex rounded-2xl p-2.5 transition-colors duration-300 sm:p-3 ${
           light
-            ? "bg-white/10 text-[#e0bf62]"
-            : "bg-zinc-50 text-[#7a865f] group-hover:bg-[#b9963b]/10 group-hover:text-[#b9963b]"
+            ? "bg-white/10 text-[#D9C57D]"
+            : "bg-zinc-50 text-[#7A865F] group-hover:bg-[#B9963B]/10 group-hover:text-[#B9963B]"
         }`}
       >
         <Icon size={20} className="sm:h-[22px] sm:w-[22px]" strokeWidth={1.7} />
@@ -146,7 +146,7 @@ function FeatureCard({
 
       <p
         className={`relative z-10 mt-2 text-[14px] leading-relaxed md:text-[15px] md:leading-7 ${
-          light ? "text-zinc-300" : "text-zinc-500"
+          light ? "text-zinc-300" : "text-[#71717A]"
         }`}
       >
         {desc}
@@ -165,8 +165,8 @@ function FlowStepCard({
   desc: string;
 }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#b9963b]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#b9963b] sm:text-[11px]">
+    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#B9963B] sm:text-[11px]">
         {step}
       </p>
       <h3 className="mt-3 text-[1.08rem] font-bold tracking-tight text-zinc-950 sm:text-[1.15rem] md:text-[1.2rem]">
@@ -181,11 +181,11 @@ function FlowStepCard({
 
 function TestimonialCard({ quote, author }: { quote: string; author: string }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#b9963b]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
       <p className="text-[15px] leading-relaxed text-zinc-700 md:text-[16px] md:leading-8">
         “{quote}”
       </p>
-      <p className="mt-4 text-[12px] font-bold uppercase tracking-[0.16em] text-[#7a865f] sm:text-[13px]">
+      <p className="mt-4 text-[12px] font-bold uppercase tracking-[0.16em] text-[#7A865F] sm:text-[13px]">
         {author}
       </p>
     </div>
@@ -207,7 +207,7 @@ function InfoRow({
         dark ? "border-white/10 bg-white/5" : "border-zinc-200/80 bg-white"
       }`}
     >
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#b9963b]/12 text-[#b9963b] sm:h-9 sm:w-9">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#B9963B]/12 text-[#B9963B] sm:h-9 sm:w-9">
         <CheckCircle2 size={16} strokeWidth={2.4} />
       </div>
       <div>
@@ -220,7 +220,7 @@ function InfoRow({
         </h3>
         <p
           className={`mt-1 text-[13px] leading-relaxed sm:text-[15px] sm:leading-7 ${
-            dark ? "text-zinc-300" : "text-zinc-500"
+            dark ? "text-zinc-300" : "text-[#71717A]"
           }`}
         >
           {desc}
@@ -238,7 +238,7 @@ function FAQCard({
   desc: string | React.ReactNode;
 }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#b9963b]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
       <h3 className="text-[1.05rem] font-bold tracking-tight text-zinc-950 md:text-lg">
         {title}
       </h3>
@@ -262,7 +262,7 @@ function ScreenFrame({
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-[20px] border border-[#b9963b]/15 bg-black shadow-[0_24px_60px_-24px_rgba(26,39,24,0.32)] sm:rounded-[26px] sm:shadow-[0_24px_80px_-36px_rgba(26,39,24,0.32)] ${className}`}
+      className={`overflow-hidden rounded-[20px] border border-[#B9963B]/15 bg-black shadow-[0_24px_60px_-24px_rgba(11,42,58,0.32)] sm:rounded-[26px] sm:shadow-[0_24px_80px_-36px_rgba(11,42,58,0.32)] ${className}`}
     >
       <Image
         src={src}
@@ -281,7 +281,7 @@ function VideoDemo() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[28px] border border-[#b9963b]/20 bg-black shadow-[0_24px_80px_-36px_rgba(26,39,24,0.42)] sm:max-w-[320px] sm:rounded-[36px]">
+    <div className="relative mx-auto w-full max-w-[280px] overflow-hidden rounded-[28px] border border-[#B9963B]/20 bg-black shadow-[0_24px_80px_-36px_rgba(11,42,58,0.42)] sm:max-w-[320px] sm:rounded-[36px]">
       {!isPlaying ? (
         <button
           type="button"
@@ -298,13 +298,13 @@ function VideoDemo() {
           />
 
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#b9963b] text-white shadow-2xl transition-transform group-hover:scale-110 sm:h-20 sm:w-20">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#B9963B] text-white shadow-2xl transition-transform group-hover:scale-110 sm:h-20 sm:w-20">
               <Play size={34} className="ml-1" fill="currentColor" />
             </div>
           </div>
 
           <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-white/10 bg-black/45 p-3 text-white backdrop-blur-md sm:bottom-4 sm:left-4 sm:right-4 sm:p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#d9c57d]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#D9C57D]">
               Veja em ação
             </p>
             <p className="mt-1 text-sm font-black leading-tight sm:text-base">
@@ -332,6 +332,7 @@ function VideoDemo() {
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showStickyCta, setShowStickyCta] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
@@ -339,6 +340,19 @@ export default function Home() {
       document.body.style.overflow = "unset";
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    function handleScroll() {
+      setShowStickyCta(window.scrollY > 620);
+    }
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const navLinks = [
     { href: "#produto", label: "Produto" },
@@ -349,7 +363,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-zinc-950 selection:bg-[#22331d] selection:text-white">
+    <div className="min-h-screen bg-white text-zinc-950 selection:bg-[#162014] selection:text-white">
       {/* HEADER */}
       <header className="fixed top-0 z-[100] w-full border-b border-zinc-200/60 bg-white/90 backdrop-blur-xl print:hidden">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-6">
@@ -363,7 +377,7 @@ export default function Home() {
               priority
             />
             <span className="text-[1.5rem] font-black tracking-[-0.06em] sm:text-[1.7rem]">
-              ANEST<span className="text-[#b9963b]">+</span>
+              ANEST<span className="text-[#B9963B]">+</span>
             </span>
           </Link>
 
@@ -391,7 +405,7 @@ export default function Home() {
               href={APPSTORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden h-10 items-center rounded-xl bg-[#1a2718] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-zinc-800 lg:inline-flex"
+              className="hidden h-10 items-center rounded-xl bg-[#162014] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] lg:inline-flex"
             >
               Baixar na App Store
             </a>
@@ -421,7 +435,7 @@ export default function Home() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="transition-colors hover:text-[#b9963b]"
+                className="transition-colors hover:text-[#B9963B]"
               >
                 {link.label}
               </a>
@@ -441,7 +455,7 @@ export default function Home() {
               href={OFFER_CODE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] text-base font-bold text-white"
+              className="flex h-14 items-center justify-center rounded-2xl bg-[#162014] text-base font-bold text-white"
             >
               Testar 7 dias grátis
             </a>
@@ -457,159 +471,170 @@ export default function Home() {
         </div>
       </header>
 
+      {showStickyCta && !isMenuOpen ? (
+  <a
+    href={OFFER_CODE_URL}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[90] flex h-12 items-center justify-center rounded-2xl bg-[#162014] text-sm font-black text-white shadow-xl shadow-black/20 transition-all lg:hidden"
+  >
+    Testar 7 dias grátis
+  </a>
+) : null}
+
       {/* HERO */}
-      <section className="relative overflow-hidden px-5 pb-14 pt-28 sm:px-6 md:pb-18 md:pt-36">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -top-44 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#22331d]/10 blur-3xl sm:h-[620px] sm:w-[620px]" />
-          <div className="absolute right-[-100px] top-8 h-[300px] w-[300px] rounded-full bg-[#8f9c69]/12 blur-3xl sm:h-[420px] sm:w-[420px]" />
+<section className="relative overflow-hidden px-5 pb-14 pt-28 sm:px-6 md:pb-18 md:pt-36">
+  <div className="pointer-events-none absolute inset-0 -z-10">
+    <div className="absolute -top-44 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#22331d]/10 blur-3xl sm:h-[620px] sm:w-[620px]" />
+    <div className="absolute right-[-100px] top-8 h-[300px] w-[300px] rounded-full bg-[#8f9c69]/12 blur-3xl sm:h-[420px] sm:w-[420px]" />
+  </div>
+
+  <div className="mx-auto max-w-7xl">
+    <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
+      <motion.div
+        initial={{ opacity: 0, x: -18 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.45 }}
+      >
+        <div className="flex flex-wrap gap-2">
+<Pill>Criado por um anestesiologista</Pill>
+<Pill>Registro anestésico sem fricção</Pill>
+<Pill>iPhone e iPad</Pill>
         </div>
 
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -18 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.45 }}
+        <h1 className="mt-6 text-[2.4rem] font-black leading-[1.05] tracking-tight text-zinc-950 sm:mt-7 sm:text-5xl md:text-[4.5rem]">
+          Você cuida do paciente.
+          <br />
+          <span className="bg-gradient-to-r from-[#7b8461] to-[#b9963b] bg-clip-text text-transparent">
+            O Anest+ cuida da sua rotina.
+          </span>
+        </h1>
+
+<p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
+  Crie, atualize, assine e exporte sua ficha anestésica com menos
+  digitação, menos esforço e mais clareza no registro final — em um
+  fluxo criado por um anestesiologista para a rotina real da anestesia.
+</p>
+
+        <div className="mt-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+            <a
+              href={OFFER_CODE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
             >
-              <div className="flex flex-wrap gap-2">
-                <Pill>De anestesiologista para anestesiologista</Pill>
-                <Pill>Registro anestésico sem fricção</Pill>
-                <Pill>iPhone e iPad</Pill>
-              </div>
+              Testar 7 dias grátis
+              <ChevronRight className="ml-2" size={18} />
+            </a>
 
-              <h1 className="mt-6 text-[2.4rem] font-black leading-[1.05] tracking-tight text-zinc-950 sm:mt-7 sm:text-5xl md:text-[4.5rem]">
-                Você cuida do paciente.
-                <br />
-                <span className="bg-gradient-to-r from-[#7b8461] to-[#b9963b] bg-clip-text text-transparent">
-                  O Anest+ cuida da sua rotina.
-                </span>
-              </h1>
-
-              <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
-                Crie e atualize sua ficha anestésica durante o caso, finalize o
-                registro com menos retrabalho e organize seus plantões no mesmo
-                app — tudo em uma experiência pensada para a rotina real do
-                anestesiologista.
-              </p>
-
-              <div className="mt-8">
-                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
-                  <a
-                    href={OFFER_CODE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
-                  >
-                    Testar 7 dias grátis
-                    <ChevronRight className="ml-2" size={18} />
-                  </a>
-
-                  <a
-                    href={APPSTORE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-14 items-center justify-center rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] px-7 text-[15px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#f6f4eb] sm:text-base"
-                  >
-                    Ver na App Store
-                  </a>
-                </div>
-
-                <p className="mt-3 text-[13px] text-zinc-500 sm:text-sm">
-                  Disponível para iPhone e iPad.
-                </p>
-
-                <p className="mt-2 text-[13px] text-zinc-500 sm:text-sm">
-                  O código{" "}
-                  <span className="font-bold text-zinc-800">ANESTFRIEND</span>{" "}
-                  já vai aplicado no resgate.
-                </p>
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-2 text-[13px] sm:gap-3 sm:text-sm">
-                {[
-                  "Calendário de plantões",
-                  "Ficha anestésica completa",
-                  "Registro durante o caso",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#b9963b]/18 bg-[#fafaf7] px-3 py-2 font-semibold text-zinc-700 shadow-sm sm:px-4 sm:py-2.5"
-                  >
-                    <CheckCircle2
-                      size={15}
-                      className="shrink-0 text-[#7a865f]"
-                    />
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6">
-                <p className="max-w-2xl text-[13px] leading-6 text-zinc-500 sm:text-sm">
-                  Quer conhecer ainda mais do app? No{" "}
-                  <a
-                    href={INSTAGRAM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-zinc-800 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:text-zinc-950 hover:decoration-[#b9963b]"
-                  >
-                    Instagram do Anest+
-                  </a>{" "}
-                  você encontra vídeos explicando as principais funções, fluxos
-                  e recursos do Anest+.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.08 }}
-              className="relative mx-auto mt-8 w-full max-w-[280px] sm:max-w-[320px] lg:mt-0"
+            <a
+              href={APPSTORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-14 items-center justify-center rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] px-7 text-[15px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#f6f4eb] sm:text-base"
             >
-              <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_center,rgba(185,150,59,0.22),transparent_68%)] blur-xl sm:rounded-[46px] sm:blur-2xl" />
-              <div className="relative">
-                <VideoDemo />
-              </div>
-            </motion.div>
+              Ver na App Store
+            </a>
           </div>
+
+          <p className="mt-3 text-[13px] text-zinc-500 sm:text-sm">
+            Disponível para iPhone e iPad.
+          </p>
+
+          <p className="mt-2 text-[13px] leading-6 text-zinc-500 sm:text-sm">
+            Use em um plantão real e avalie se o Anest+ se adapta à sua rotina.
+            O código{" "}
+            <span className="font-bold text-zinc-800">ANESTFRIEND</span>{" "}
+            já vai aplicado no resgate.
+          </p>
         </div>
-      </section>
+
+        <div className="mt-8 flex flex-wrap gap-2 text-[13px] sm:gap-3 sm:text-sm">
+          {[
+            "Ficha anestésica completa",
+            "Registro durante o caso",
+            "Assinatura e validação",
+          ].map((item) => (
+            <div
+              key={item}
+              className="inline-flex items-center gap-2 rounded-full border border-[#b9963b]/18 bg-[#fafaf7] px-3 py-2 font-semibold text-zinc-700 shadow-sm sm:px-4 sm:py-2.5"
+            >
+              <CheckCircle2
+                size={15}
+                className="shrink-0 text-[#7a865f]"
+              />
+              {item}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6">
+          <p className="max-w-2xl text-[13px] leading-6 text-zinc-500 sm:text-sm">
+            Quer conhecer ainda mais do app? No{" "}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-zinc-800 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:text-zinc-950 hover:decoration-[#b9963b]"
+            >
+              Instagram do Anest+
+            </a>{" "}
+            você encontra vídeos explicando as principais funções, fluxos
+            e recursos do Anest+.
+          </p>
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 0.08 }}
+        className="relative mx-auto mt-8 w-full max-w-[280px] sm:max-w-[320px] lg:mt-0"
+      >
+        <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_center,rgba(185,150,59,0.22),transparent_68%)] blur-xl sm:rounded-[46px] sm:blur-2xl" />
+        <div className="relative">
+          <VideoDemo />
+        </div>
+      </motion.div>
+    </div>
+  </div>
+</section>
 
       {/* QUEBRA DE OBJEÇÃO DO INTRAOPERATÓRIO */}
       <section id="como-funciona" className="px-5 py-14 sm:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="relative overflow-hidden rounded-[28px] border border-[#b9963b]/15 bg-[#f8f8f4] px-5 py-8 shadow-[0_24px_60px_-40px_rgba(26,39,24,0.16)] sm:rounded-[36px] sm:px-8 sm:py-10 md:px-10 md:py-12">
+          <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-[#FAFAF7] px-5 py-8 shadow-[0_24px_60px_-40px_rgba(11,42,58,0.16)] sm:rounded-[36px] sm:px-8 sm:py-10 md:px-10 md:py-12">
             <div className="pointer-events-none absolute inset-0">
-              <div className="absolute left-0 top-0 h-36 w-36 rounded-full bg-[#b9963b]/8 blur-3xl" />
-              <div className="absolute bottom-0 right-0 h-36 w-36 rounded-full bg-[#22331d]/6 blur-3xl" />
+              <div className="absolute left-0 top-0 h-36 w-36 rounded-full bg-[#B9963B]/8 blur-3xl" />
+              <div className="absolute bottom-0 right-0 h-36 w-36 rounded-full bg-[#22331D]/6 blur-3xl" />
             </div>
 
             <div className="relative z-10">
               <SectionHeading
                 center
                 eyebrow="Sem complicar seu fluxo"
-                title="Em poucos minutos você entende por que não vai querer voltar para o papel"
-                desc="Não é para deixar para depois. É para registrar enquanto o caso acontece, com poucos toques, menos digitação e menos retrabalho no fim do plantão."
+                title="O registro acompanha o intraoperatório, sem virar mais uma tarefa pesada"
+                desc="O Anest+ foi desenhado para entrar no fluxo real do caso: poucos toques, menos digitação e uma ficha que já chega organizada ao fim do procedimento."
               />
 
               <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
                 <FlowStepCard
                   step="Passo 1"
-                  title="Monte a ficha sem começar do zero"
-                  desc="Paciente, hospital e base do caso entram de forma rápida, sem começar do zero a cada procedimento."
+                  title="Abra o caso com uma estrutura pronta"
+                  desc="Paciente, hospital, técnica e dados iniciais entram em uma ficha já organizada para o fluxo anestésico."
                 />
 
                 <FlowStepCard
                   step="Passo 2"
-                  title="Atualize a ficha no ritmo do caso"
-                  desc="Sinais vitais, parâmetros, fluidos e descrição podem ser atualizados no fluxo, sem transformar o registro em mais uma tarefa pesada."
+                  title="Registre sem quebrar o ritmo"
+                  desc="Sinais vitais, parâmetros, fluidos, fármacos e evolução são atualizados com poucos toques durante o caso."
                 />
 
                 <FlowStepCard
                   step="Passo 3"
-                  title="Feche o caso com a ficha já pronta"
-                  desc="No fim do caso, a ficha já está organizada, legível e pronta para revisar, imprimir e guardar."
+                  title="Finalize com clareza"
+                  desc="Ao fim do procedimento, a ficha já está legível, padronizada e pronta para revisão, assinatura e exportação."
                 />
               </div>
             </div>
@@ -625,7 +650,7 @@ export default function Home() {
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6">
-            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(11,42,58,0.18)]">
               <Image
                 src="/brand/logo-hgvc2.png"
                 alt="HGVC"
@@ -636,7 +661,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(26,39,24,0.18)]">
+            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(11,42,58,0.18)]">
               <Image
                 src="/brand/logo-afranio-peixoto2.png"
                 alt="Hospital Afrânio Peixoto"
@@ -647,6 +672,9 @@ export default function Home() {
               />
             </div>
           </div>
+<p className="mx-auto mt-5 max-w-2xl text-sm font-medium leading-6 text-zinc-500 sm:text-base">
+  Em uso real no centro cirúrgico, com mais de 10 mil fichas anestésicas já registradas em fluxos individuais e institucionais.
+</p>
         </div>
       </section>
 
@@ -662,7 +690,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
             <TestimonialCard
-              quote="Parei de terminar caso pensando na ficha que ainda faltava organizar. O fluxo do plantão ficou muito mais leve."
+              quote="Parei de terminar caso pensando na ficha que ainda faltava organizar. O fechamento do plantão ficou muito mais leve."
               author="Daniel M. — Anestesiologista"
             />
             <TestimonialCard
@@ -670,7 +698,7 @@ export default function Home() {
               author="Isabela T. — Anestesiologista"
             />
             <TestimonialCard
-              quote="A ficha final ficou mais clara, mais rápida de revisar e com muito menos retrabalho no fim do caso."
+              quote="No fim do caso, a ficha já estava organizada para revisar e exportar. Isso facilitou bastante meu plantão."
               author="Iago G. — Anestesiologista"
             />
           </div>
@@ -685,32 +713,31 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-[0.94fr_1.06fr]">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a865f] sm:text-[11px]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F] sm:text-[11px]">
                 A origem do produto
               </p>
 
               <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-5xl">
-                Não é um software genérico.
-                <br />É a vivência real do centro cirúrgico.
+                Não nasceu em uma planilha.
+                <br />Nasceu dentro do centro cirúrgico.
               </h2>
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Antes do Anest+, grande parte do registro anestésico ainda
-                dependia de papel, digitação excessiva e reconstrução mental ao
-                final do caso. O app nasceu para reduzir esse atrito e
-                acompanhar melhor o fluxo real do intraoperatório.
-              </p>
+  O Anest+ nasceu de uma situação comum no centro cirúrgico:
+  registrar uma anestesia completa, com qualidade, sem transformar
+  a ficha em mais uma carga durante o plantão.
+</p>
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8">
-                Em vez de adaptar a rotina da anestesia a um software genérico,
-                a ideia foi fazer o contrário: criar um produto que respeita a
-                lógica real do plantão.
+                Em vez de forçar o anestesiologista a se adaptar a um sistema
+                pesado, o Anest+ foi desenhado para respeitar a lógica do
+                intraoperatório: rápido, direto, legível e seguro.
               </p>
 
-              <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#b9963b]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
+              <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#B9963B]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
                 <ShieldCheck
                   size={16}
-                  className="text-[#7a865f] sm:h-[18px] sm:w-[18px]"
+                  className="text-[#7A865F] sm:h-[18px] sm:w-[18px]"
                 />
                 <span className="text-[12px] font-bold uppercase tracking-wide text-zinc-700 sm:text-sm">
                   Local-first, privado e com acesso seguro pela conta Anest+
@@ -762,9 +789,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[24px] border border-[#b9963b]/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
+              <div className="rounded-[24px] border border-[#B9963B]/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
                 <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="mt-0.5 rounded-2xl bg-[#b9963b]/10 p-2.5 text-[#b9963b] sm:p-3">
+                  <div className="mt-0.5 rounded-2xl bg-[#B9963B]/10 p-2.5 text-[#B9963B] sm:p-3">
                     <FileText size={18} className="sm:h-[20px] sm:w-[20px]" />
                   </div>
                   <div>
@@ -790,8 +817,8 @@ export default function Home() {
           <SectionHeading
             center
             eyebrow="A sala de cirurgia é o centro"
-            title="Sua ficha anestésica sem atrito, do início ao fim."
-            desc="O Anest+ resolve o que mais pesa na rotina: criar a ficha com rapidez, registrar o caso sem atrapalhar o intraoperatório e terminar com um registro final claro, sem retrabalho."
+            title="Menos carga mental. Mais clareza no registro."
+            desc="O Anest+ transforma a ficha anestésica em um fluxo contínuo: começa rápido, acompanha o caso e termina com um documento final claro, pronto para revisão e exportação."
           />
         </div>
       </section>
@@ -813,12 +840,12 @@ export default function Home() {
 
             <div className="order-1 lg:order-2">
               <h2 className="text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:text-4xl md:text-[2.8rem]">
-                Abra a ficha com rapidez e sem fricção
+                Comece a ficha sem perder tempo com o básico
               </h2>
-              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Os dados do paciente e do procedimento entram em uma estrutura
-                clara e validada, criando a base perfeita para acompanhar o caso
-                desde o primeiro minuto.
+              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+                A abertura do caso já nasce organizada: paciente, procedimento,
+                técnica anestésica, hospital e dados iniciais em uma estrutura
+                pronta para acompanhar todo o intraoperatório.
               </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -832,11 +859,11 @@ export default function Home() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-[16px] border border-[#b9963b]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
+                    className="flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
                   >
                     <CheckCircle2
                       size={18}
-                      className="shrink-0 text-[#b9963b]"
+                      className="shrink-0 text-[#B9963B]"
                     />
                     {item}
                   </div>
@@ -852,8 +879,8 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 md:mb-14">
             <SectionHeading
-              title="Registre o caso sem quebrar o ritmo da cirurgia"
-              desc="O Anest+ entra no fluxo do intraoperatório sem pesar na rotina. Menos digitação, menos retrabalho e menos sensação de estar preenchendo ficha fora de hora."
+              title="Atualize a ficha no ritmo real da anestesia"
+              desc="A ficha acompanha o caso sem competir com sua atenção. Sinais, parâmetros, fluidos, fármacos e evolução ficam organizados com menos digitação e menos interrupção."
             />
           </div>
 
@@ -912,18 +939,18 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#b9963b] sm:text-[11px]">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B9963B] sm:text-[11px]">
                 O alívio no final do plantão
               </p>
 
               <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-[2.8rem]">
-                Uma ficha clara e pronta, sem reconstruir de memória
+                Termine o caso com a ficha pronta, não com mais trabalho
               </h2>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Esqueça o retrabalho. Ao término do caso, o Anest+ já consolidou
-                cabeçalho, fármacos e evolução em uma estrutura limpa,
-                padronizada e pronta para ser exportada.
+              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+                Ao término do procedimento, o registro já está consolidado em
+                uma estrutura limpa, legível e padronizada — pronto para
+                revisar, assinar, exportar e seguir para o fluxo do hospital.
               </p>
 
               <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
@@ -943,7 +970,7 @@ export default function Home() {
                   compact
                   icon={CheckCircle2}
                   title="Revisão rápida"
-                  desc="Bata o olho, confira a evolução do caso e feche o registro com muito menos retrabalho."
+                  desc="Bata o olho, confira a evolução do caso e feche o registro com muito menos esforço."
                 />
                 <FeatureCard
                   compact
@@ -954,10 +981,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-[24px] border border-[#b9963b]/15 bg-white p-3 shadow-sm sm:rounded-[36px] sm:p-5 md:p-6">
+            <div className="relative overflow-hidden rounded-[24px] border border-[#B9963B]/15 bg-white p-3 shadow-sm sm:rounded-[36px] sm:p-5 md:p-6">
               <div className="pointer-events-none absolute inset-0">
-                <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#b9963b]/5 blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331d]/5 blur-3xl" />
+                <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#B9963B]/5 blur-3xl" />
+                <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331D]/5 blur-3xl" />
               </div>
               <div className="relative z-10">
                 <ScreenFrame
@@ -975,7 +1002,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#b9963b] sm:text-[11px]">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B9963B] sm:text-[11px]">
                 Assinatura e validação
               </p>
 
@@ -983,14 +1010,14 @@ export default function Home() {
                 Um registro final com autoria, integridade e verificação.
               </h2>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
                 Ao finalizar a ficha, o Anest+ permite aplicar uma assinatura
                 eletrônica avançada vinculada ao profissional, adicionando uma
                 camada técnica de autoria, integridade e rastreabilidade ao
                 documento exportado.
               </p>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:text-base sm:leading-8 md:text-lg">
+              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:text-base sm:leading-8 md:text-lg">
                 O documento também pode ser conferido posteriormente no
                 validador do Anest+, ajudando a verificar os dados técnicos do
                 registro e a integridade esperada do arquivo.
@@ -998,7 +1025,7 @@ export default function Home() {
 
               <Link
                 href="/validar"
-                className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] px-6 text-[14px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#f6f4eb]"
+                className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl border border-[#B9963B]/25 bg-[#FAFAF7] px-6 text-[14px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#F6F4EB]"
               >
                 Validar uma ficha
                 <ChevronRight className="ml-2" size={17} />
@@ -1038,7 +1065,7 @@ export default function Home() {
             <div>
               <SectionHeading
                 eyebrow="Conta Anest+"
-                title="Suas fichas organizadas também fora do iPhone"
+                title="Suas fichas organizadas e acessíveis no computador"
                 desc="Com a Conta Anest+, você pode acessar suas fichas sincronizadas em um painel seguro, buscar por data, paciente ou prontuário, baixar PDFs e acompanhar o que já foi revisado."
               />
 
@@ -1073,16 +1100,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-[28px] border border-[#b9963b]/15 bg-white p-4 shadow-[0_24px_70px_-42px_rgba(26,39,24,0.22)] sm:rounded-[36px] sm:p-6">
+            <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-white p-4 shadow-[0_24px_70px_-42px_rgba(11,42,58,0.22)] sm:rounded-[36px] sm:p-6">
               <div className="pointer-events-none absolute inset-0">
-                <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#b9963b]/5 blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331d]/5 blur-3xl" />
+                <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#B9963B]/5 blur-3xl" />
+                <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331D]/5 blur-3xl" />
               </div>
 
-              <div className="relative z-10 rounded-[24px] border border-zinc-200 bg-[#fafaf7] p-4 shadow-sm">
+              <div className="relative z-10 rounded-[24px] border border-zinc-200 bg-[#FAFAF7] p-4 shadow-sm">
                 <div className="mb-5 flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a865f]">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F]">
                       Conta Anest+
                     </p>
                     <h3 className="mt-1 text-xl font-black tracking-tight text-zinc-950">
@@ -1090,7 +1117,7 @@ export default function Home() {
                     </h3>
                   </div>
 
-                  <div className="rounded-full border border-[#b9963b]/20 bg-[#f6f7f1] px-3 py-1.5 text-xs font-bold text-[#506047]">
+                  <div className="rounded-full border border-[#B9963B]/20 bg-[#FAFAF7] px-3 py-1.5 text-xs font-bold text-[#506047]">
                     30 dias
                   </div>
                 </div>
@@ -1142,20 +1169,20 @@ export default function Home() {
                       <span
                         className={
                           row[1] === "Novo"
-                            ? "font-bold text-[#7a865f]"
+                            ? "font-bold text-[#7A865F]"
                             : "font-bold text-zinc-400"
                         }
                       >
                         {row[1]}
                       </span>
-                      <span className="text-right font-bold text-[#b9963b]">
+                      <span className="text-right font-bold text-[#B9963B]">
                         {row[2]}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-4 rounded-2xl bg-[#1a2718] px-4 py-3 text-center text-sm font-bold text-white">
+                <div className="mt-4 rounded-2xl bg-[#162014] px-4 py-3 text-center text-sm font-bold text-white">
                   Buscar por data, paciente ou prontuário
                 </div>
               </div>
@@ -1184,7 +1211,7 @@ export default function Home() {
               <h2 className="text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:text-4xl md:text-[2.8rem]">
                 Plantões organizados no mesmo ecossistema
               </h2>
-              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
                 Além da ficha anestésica, o app também ajuda a visualizar sua
                 agenda, organizar plantões e manter a rotina menos espalhada.
               </p>
@@ -1198,11 +1225,11 @@ export default function Home() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-[16px] border border-[#b9963b]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
+                    className="flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
                   >
                     <CheckCircle2
                       size={18}
-                      className="shrink-0 text-[#b9963b]"
+                      className="shrink-0 text-[#B9963B]"
                     />
                     {item}
                   </div>
@@ -1295,8 +1322,8 @@ export default function Home() {
           <SectionHeading
             light
             eyebrow="Mais confiança no registro"
-            title="Registro protegido, assinatura avançada e acesso seguro para inclusão no sistema do seu hospital"
-            desc="O Anest+ combina registro local-first, assinatura eletrônica avançada e uma área segura para acessar a ficha por até 30 dias — tempo pensado para revisar, baixar, imprimir ou enviar o documento ao prontuário eletrônico do hospital."
+            title="Confiança técnica sem deixar o fluxo pesado"
+            desc="O Anest+ combina registro local-first, assinatura eletrônica avançada, validação do documento e acesso seguro à ficha sincronizada por até 30 dias — tempo suficiente para revisar, baixar, imprimir ou enviar ao prontuário do hospital."
           />
 
           <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 xl:grid-cols-3">
@@ -1417,7 +1444,7 @@ export default function Home() {
                   também oferecemos uma{" "}
                   <Link
                     href="/institucional"
-                    className="text-[#b9963b] underline underline-offset-2"
+                    className="text-[#B9963B] underline underline-offset-2"
                   >
                     solução institucional
                   </Link>{" "}
@@ -1461,11 +1488,11 @@ export default function Home() {
           <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5">
             <a
               href={`mailto:${EMAIL}`}
-              className="group flex flex-col items-center rounded-[24px] border border-zinc-200/80 bg-white p-5 text-center shadow-sm transition-all hover:border-[#b9963b]/40 hover:shadow-md sm:rounded-[28px] sm:p-7"
+              className="group flex flex-col items-center rounded-[24px] border border-zinc-200/80 bg-white p-5 text-center shadow-sm transition-all hover:border-[#B9963B]/40 hover:shadow-md sm:rounded-[28px] sm:p-7"
             >
-              <div className="mb-3 inline-flex rounded-[14px] bg-zinc-50 p-2.5 transition-colors group-hover:bg-[#b9963b]/10 sm:mb-4 sm:rounded-2xl sm:p-3">
+              <div className="mb-3 inline-flex rounded-[14px] bg-zinc-50 p-2.5 transition-colors group-hover:bg-[#B9963B]/10 sm:mb-4 sm:rounded-2xl sm:p-3">
                 <Mail
-                  className="text-[#b9963b] sm:h-[24px] sm:w-[24px]"
+                  className="text-[#B9963B] sm:h-[24px] sm:w-[24px]"
                   size={22}
                 />
               </div>
@@ -1475,7 +1502,7 @@ export default function Home() {
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
                 Parcerias e solicitações formais.
               </p>
-              <span className="mt-2.5 text-[14px] font-bold text-[#b9963b] underline decoration-[#b9963b]/30 underline-offset-4 sm:mt-3 sm:text-sm">
+              <span className="mt-2.5 text-[14px] font-bold text-[#B9963B] underline decoration-[#B9963B]/30 underline-offset-4 sm:mt-3 sm:text-sm">
                 {EMAIL}
               </span>
             </a>
@@ -1484,11 +1511,11 @@ export default function Home() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col items-center rounded-[24px] border border-zinc-200/80 bg-white p-5 text-center shadow-sm transition-all hover:border-[#b9963b]/40 hover:shadow-md sm:rounded-[28px] sm:p-7"
+              className="group flex flex-col items-center rounded-[24px] border border-zinc-200/80 bg-white p-5 text-center shadow-sm transition-all hover:border-[#B9963B]/40 hover:shadow-md sm:rounded-[28px] sm:p-7"
             >
-              <div className="mb-3 inline-flex rounded-[14px] bg-zinc-50 p-2.5 transition-colors group-hover:bg-[#b9963b]/10 sm:mb-4 sm:rounded-2xl sm:p-3">
+              <div className="mb-3 inline-flex rounded-[14px] bg-zinc-50 p-2.5 transition-colors group-hover:bg-[#B9963B]/10 sm:mb-4 sm:rounded-2xl sm:p-3">
                 <MessageCircle
-                  className="text-[#7a865f] sm:h-[24px] sm:w-[24px]"
+                  className="text-[#7A865F] sm:h-[24px] sm:w-[24px]"
                   size={22}
                 />
               </div>
@@ -1498,7 +1525,7 @@ export default function Home() {
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
                 Dúvidas rápidas, sugestões e suporte.
               </p>
-              <span className="mt-2.5 text-[14px] font-bold text-[#b9963b] underline decoration-[#b9963b]/30 underline-offset-4 sm:mt-3 sm:text-sm">
+              <span className="mt-2.5 text-[14px] font-bold text-[#B9963B] underline decoration-[#B9963B]/30 underline-offset-4 sm:mt-3 sm:text-sm">
                 (71) 99228-8755
               </span>
             </a>
@@ -1514,31 +1541,32 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
             viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[32px] bg-[#162014] px-6 py-12 text-center text-white shadow-2xl sm:rounded-[40px] sm:px-8 sm:py-16 md:px-14"
+            className="relative overflow-hidden rounded-[32px] bg-[#22331D] px-6 py-12 text-center text-white shadow-2xl sm:rounded-[40px] sm:px-8 sm:py-16 md:px-14"
           >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(217,180,74,0.18),transparent_45%)]" />
-            <div className="absolute inset-0 opacity-10 [background-image:radial-gradient(#d9b44a_1px,transparent_1px)] [background-size:24px_24px]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(185,150,59,0.18),transparent_45%)]" />
+            <div className="absolute inset-0 opacity-10 [background-image:radial-gradient(#B9963B_1px,transparent_1px)] [background-size:24px_24px]" />
 
             <div className="relative z-10 mx-auto max-w-3xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#d9c57d] sm:px-4 sm:py-2 sm:text-[11px]">
-                De anestesiologista para anestesiologista
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#D9C57D] sm:px-4 sm:py-2 sm:text-[11px]">
+                Criado por quem vive o centro cirúrgico
               </div>
 
               <h2 className="text-[2rem] font-black leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[3.5rem] lg:leading-[1.04]">
-                Teste no seu fluxo real.
+                Leve o Anest+ para um plantão real.
                 <br />
-                Decida depois.
+                Sinta a diferença no fechamento da ficha.
               </h2>
 
               <p className="mt-4 text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
-                Use por 7 dias para criar a ficha, registrar o caso durante o
-                intraoperatório e finalizar um documento pronto para revisar,
-                imprimir ou levar ao prontuário eletrônico do hospital.
+                Teste por 7 dias criando fichas reais, registrando o
+                intraoperatório com menos atrito e finalizando documentos
+                claros, assináveis e prontos para revisão ou envio ao fluxo do
+                hospital.
               </p>
 
               <div className="mt-8 flex flex-col items-center justify-center">
-                <div className="inline-flex flex-col gap-3 rounded-2xl border border-[#b9963b]/30 bg-black/20 p-2 shadow-sm backdrop-blur-md sm:flex-row sm:items-center sm:pr-5">
-                  <span className="flex h-9 items-center justify-center rounded-xl bg-[#d9b44a] px-4 text-[12px] font-black text-[#162014] shadow-sm sm:text-[13px]">
+                <div className="inline-flex flex-col gap-3 rounded-2xl border border-[#B9963B]/30 bg-black/20 p-2 shadow-sm backdrop-blur-md sm:flex-row sm:items-center sm:pr-5">
+                  <span className="flex h-9 items-center justify-center rounded-xl bg-[#B9963B] px-4 text-[12px] font-black text-[#162014] shadow-sm sm:text-[13px]">
                     ANESTFRIEND
                   </span>
                   <span className="text-center text-[14px] font-medium text-[#d8dccf] sm:text-left sm:text-[15px]">
@@ -1553,7 +1581,7 @@ export default function Home() {
                   href={OFFER_CODE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-[14px] bg-[#d9b44a] px-6 py-3.5 text-[15px] font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
+                  className="rounded-[14px] bg-[#B9963B] px-6 py-3.5 text-[15px] font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
                 >
                   Ativar 7 dias grátis
                 </a>
