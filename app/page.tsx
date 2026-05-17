@@ -26,7 +26,6 @@ import {
   AlertCircle,
   EyeOff,
   HardDrive,
-  Scale,
   Mail,
   type LucideIcon,
 } from "lucide-react";
@@ -192,43 +191,6 @@ function TestimonialCard({ quote, author }: { quote: string; author: string }) {
   );
 }
 
-function InfoRow({
-  title,
-  desc,
-  dark = false,
-}: {
-  title: string;
-  desc: string;
-  dark?: boolean;
-}) {
-  return (
-    <div
-      className={`flex gap-3 rounded-[20px] border px-4 py-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:gap-4 sm:px-5 sm:py-5 md:rounded-[24px] ${
-        dark ? "border-white/10 bg-white/5" : "border-zinc-200/80 bg-white"
-      }`}
-    >
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#B9963B]/12 text-[#B9963B] sm:h-9 sm:w-9">
-        <CheckCircle2 size={16} strokeWidth={2.4} />
-      </div>
-      <div>
-        <h3
-          className={`text-[1.05rem] font-bold leading-snug sm:text-lg ${
-            dark ? "text-white" : "text-zinc-950"
-          }`}
-        >
-          {title}
-        </h3>
-        <p
-          className={`mt-1 text-[13px] leading-relaxed sm:text-[15px] sm:leading-7 ${
-            dark ? "text-zinc-300" : "text-[#71717A]"
-          }`}
-        >
-          {desc}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function FAQCard({
   title,
@@ -308,7 +270,7 @@ function VideoDemo() {
               Veja em ação
             </p>
             <p className="mt-1 text-sm font-black leading-tight sm:text-base">
-              A ficha no fluxo real.
+              Video real do app.
             </p>
           </div>
         </button>
@@ -457,7 +419,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex h-14 items-center justify-center rounded-2xl bg-[#162014] text-base font-bold text-white"
             >
-              Testar 7 dias grátis
+              Testar no próximo plantão
             </a>
             <a
               href={WHATSAPP_URL}
@@ -478,7 +440,7 @@ export default function Home() {
     rel="noopener noreferrer"
     className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[90] flex h-12 items-center justify-center rounded-2xl bg-[#162014] text-sm font-black text-white shadow-xl shadow-black/20 transition-all lg:hidden"
   >
-    Testar 7 dias grátis
+    Testar no próximo plantão
   </a>
 ) : null}
 
@@ -498,7 +460,7 @@ export default function Home() {
       >
         <div className="flex flex-wrap gap-2">
 <Pill>Criado por um anestesiologista</Pill>
-<Pill>Registro anestésico sem fricção</Pill>
+<Pill>Registro anestésico mais fluido</Pill>
 <Pill>iPhone e iPad</Pill>
         </div>
 
@@ -511,9 +473,8 @@ export default function Home() {
         </h1>
 
 <p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
-  Crie, atualize, assine e exporte sua ficha anestésica com menos
-  digitação, menos esforço e mais clareza no registro final — em um
-  fluxo criado por um anestesiologista para a rotina real da anestesia.
+  Registre a anestesia durante o caso, assine e exporte uma ficha final clara,
+legível e organizada — com menos digitação e mais tranquilidade no plantão.
 </p>
 
         <div className="mt-8">
@@ -524,7 +485,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
             >
-              Testar 7 dias grátis
+              Testar no próximo plantão
               <ChevronRight className="ml-2" size={18} />
             </a>
 
@@ -552,10 +513,10 @@ export default function Home() {
 
         <div className="mt-8 flex flex-wrap gap-2 text-[13px] sm:gap-3 sm:text-sm">
           {[
-            "Ficha anestésica completa",
-            "Registro durante o caso",
-            "Assinatura e validação",
-          ].map((item) => (
+  "Ficha pronta no fim do caso",
+  "Registro durante a anestesia",
+  "Assinatura e validação",
+].map((item) => (
             <div
               key={item}
               className="inline-flex items-center gap-2 rounded-full border border-[#b9963b]/18 bg-[#fafaf7] px-3 py-2 font-semibold text-zinc-700 shadow-sm sm:px-4 sm:py-2.5"
@@ -580,8 +541,8 @@ export default function Home() {
             >
               Instagram do Anest+
             </a>{" "}
-            você encontra vídeos explicando as principais funções, fluxos
-            e recursos do Anest+.
+            você encontra vídeos explicando as principais funções, telas
+e recursos do Anest+.
           </p>
         </div>
       </motion.div>
@@ -611,18 +572,18 @@ export default function Home() {
             </div>
 
             <div className="relative z-10">
-              <SectionHeading
-                center
-                eyebrow="Sem complicar seu fluxo"
-                title="O registro acompanha o intraoperatório, sem virar mais uma tarefa pesada"
-                desc="O Anest+ foi desenhado para entrar no fluxo real do caso: poucos toques, menos digitação e uma ficha que já chega organizada ao fim do procedimento."
-              />
+<SectionHeading
+  center
+  eyebrow="Feito para o intraoperatório"
+  title="Controle o caso com precisão. Registre sem tirar o foco do paciente."
+  desc="Da hemodinâmica aos fármacos, dos parâmetros à evolução, o Anest+ acompanha o ritmo do intraoperatório para transformar dados clínicos em uma ficha clara e organizada."
+/>
 
               <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
                 <FlowStepCard
                   step="Passo 1"
                   title="Abra o caso com uma estrutura pronta"
-                  desc="Paciente, hospital, técnica e dados iniciais entram em uma ficha já organizada para o fluxo anestésico."
+                  desc="Paciente, hospital, técnica e dados iniciais entram em uma ficha já organizada para acompanhar a anestesia desde o início."
                 />
 
                 <FlowStepCard
@@ -645,9 +606,9 @@ export default function Home() {
       {/* VALIDAÇÃO EM HOSPITAIS */}
       <section className="px-5 pb-4 pt-12 sm:px-6 md:pt-16">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
-            Validado na prática nos hospitais
-          </p>
+<p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
+  Já utilizado em rotina real de centro cirúrgico
+</p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6">
             <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(11,42,58,0.18)]">
@@ -673,155 +634,144 @@ export default function Home() {
             </div>
           </div>
 <p className="mx-auto mt-5 max-w-2xl text-sm font-medium leading-6 text-zinc-500 sm:text-base">
-  Em uso real no centro cirúrgico, com mais de 10 mil fichas anestésicas já registradas em fluxos individuais e institucionais.
+  Mais de 10 mil fichas anestésicas já registradas em uso individual e institucional.
 </p>
         </div>
       </section>
 
       {/* PROVA SOCIAL */}
-      <section className="bg-zinc-50/60 px-5 py-14 sm:px-6 md:py-20">
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading
-            center
-            eyebrow="Quem usa percebe na rotina"
-            title="O que muda quando o Anest+ entra no plantão"
-            desc="Relatos curtos, práticos e diretos sobre o impacto no dia a dia do anestesiologista."
-          />
+<section className="bg-zinc-50/60 px-5 py-14 sm:px-6 md:py-20">
+  <div className="mx-auto max-w-6xl">
+<SectionHeading
+  center
+  eyebrow="Uso real na rotina"
+  title="Feito para entrar no dia a dia do anestesiologista"
+  desc="Na prática, o Anest+ precisa ser rápido, claro e discreto o suficiente para acompanhar o caso sem atrapalhar a condução anestésica."
+/>
 
-          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
-            <TestimonialCard
-              quote="Parei de terminar caso pensando na ficha que ainda faltava organizar. O fechamento do plantão ficou muito mais leve."
-              author="Daniel M. — Anestesiologista"
-            />
-            <TestimonialCard
-              quote="O calendário de plantões me ajudou a organizar melhor a rotina e trouxe muito mais clareza para os meus compromissos."
-              author="Isabela T. — Anestesiologista"
-            />
-            <TestimonialCard
-              quote="No fim do caso, a ficha já estava organizada para revisar e exportar. Isso facilitou bastante meu plantão."
-              author="Iago G. — Anestesiologista"
-            />
-          </div>
-        </div>
-      </section>
+    <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
+      <TestimonialCard
+        quote="O maior ganho foi chegar ao fim do caso com a ficha praticamente pronta para revisar e exportar."
+        author="Daniel M. — Anestesiologista"
+      />
+
+      <TestimonialCard
+        quote="A leitura final ficou mais clara. Fármacos, horários e descrição aparecem organizados, sem depender da correria do papel."
+        author="Isabela T. — Anestesiologista"
+      />
+
+      <TestimonialCard
+        quote="No plantão, o app ajudou a manter o registro do caso em ordem sem mudar a forma como conduzo a anestesia."
+        author="Iago G. — Anestesiologista"
+      />
+    </div>
+  </div>
+</section>
 
       {/* ORIGEM DO PRODUTO */}
-      <section
-        id="problema"
-        className="bg-zinc-50/60 px-5 py-12 sm:px-6 md:py-24"
-      >
-        <div className="mx-auto max-w-6xl">
-          <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-[0.94fr_1.06fr]">
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F] sm:text-[11px]">
-                A origem do produto
-              </p>
+<section
+  id="problema"
+  className="bg-zinc-50/60 px-5 py-12 sm:px-6 md:py-24"
+>
+  <div className="mx-auto max-w-6xl">
+    <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-[0.94fr_1.06fr]">
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F] sm:text-[11px]">
+          A origem do produto
+        </p>
 
-              <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-5xl">
-                Não nasceu em uma planilha.
-                <br />Nasceu dentro do centro cirúrgico.
-              </h2>
+        <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-5xl">
+          Feito por quem conhece a anestesia por dentro.
+        </h2>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-  O Anest+ nasceu de uma situação comum no centro cirúrgico:
-  registrar uma anestesia completa, com qualidade, sem transformar
-  a ficha em mais uma carga durante o plantão.
+<p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+  O Anest+ nasceu da rotina do centro cirúrgico: enquanto a atenção principal
+  permanece no paciente, sinais, parâmetros, fármacos, horários, evolução e
+  detalhes do caso também precisam ser registrados com clareza, precisão e
+  continuidade.
 </p>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8">
-                Em vez de forçar o anestesiologista a se adaptar a um sistema
-                pesado, o Anest+ foi desenhado para respeitar a lógica do
-                intraoperatório: rápido, direto, legível e seguro.
-              </p>
+        <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8">
+          Em vez de tentar transformar a anestesia em um formulário rígido, o
+          app organiza o registro em etapas compatíveis com a prática real:
+          abertura do caso, acompanhamento, descrição, assinatura e exportação.
+        </p>
 
-              <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#B9963B]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
-                <ShieldCheck
-                  size={16}
-                  className="text-[#7A865F] sm:h-[18px] sm:w-[18px]"
-                />
-                <span className="text-[12px] font-bold uppercase tracking-wide text-zinc-700 sm:text-sm">
-                  Local-first, privado e com acesso seguro pela conta Anest+
-                </span>
-              </div>
+        <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#B9963B]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
+          <ShieldCheck
+            size={16}
+            className="text-[#7A865F] sm:h-[18px] sm:w-[18px]"
+          />
+          <span className="text-[12px] font-bold uppercase tracking-wide text-zinc-700 sm:text-sm">
+            Local-first, privado e com acesso seguro pela conta Anest+
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-4">
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400 sm:text-[11px]">
+          O que o Anest+ ajuda a reduzir
+        </p>
+
+        <div className="rounded-[24px] border border-red-500/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="mt-0.5 rounded-2xl bg-red-500/10 p-2.5 text-red-400 sm:p-3">
+              <AlertCircle
+                size={18}
+                className="sm:h-[20px] sm:w-[20px]"
+              />
             </div>
-
-            <div className="grid gap-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-400 sm:text-[11px]">
-                O que o Anest+ foi criado para resolver
+            <div>
+              <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
+                Registro disperso
+              </h3>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
+                Quando dados do caso ficam espalhados entre memória, papel e
+                anotações rápidas, a revisão final se torna mais lenta e menos
+                previsível.
               </p>
-
-              <div className="rounded-[24px] border border-red-500/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="mt-0.5 rounded-2xl bg-red-500/10 p-2.5 text-red-400 sm:p-3">
-                    <AlertCircle
-                      size={18}
-                      className="sm:h-[20px] sm:w-[20px]"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                      Registro manual e cansativo
-                    </h3>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
-                      Papel, digitação excessiva e reconstrução mental ao final
-                      do caso transformam a ficha em mais uma carga dentro do
-                      plantão.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[24px] border border-orange-500/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="mt-0.5 rounded-2xl bg-orange-500/10 p-2.5 text-orange-400 sm:p-3">
-                    <Clock size={18} className="sm:h-[20px] sm:w-[20px]" />
-                  </div>
-                  <div>
-                    <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                      Ficha que pesa durante o caso
-                    </h3>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
-                      Quando o registro não acompanha o fluxo real do
-                      intraoperatório, ele compete com a rotina em vez de
-                      ajudar.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[24px] border border-[#B9963B]/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="mt-0.5 rounded-2xl bg-[#B9963B]/10 p-2.5 text-[#B9963B] sm:p-3">
-                    <FileText size={18} className="sm:h-[20px] sm:w-[20px]" />
-                  </div>
-                  <div>
-                    <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                      Documento final frágil
-                    </h3>
-                    <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
-                      Ficha pouco legível, inconsistências de preenchimento e
-                      menor padronização enfraquecem a qualidade do resultado
-                      final.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* POSICIONAMENTO FOCADO NA FICHA */}
-      <section className="px-5 py-16 text-center sm:px-6 md:py-24">
-        <div className="mx-auto max-w-4xl">
-          <SectionHeading
-            center
-            eyebrow="A sala de cirurgia é o centro"
-            title="Menos carga mental. Mais clareza no registro."
-            desc="O Anest+ transforma a ficha anestésica em um fluxo contínuo: começa rápido, acompanha o caso e termina com um documento final claro, pronto para revisão e exportação."
-          />
+        <div className="rounded-[24px] border border-orange-500/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="mt-0.5 rounded-2xl bg-orange-500/10 p-2.5 text-orange-400 sm:p-3">
+              <Clock size={18} className="sm:h-[20px] sm:w-[20px]" />
+            </div>
+            <div>
+              <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
+                Fechamento mais demorado
+              </h3>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
+                O fim do procedimento costuma concentrar despertar, passagem,
+organização da sala e documentação. A ficha não precisa ser
+mais um ponto de atraso nesse momento.
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <div className="rounded-[24px] border border-[#B9963B]/10 bg-white p-5 shadow-sm sm:rounded-[28px] sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="mt-0.5 rounded-2xl bg-[#B9963B]/10 p-2.5 text-[#B9963B] sm:p-3">
+              <FileText size={18} className="sm:h-[20px] sm:w-[20px]" />
+            </div>
+            <div>
+              <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
+                Documento final pouco padronizado
+              </h3>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
+                A legibilidade, a sequência dos dados e a consistência do registro
+impactam diretamente a revisão, a guarda do documento e a rotina do hospital.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* 1. NOVO CASO */}
       <section
@@ -840,23 +790,24 @@ export default function Home() {
 
             <div className="order-1 lg:order-2">
               <h2 className="text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:text-4xl md:text-[2.8rem]">
-                Comece a ficha sem perder tempo com o básico
-              </h2>
-              <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                A abertura do caso já nasce organizada: paciente, procedimento,
-                técnica anestésica, hospital e dados iniciais em uma estrutura
-                pronta para acompanhar todo o intraoperatório.
-              </p>
+  Abra o caso em poucos passos e siga com a ficha já estruturada
+</h2>
+
+<p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+  O Anest+ organiza os dados iniciais do paciente, procedimento, técnica
+  anestésica, hospital e plano em uma ficha pronta para acompanhar o caso
+  desde o início.
+</p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
-                {[
-                  "Paciente e registro",
-                  "ASA, cirurgia e técnica",
-                  "Hospital e plano",
-                  "Dados iniciais com mais agilidade",
-                  "Alergias detalhadas",
-                  "Início estruturado",
-                ].map((item) => (
+ {[
+  "Paciente e prontuário",
+  "ASA, técnica e procedimento",
+  "Hospital, plano e identificação",
+  "Alergias e observações iniciais",
+  "Horário de início do caso",
+  "Estrutura pronta para evoluir",
+].map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
@@ -879,43 +830,48 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 md:mb-14">
             <SectionHeading
-              title="Atualize a ficha no ritmo real da anestesia"
-              desc="A ficha acompanha o caso sem competir com sua atenção. Sinais, parâmetros, fluidos, fármacos e evolução ficam organizados com menos digitação e menos interrupção."
-            />
+              title="Da monitorização à evolução, cada detalhe no lugar certo"
+              desc="Durante a anestesia, o Anest+ ajuda a registrar sinais, parâmetros, fluidos, fármacos e evolução com poucos toques — mantendo a ficha organizada enquanto sua atenção permanece na condução clínica."
+/>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
             <div className="grid gap-4 md:grid-cols-2">
-              <FeatureCard
-                icon={Activity}
-                title="Sinais vitais por deslize"
-                desc="Ajuste parâmetros rapidamente apenas deslizando os campos. Zero digitação desnecessária."
-              />
-              <FeatureCard
-                icon={Settings2}
-                title="Parâmetros e alergias na hora"
-                desc="Adicione parâmetros, acessos e colunas extras no fluxo, sem sair da tela principal."
-              />
-              <FeatureCard
-                icon={Droplets}
-                title="Fluidos automáticos"
-                desc="Informe o volume total e o app distribui fluidos e soluções contínuas de forma inteligente."
-              />
-              <FeatureCard
-                icon={ClipboardPen}
-                title="Descrição contínua"
-                desc="Registre indução, manutenção e despertar no tempo certo, criando um histórico preciso."
-              />
-              <FeatureCard
-                icon={ShieldCheck}
-                title="Dose e via organizadas"
-                desc="A medicação fica estruturada de forma clara para facilitar o registro e a revisão."
-              />
-              <FeatureCard
-                icon={CheckCircle2}
-                title="Visão clara do caso"
-                desc="A ficha se mantém organizada para você bater o olho e entender o cenário com rapidez."
-              />
+<FeatureCard
+  icon={Activity}
+title="Monitorização traduzida em registro"
+desc="Frequência, pressão e demais parâmetros acompanham o caso com atualizações rápidas, mantendo a ficha coerente com a condução anestésica."
+/>
+
+<FeatureCard
+  icon={Settings2}
+  title="Parâmetros na mesma tela"
+  desc="Monitores, gases, acessos, alergias e ajustes do caso ficam acessíveis sem tirar o anestesiologista da tela principal."
+/>
+
+<FeatureCard
+  icon={Droplets}
+  title="Fluidos com distribuição automática"
+  desc="Informe o volume administrado e deixe o app organizar a distribuição na ficha, mantendo o registro mais claro e proporcional."
+/>
+
+<FeatureCard
+  icon={ClipboardPen}
+  title="Evolução construída durante o caso"
+  desc="Registre indução, manutenção, intercorrências e destino enquanto o caso acontece, sem depender só da memória no final."
+/>
+
+<FeatureCard
+  icon={ShieldCheck}
+  title="Fármacos com dose e via"
+  desc="As medicações ficam registradas de forma estruturada, facilitando conferência, revisão e leitura do documento final."
+/>
+
+<FeatureCard
+  icon={CheckCircle2}
+  title="Sem pendências na saída de sala"
+  desc="O registro vai sendo formado durante o caso, eliminando o esforço de puxar tudo da memória no fim da cirurgia."
+/>
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 lg:justify-items-center">
@@ -950,34 +906,37 @@ export default function Home() {
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
                 Ao término do procedimento, o registro já está consolidado em
                 uma estrutura limpa, legível e padronizada — pronto para
-                revisar, assinar, exportar e seguir para o fluxo do hospital.
+                revisar, assinar, exportar e seguir para a rotina do hospital.
               </p>
 
               <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
-                <FeatureCard
-                  compact
-                  icon={FileCheck2}
-                  title="Ficha pronta no final"
-                  desc="Os blocos do caso já ficam organizados em uma estrutura clara para revisão e exportação."
-                />
-                <FeatureCard
-                  compact
-                  icon={ShieldCheck}
-                  title="Mais clareza na leitura"
-                  desc="A ficha fica mais legível e reduz problemas comuns do papel, como rasura e dificuldade de leitura."
-                />
-                <FeatureCard
-                  compact
-                  icon={CheckCircle2}
-                  title="Revisão rápida"
-                  desc="Bata o olho, confira a evolução do caso e feche o registro com muito menos esforço."
-                />
-                <FeatureCard
-                  compact
-                  icon={Activity}
-                  title="Registro mais consistente"
-                  desc="A ficha reflete melhor a evolução do caso e fortalece o registro final."
-                />
+<FeatureCard
+  compact
+  icon={FileCheck2}
+  title="Um documento à altura do caso"
+  desc="Técnica, fármacos, parâmetros, sinais vitais e descrição ficam reunidos em um PDF claro, coerente e pronto para revisão."
+/>
+
+<FeatureCard
+  compact
+  icon={ShieldCheck}
+  title="Menos fragilidade do papel"
+  desc="O registro digital reduz rasuras, melhora a leitura e deixa a ficha mais consistente para conferência."
+/>
+
+<FeatureCard
+  compact
+  icon={CheckCircle2}
+  title="Revisão mais objetiva"
+  desc="Com os dados estruturados, fica mais fácil conferir o caso antes de assinar e exportar."
+/>
+
+<FeatureCard
+  compact
+  icon={Activity}
+  title="Pronto para o próximo passo"
+  desc="A ficha pode ser impressa, baixada, enviada ou anexada conforme a rotina definida pelo serviço."
+/>
               </div>
             </div>
 
@@ -997,207 +956,214 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ASSINATURA E VALIDAÇÃO */}
+           {/* ASSINATURA ELETRÔNICA AVANÇADA E VALIDAÇÃO */}
       <section className="px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B9963B] sm:text-[11px]">
-                Assinatura e validação
+                Assinatura eletrônica avançada
               </p>
 
-              <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-[2.8rem]">
-                Um registro final com autoria, integridade e verificação.
-              </h2>
+		<h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-[2.8rem]">
+		  Assine, exporte e valide a ficha sem sair do app.
+		</h2>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Ao finalizar a ficha, o Anest+ permite aplicar uma assinatura
-                eletrônica avançada vinculada ao profissional, adicionando uma
-                camada técnica de autoria, integridade e rastreabilidade ao
-                documento exportado.
-              </p>
+<p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
+  Ao finalizar o registro, o Anest+ permite aplicar uma assinatura eletrônica avançada vinculada ao profissional responsável, após autenticação no próprio dispositivo, como Face ID, Touch ID ou código do aparelho.
+</p>
 
-              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:text-base sm:leading-8 md:text-lg">
-                O documento também pode ser conferido posteriormente no
-                validador do Anest+, ajudando a verificar os dados técnicos do
-                registro e a integridade esperada do arquivo.
-              </p>
+<p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:text-base sm:leading-8 md:text-lg">
+  O PDF exportado recebe um marcador técnico de confiança com dados de autoria, assinatura e conteúdo assinado. Depois, o arquivo pode ser conferido no validador do Anest+, diretamente pelo site.
+</p>
 
-              <Link
-                href="/validar"
-                className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl border border-[#B9963B]/25 bg-[#FAFAF7] px-6 text-[14px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#F6F4EB]"
-              >
-                Validar uma ficha
-                <ChevronRight className="ml-2" size={17} />
-              </Link>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/validar"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl border border-[#B9963B]/25 bg-[#FAFAF7] px-6 text-[14px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#F6F4EB]"
+                >
+                  Validar uma ficha
+                  <ChevronRight className="ml-2" size={17} />
+                </Link>
+
+                <a
+                  href={OFFER_CODE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#162014] px-6 text-[14px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D]"
+                >
+                  Testar no próximo plantão
+                </a>
+              </div>
             </div>
 
             <div className="grid gap-4">
-              <FeatureCard
-                compact
-                icon={ShieldCheck}
-                title="Assinatura eletrônica avançada"
-                desc="A ficha pode ser assinada pelo profissional responsável, com autenticação e vínculo técnico ao documento final."
-              />
+<FeatureCard
+  compact
+  icon={ShieldCheck}
+  title="Autenticação do profissional"
+  desc="A assinatura é aplicada somente após confirmação no dispositivo, como Face ID, Touch ID ou código do aparelho."
+/>
 
               <FeatureCard
                 compact
                 icon={FileCheck2}
-                title="Integridade do arquivo"
-                desc="O documento exportado pode conter dados técnicos de verificação para ajudar a identificar alterações posteriores."
+                title="Camada criptográfica no PDF"
+                desc="O Anest+ gera uma assinatura digital vinculada ao conteúdo da ficha, ao profissional e ao momento da assinatura."
               />
 
               <FeatureCard
                 compact
                 icon={QrCode}
                 title="Validador Anest+"
-                desc="A ficha pode ser conferida em um ambiente próprio de validação, reforçando a confiança no documento apresentado."
+                desc="O PDF pode ser enviado ao validador do site para conferir os dados técnicos da assinatura e a integridade esperada do documento."
+              />
+
+              <FeatureCard
+                compact
+                icon={ClipboardList}
+                title="Rastreabilidade do registro"
+                desc="A ficha assinada carrega informações técnicas de autoria, assinatura, data, chave pública e conteúdo assinado."
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CONTA ANEST+ */}
-      <section className="bg-zinc-50/60 px-5 py-16 sm:px-6 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+ {/* CONTA ANEST+ */}
+<section className="bg-zinc-50/60 px-5 py-16 sm:px-6 md:py-24">
+  <div className="mx-auto max-w-6xl">
+    <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <div>
+        <SectionHeading
+          eyebrow="Conta Anest+"
+          title="A ponte entre o seu celular e o sistema do hospital"
+          desc="Quando a sincronização estiver ativada, seus casos concluídos ficam disponíveis em um painel web seguro por tempo limitado. Assim, você pode localizar, revisar, imprimir ou encaminhar a ficha ao prontuário eletrônico do hospital com mais facilidade."
+        />
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <FeatureCard
+            compact
+            icon={FileText}
+            title="Histórico de fichas"
+            desc="Acesse os casos exportados recentemente, organizados por data e status."
+          />
+
+          <FeatureCard
+            compact
+            icon={ClipboardList}
+            title="Busca rápida"
+            desc="Localize a ficha certa por nome do paciente ou número do prontuário."
+          />
+
+          <FeatureCard
+            compact
+            icon={HardDrive}
+            title="Download pelo computador"
+            desc="Baixe seus PDFs para impressão, revisão ou anexação no sistema utilizado pelo hospital."
+          />
+
+          <FeatureCard
+            compact
+            icon={EyeOff}
+            title="Disponibilidade temporária"
+            desc="As fichas sincronizadas ficam disponíveis por até 30 dias e depois são removidas da infraestrutura do Anest+."
+          />
+        </div>
+      </div>
+
+      <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-white p-4 shadow-[0_24px_70px_-42px_rgba(11,42,58,0.22)] sm:rounded-[36px] sm:p-6">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#B9963B]/5 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331D]/5 blur-3xl" />
+        </div>
+
+        <div className="relative z-10 rounded-[24px] border border-zinc-200 bg-[#FAFAF7] p-4 shadow-sm">
+          <div className="mb-5 flex items-center justify-between gap-4">
             <div>
-              <SectionHeading
-                eyebrow="Conta Anest+"
-                title="Suas fichas organizadas e acessíveis no computador"
-                desc="Com a Conta Anest+, você pode acessar suas fichas sincronizadas em um painel seguro, buscar por data, paciente ou prontuário, baixar PDFs e acompanhar o que já foi revisado."
-              />
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                <FeatureCard
-                  compact
-                  icon={FileText}
-                  title="Histórico por data"
-                  desc="Busque fichas por dia ou período, com visualização organizada dos casos exportados."
-                />
-
-                <FeatureCard
-                  compact
-                  icon={ClipboardList}
-                  title="Busca rápida"
-                  desc="Localize fichas por paciente ou prontuário sem precisar garimpar arquivos manualmente."
-                />
-
-                <FeatureCard
-                  compact
-                  icon={HardDrive}
-                  title="Download pelo computador"
-                  desc="Baixe o PDF quando precisar revisar, imprimir ou encaminhar ao fluxo do hospital."
-                />
-
-                <FeatureCard
-                  compact
-                  icon={Clock}
-                  title="Disponibilidade temporária"
-                  desc="Veja até quando cada ficha sincronizada fica disponível na sua conta."
-                />
-              </div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F]">
+                Conta Anest+
+              </p>
+              <h3 className="mt-1 text-xl font-black tracking-tight text-zinc-950">
+                Painel de fichas
+              </h3>
             </div>
 
-            <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-white p-4 shadow-[0_24px_70px_-42px_rgba(11,42,58,0.22)] sm:rounded-[36px] sm:p-6">
-              <div className="pointer-events-none absolute inset-0">
-                <div className="absolute left-0 top-0 h-40 w-40 rounded-full bg-[#B9963B]/5 blur-3xl" />
-                <div className="absolute bottom-0 right-0 h-40 w-40 rounded-full bg-[#22331D]/5 blur-3xl" />
-              </div>
-
-              <div className="relative z-10 rounded-[24px] border border-zinc-200 bg-[#FAFAF7] p-4 shadow-sm">
-                <div className="mb-5 flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#7A865F]">
-                      Conta Anest+
-                    </p>
-                    <h3 className="mt-1 text-xl font-black tracking-tight text-zinc-950">
-                      Histórico de fichas
-                    </h3>
-                  </div>
-
-                  <div className="rounded-full border border-[#B9963B]/20 bg-[#FAFAF7] px-3 py-1.5 text-xs font-bold text-[#506047]">
-                    30 dias
-                  </div>
-                </div>
-
-                <div className="mb-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-                      Total
-                    </p>
-                    <p className="mt-2 text-3xl font-black text-zinc-950">24</p>
-                  </div>
-
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-                      Tempo
-                    </p>
-                    <p className="mt-2 text-3xl font-black text-zinc-950">
-                      18h
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
-                      Técnica
-                    </p>
-                    <p className="mt-2 text-xl font-black text-zinc-950">
-                      Geral
-                    </p>
-                  </div>
-                </div>
-
-                <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-                  <div className="grid grid-cols-[1.3fr_1fr_1fr] gap-3 border-b border-zinc-100 bg-zinc-50 px-4 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">
-                    <span>Paciente</span>
-                    <span>Status</span>
-                    <span className="text-right">Ação</span>
-                  </div>
-
-                  {[
-                    ["Paciente A.", "Novo", "Baixar"],
-                    ["Paciente B.", "Baixado", "Baixar"],
-                    ["Paciente C.", "Novo", "Baixar"],
-                  ].map((row) => (
-                    <div
-                      key={row.join("-")}
-                      className="grid grid-cols-[1.3fr_1fr_1fr] gap-3 border-b border-zinc-100 px-4 py-3 text-xs text-zinc-700 last:border-b-0"
-                    >
-                      <span className="font-bold">{row[0]}</span>
-                      <span
-                        className={
-                          row[1] === "Novo"
-                            ? "font-bold text-[#7A865F]"
-                            : "font-bold text-zinc-400"
-                        }
-                      >
-                        {row[1]}
-                      </span>
-                      <span className="text-right font-bold text-[#B9963B]">
-                        {row[2]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 rounded-2xl bg-[#162014] px-4 py-3 text-center text-sm font-bold text-white">
-                  Buscar por data, paciente ou prontuário
-                </div>
-              </div>
+            <div className="rounded-full border border-[#B9963B]/20 bg-[#FAFAF7] px-3 py-1.5 text-xs font-bold text-[#506047]">
+              Sincronizado
             </div>
           </div>
+
+          <div className="mb-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
+                Fichas
+              </p>
+              <p className="mt-2 text-3xl font-black text-zinc-950">24</p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
+                Janela
+              </p>
+              <p className="mt-2 text-xl font-black text-zinc-950">
+                30 dias
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-400">
+                Formato
+              </p>
+              <p className="mt-2 text-xl font-black text-zinc-950">PDF</p>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+            <div className="grid grid-cols-[1.3fr_1fr_1fr] gap-3 border-b border-zinc-100 bg-zinc-50 px-4 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">
+              <span>Paciente</span>
+              <span>Status</span>
+              <span className="text-right">Ação</span>
+            </div>
+
+            {[
+              ["Paciente A.", "Pronto", "Baixar"],
+              ["Paciente B.", "Baixado", "Baixar"],
+              ["Paciente C.", "Pronto", "Baixar"],
+            ].map((row) => (
+              <div
+                key={row.join("-")}
+                className="grid grid-cols-[1.3fr_1fr_1fr] gap-3 border-b border-zinc-100 px-4 py-3 text-xs text-zinc-700 last:border-b-0"
+              >
+                <span className="font-bold">{row[0]}</span>
+                <span
+                  className={
+                    row[1] === "Pronto"
+                      ? "font-bold text-[#7A865F]"
+                      : "font-bold text-zinc-400"
+                  }
+                >
+                  {row[1]}
+                </span>
+                <span className="text-right font-bold text-[#B9963B]">
+                  {row[2]}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* 4. TRANSIÇÃO PARA EXTRAS */}
       <section className="px-5 py-16 text-center sm:px-6 md:py-24">
         <div className="mx-auto max-w-4xl">
           <SectionHeading
             center
-            eyebrow="Além da ficha"
-            title="Recursos que continuam ajudando fora da sala"
+            eyebrow="Recursos complementares"
+            title="O Anest+ continua te ajudando fora da sala"
             desc="Depois de resolver o que mais pesa no intraoperatório, o Anest+ também organiza plantões, protocolos e outros pontos da rotina do anestesiologista."
           />
         </div>
@@ -1217,12 +1183,12 @@ export default function Home() {
               </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
-                {[
-                  "Visão clara da agenda",
-                  "Recorrência automática",
-                  "Atividades por hospital",
-                  "Fim da escala espalhada",
-                ].map((item) => (
+{[
+  "Agenda de plantões",
+  "Recorrências configuráveis",
+  "Atividades por hospital",
+  "Rotina menos espalhada",
+].map((item) => (
                   <div
                     key={item}
                     className="flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
@@ -1251,50 +1217,55 @@ export default function Home() {
       {/* 6. BASE E RECURSOS EXTRAS */}
       <section className="px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
-          <SectionHeading
-            eyebrow="Recursos de apoio"
-            title="Recursos que deixam a rotina mais leve"
-            desc="Hospitais salvos, textos dinâmicos, presets e outros recursos deixam a rotina mais leve sem tirar o foco da ficha anestésica."
-          />
+<SectionHeading
+  eyebrow="Recursos de apoio"
+  title="Protocolos, hospitais e atalhos para uma rotina mais fluida"
+  desc="Além do registro anestésico, o Anest+ reúne recursos que ajudam no dia a dia: hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code e controle financeiro."
+/>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div className="grid gap-4 md:grid-cols-2">
               <FeatureCard
-                compact
-                icon={Building2}
-                title="Hospitais salvos"
-                desc="Identidade e logo dos locais onde você atua, sempre à mão."
-              />
-              <FeatureCard
-                compact
-                icon={ClipboardPen}
-                title="Descrição dinâmica"
-                desc="Inicie a evolução na ficha apenas tocando em blocos de texto-base."
-              />
-              <FeatureCard
-                compact
-                icon={Settings2}
-                title="Presets próprios"
-                desc="Crie protocolos baseados nas técnicas que você mais usa."
-              />
-              <FeatureCard
-                compact
-                icon={Activity}
-                title="Grades de monitorização"
-                desc="Aplique estruturas de acompanhamento por técnica anestésica."
-              />
-              <FeatureCard
-                compact
-                icon={QrCode}
-                title="Passagem via QR Code"
-                desc="Transfira casos complexos em andamento com um toque de câmera."
-              />
-              <FeatureCard
-                compact
-                icon={Wallet}
-                title="Controle financeiro"
-                desc="Acompanhe seus plantões e faturamentos junto da sua rotina clínica."
-              />
+  compact
+  icon={Building2}
+  title="Hospitais salvos"
+  desc="Mantenha identidade, nome e logotipo dos locais onde você atua prontos para aparecer no PDF."
+/>
+
+<FeatureCard
+  compact
+  icon={ClipboardPen}
+  title="Descrição dinâmica"
+  desc="Use textos-base para iniciar a evolução anestésica com mais rapidez, sem escrever tudo do zero."
+/>
+
+<FeatureCard
+  compact
+  icon={Settings2}
+  title="Presets próprios"
+  desc="Salve estruturas de técnicas, medicamentos e parâmetros usados com frequência na sua rotina."
+/>
+
+<FeatureCard
+  compact
+  icon={Activity}
+  title="Grades de monitorização"
+  desc="Monte modelos de acompanhamento compatíveis com diferentes técnicas anestésicas."
+/>
+
+<FeatureCard
+  compact
+  icon={QrCode}
+  title="Passagem via QR Code"
+  desc="Compartilhe dados de casos em andamento de forma rápida quando houver necessidade de passagem."
+/>
+
+<FeatureCard
+  compact
+  icon={Wallet}
+  title="Controle financeiro"
+  desc="Acompanhe plantões e valores da sua rotina profissional junto ao restante do ecossistema."
+/>
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:justify-items-center">
@@ -1314,163 +1285,82 @@ export default function Home() {
       </section>
 
       {/* SEGURANÇA */}
-      <section
-        id="seguranca"
-        className="mx-4 my-6 rounded-[32px] bg-zinc-950 px-5 py-12 text-white shadow-2xl sm:my-8 sm:rounded-[40px] sm:px-6 sm:py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading
-            light
-            eyebrow="Mais confiança no registro"
-            title="Confiança técnica sem deixar o fluxo pesado"
-            desc="O Anest+ combina registro local-first, assinatura eletrônica avançada, validação do documento e acesso seguro à ficha sincronizada por até 30 dias — tempo suficiente para revisar, baixar, imprimir ou enviar ao prontuário do hospital."
-          />
+<section
+  id="seguranca"
+  className="mx-4 my-6 rounded-[32px] bg-zinc-950 px-5 py-12 text-white shadow-2xl sm:my-8 sm:rounded-[40px] sm:px-6 sm:py-16 md:py-20"
+>
+  <div className="mx-auto max-w-6xl">
+    <SectionHeading
+      light
+      eyebrow="Segurança e privacidade"
+      title="Precisão no cuidado. Clareza no documento."
+      desc="O Anest+ combina registro local-first, autenticação do profissional, assinatura eletrônica avançada, validação do PDF e disponibilidade temporária das fichas sincronizadas."
+    />
 
-          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 xl:grid-cols-3">
-            <FeatureCard
-              light
-              compact
-              icon={HardDrive}
-              title="Local-first"
-              desc="A ficha é criada e atualizada no dispositivo, mantendo o uso rápido e independente durante o caso."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={ShieldCheck}
-              title="Assinatura eletrônica avançada"
-              desc="Ao finalizar o registro, o profissional pode assinar a ficha com autenticação e camada criptográfica de autoria, integridade e rastreabilidade."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={FileText}
-              title="Conta Anest+"
-              desc="A ficha sincronizada fica disponível em ambiente seguro por até 30 dias para revisão, download, impressão ou envio ao prontuário eletrônico do hospital."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={ClipboardList}
-              title="Integridade do documento"
-              desc="A ficha final pode receber dados técnicos de verificação para ajudar a identificar alterações posteriores no arquivo."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={Scale}
-              title="Privacidade por desenho"
-              desc="O fluxo foi pensado para reduzir exposição desnecessária e manter o controle do registro nas mãos do profissional."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={EyeOff}
-              title="Acesso protegido"
-              desc="O acesso à conta e às fichas pessoais segue autenticação do usuário e controles de segurança da plataforma."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={Clock}
-              title="Tempo para envio ao prontuário"
-              desc="O prazo de até 30 dias foi pensado para permitir revisar, baixar, imprimir ou enviar a ficha ao prontuário eletrônico do hospital com tranquilidade."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={ShieldCheck}
-              title="Exclusão automática por segurança"
-              desc="Após esse período, os arquivos sincronizados são removidos automaticamente da infraestrutura do Anest+, reduzindo exposição e retenção desnecessária de dados."
-            />
-            <FeatureCard
-              light
-              compact
-              icon={FileCheck2}
-              title="Guarda definitiva no hospital"
-              desc="A conta Anest+ facilita o acesso operacional, permitindo que a ficha siga para guarda definitiva no prontuário ou no fluxo documental do hospital."
-            />
-          </div>
+    <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
+      <FeatureCard
+        light
+        compact
+        icon={HardDrive}
+        title="Registro local-first"
+        desc="A ficha é criada e atualizada no dispositivo, mantendo o uso rápido durante o caso e reduzindo dependência de conexão no intraoperatório."
+      />
 
-          <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2">
-            <InfoRow
-              dark
-              title="Registro mais claro"
-              desc="Preenchimento estruturado reduz inconsistências, melhora a leitura e facilita a revisão da ficha final."
-            />
-            <InfoRow
-              dark
-              title="Janela segura de 30 dias"
-              desc="As fichas sincronizadas ficam disponíveis por até 30 dias para revisão, download, impressão ou envio ao prontuário eletrônico do hospital."
-            />
-            <InfoRow
-              dark
-              title="Controle do profissional"
-              desc="O fluxo mantém o registro sob controle do anestesiologista, com acesso protegido e organização por conta."
-            />
-            <InfoRow
-              dark
-              title="Pronto para revisar e enviar"
-              desc="A ficha final pode ser revisada, assinada, verificada, impressa ou baixada antes de seguir para o sistema do hospital."
-            />
-          </div>
-        </div>
-      </section>
+      <FeatureCard
+        light
+        compact
+        icon={ShieldCheck}
+        title="Assinatura eletrônica avançada"
+        desc="O PDF pode ser assinado após autenticação do profissional e conferido posteriormente pelo validador do Anest+."
+      />
+
+      <FeatureCard
+        light
+        compact
+        icon={EyeOff}
+        title="Retenção limitada"
+        desc="Quando sincronizadas, as fichas ficam disponíveis por até 30 dias para revisão e download, sendo removidas depois desse período."
+      />
+    </div>
+
+    <div className="mt-8 rounded-[24px] border border-[#B9963B]/20 bg-[#B9963B]/5 p-5 text-center text-[13px] leading-6 text-zinc-300 sm:mt-10 sm:p-6 sm:text-sm sm:leading-7">
+      O Anest+ organiza o registro e gera um documento técnico mais claro, mas não substitui a avaliação clínica do anestesiologista nem a guarda documental definitiva pelo hospital ou serviço responsável.
+    </div>
+  </div>
+</section>
 
       {/* FAQ */}
-      <section id="faq" className="px-5 py-12 sm:px-6 md:py-16">
-        <div className="mx-auto max-w-4xl">
-          <SectionHeading
-            center
-            eyebrow="Dúvidas frequentes"
-            title="Respostas diretas sobre uso e rotina"
-            desc="As perguntas mais comuns sobre funcionamento, privacidade e uso do Anest+."
-          />
+<section id="faq" className="px-5 py-12 sm:px-6 md:py-16">
+  <div className="mx-auto max-w-4xl">
+    <SectionHeading
+      center
+      eyebrow="Dúvidas frequentes"
+      title="Respostas diretas sobre uso e rotina"
+    />
 
-          <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2">
-            <FAQCard
-              title="O Anest+ substitui o papel?"
-              desc="Ele foi criado para reduzir a dependência do papel, organizar a ficha durante o caso e gerar um registro final mais claro. Em ambientes institucionais, o uso deve seguir o fluxo definido pelo hospital ou serviço."
-            />
-            <FAQCard
-              title="Preciso parar o caso para usar o app?"
-              desc="Não. O app foi pensado para entrar no fluxo do intraoperatório com praticidade, ajudando no registro sem virar uma tarefa paralela pesada."
-            />
-            <FAQCard
-              title="Serve para uso individual e institucional?"
-              desc={
-                <>
-                  Sim. O app funciona muito bem no uso individual do médico, mas
-                  também oferecemos uma{" "}
-                  <Link
-                    href="/institucional"
-                    className="text-[#B9963B] underline underline-offset-2"
-                  >
-                    solução institucional
-                  </Link>{" "}
-                  focada em padronização para hospitais e grupos anestésicos.
-                </>
-              }
-            />
-            <FAQCard
-              title="Minhas fichas ficam só no aparelho?"
-              desc="O Anest+ segue uma lógica local-first: o registro é criado e atualizado no dispositivo. Quando a conta Anest+ estiver ativada, a ficha pode ser disponibilizada em ambiente seguro por até 30 dias, facilitando revisão, download, impressão pelo computador ou envio ao prontuário eletrônico do hospital."
-            />
-            <FAQCard
-              title="Por quanto tempo minhas fichas ficam disponíveis na conta Anest+?"
-              desc="Quando a sincronização estiver ativada, as fichas ficam disponíveis em ambiente seguro por até 30 dias para revisão, download, impressão pelo computador ou envio ao sistema de prontuário eletrônico do hospital. Após esse prazo, são removidas automaticamente da infraestrutura do Anest+ como medida de segurança e redução de retenção de dados."
-            />
-            <FAQCard
-              title="O que é a assinatura eletrônica avançada no Anest+?"
-              desc="É uma camada de assinatura vinculada ao profissional e ao documento final, com autenticação e recursos criptográficos de integridade para reforçar autoria, rastreabilidade e verificação do registro exportado."
-            />
-            <FAQCard
-              title="Como funciona a validação da ficha?"
-              desc="O documento exportado pelo Anest+ pode conter dados técnicos de verificação. O validador permite conferir informações do registro e ajudar a identificar se o arquivo mantém a integridade esperada."
-            />
-          </div>
-        </div>
-      </section>
+    <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2">
+      <FAQCard
+        title="O Anest+ substitui a ficha de papel do hospital?"
+        desc="Ele foi criado para organizar o registro anestésico e gerar um PDF final claro, legível e assinável. Em ambientes institucionais, o uso deve seguir a rotina definida pelo hospital ou serviço."
+      />
+
+      <FAQCard
+        title="Vou perder tempo olhando para a tela durante o caso?"
+        desc="Não. A interface foi pensada para interações rápidas, com poucos toques, para que o registro acompanhe o caso sem virar uma tarefa paralela pesada."
+      />
+
+      <FAQCard
+        title="Onde e por quanto tempo ficam salvas minhas fichas?"
+        desc="O registro é criado no dispositivo. Quando a sincronização estiver ativada, uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, ela é removida da infraestrutura do Anest+."
+      />
+
+      <FAQCard
+        title="Como funciona a assinatura eletrônica avançada?"
+        desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com dados de autoria, assinatura e conteúdo assinado, permitindo conferência posterior no validador do site."
+      />
+    </div>
+  </div>
+</section>
 
       {/* CONTATO */}
       <section
@@ -1554,15 +1444,13 @@ export default function Home() {
               <h2 className="text-[2rem] font-black leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[3.5rem] lg:leading-[1.04]">
                 Leve o Anest+ para um plantão real.
                 <br />
-                Sinta a diferença no fechamento da ficha.
+                Finalize o caso com um registro à altura da sua anestesia.
               </h2>
 
-              <p className="mt-4 text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
-                Teste por 7 dias criando fichas reais, registrando o
-                intraoperatório com menos atrito e finalizando documentos
-                claros, assináveis e prontos para revisão ou envio ao fluxo do
-                hospital.
-              </p>
+<p className="mt-4 text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
+  Use o Anest+ em um plantão real e veja a ficha ganhar forma ao longo do caso:
+  dados organizados, revisão objetiva, assinatura, validação e exportação.
+</p>
 
               <div className="mt-8 flex flex-col items-center justify-center">
                 <div className="inline-flex flex-col gap-3 rounded-2xl border border-[#B9963B]/30 bg-black/20 p-2 shadow-sm backdrop-blur-md sm:flex-row sm:items-center sm:pr-5">
@@ -1570,8 +1458,7 @@ export default function Home() {
                     ANESTFRIEND
                   </span>
                   <span className="text-center text-[14px] font-medium text-[#d8dccf] sm:text-left sm:text-[15px]">
-                    Ative 7 dias grátis e teste no seu fluxo real, sem
-                    compromisso.
+                    Ative 7 dias grátis e teste em um plantão real, sem compromisso.
                   </span>
                 </div>
               </div>
@@ -1583,7 +1470,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="rounded-[14px] bg-[#B9963B] px-6 py-3.5 text-[15px] font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
                 >
-                  Ativar 7 dias grátis
+                  Testar no próximo plantão
                 </a>
 
                 <a

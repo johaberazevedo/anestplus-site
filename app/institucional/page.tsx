@@ -346,8 +346,8 @@ const navLinks = [
             <p className="mx-auto mt-6 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:text-base sm:leading-7 md:text-[1.25rem] md:leading-8">
   Leve o Anest+ para sua instituição e padronize o registro anestésico
   do centro cirúrgico: fichas mais claras, produção mais organizada,
-  assinatura do profissional e envio mais simples para o fluxo documental
-  do hospital.
+  assinatura eletrônica avançada, validação técnica e envio mais simples
+para o fluxo documental do hospital.
 </p>
 
             <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
@@ -519,20 +519,34 @@ const navLinks = [
         </div>
       </section>
 
-      <section className="px-5 py-16 sm:px-6 md:py-24">
+           <section className="px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <SectionHeading
-                eyebrow="Assinatura e validação"
-                title="Um documento final com autoria, integridade e conferência externa"
-                desc="Além de padronizar a ficha anestésica, o Anest+ adiciona uma camada técnica de assinatura eletrônica avançada e validação do documento exportado."
+                eyebrow="Assinatura eletrônica avançada e validação"
+                title="Fichas assinadas pelo profissional, com validação técnica pelo Anest+."
+                desc="Além de padronizar a ficha anestésica, o Anest+ adiciona uma camada de assinatura eletrônica avançada e validação do documento exportado, ajudando a instituição a conferir autoria, integridade e rastreabilidade do registro."
               />
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:text-base sm:leading-8 md:text-lg">
-                A instituição passa a contar com fichas mais claras,
-                identificadas, verificáveis e preparadas para seguir ao
-                prontuário ou ao fluxo documental interno.
+                No fluxo institucional, cada ficha pode ser assinada pelo
+                profissional responsável antes da exportação. A assinatura fica
+                vinculada ao documento final, ao profissional ativo e ao momento
+                da assinatura.
+              </p>
+
+              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:text-base sm:leading-8 md:text-lg">
+                O PDF exportado recebe um marcador técnico de confiança dentro
+                do próprio arquivo. Esse marcador permite que o validador do
+                Anest+ leia os dados técnicos da ficha e confira a integridade
+                esperada do documento.
+              </p>
+
+              <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:text-base sm:leading-8 md:text-lg">
+                Para o hospital, isso significa um registro mais padronizado,
+                assinado, verificável e mais preparado para seguir ao prontuário,
+                à auditoria ou ao fluxo documental interno.
               </p>
 
               <Link
@@ -548,22 +562,29 @@ const navLinks = [
               <FeatureCard
                 compact
                 icon={ShieldCheck}
-                title="Autoria do profissional"
-                desc="A assinatura é vinculada ao anestesiologista responsável, reforçando a identificação técnica do registro."
+                title="Assinatura do profissional"
+                desc="A ficha pode ser assinada pelo anestesiologista responsável antes da exportação, vinculando o registro ao profissional ativo no app."
               />
 
               <FeatureCard
                 compact
                 icon={FileCheck2}
-                title="Integridade do arquivo"
-                desc="O documento pode conter dados técnicos de verificação para ajudar a identificar alterações posteriores."
+                title="Camada criptográfica no PDF"
+                desc="O documento exportado recebe dados técnicos de assinatura, autoria e integridade, embutidos no próprio arquivo PDF."
+              />
+
+              <FeatureCard
+                compact
+                icon={ClipboardList}
+                title="Validação externa"
+                desc="O hospital pode conferir o PDF no validador do Anest+, verificando os dados técnicos da assinatura e do conteúdo assinado."
               />
 
               <FeatureCard
                 compact
                 icon={Scale}
-                title="Rastreabilidade documental"
-                desc="A ficha final ganha uma camada adicional de conferência, útil para revisão, auditoria e guarda institucional."
+                title="Rastreabilidade institucional"
+                desc="A ficha final ganha uma camada adicional de conferência para apoiar revisão, auditoria, faturamento e guarda documental."
               />
             </div>
           </div>
@@ -759,7 +780,7 @@ desc="O painel organiza os principais dados em formato copiável, reduzindo lan�
               compact
               icon={ShieldCheck}
               title="Assinatura eletrônica avançada"
-              desc="O profissional pode assinar a ficha com autenticação e camada criptográfica de autoria, integridade e rastreabilidade."
+              desc="A ficha pode ser assinada pelo profissional responsável, com autenticação no dispositivo institucional e geração de dados técnicos de autoria, integridade e rastreabilidade."
             />
 
             <FeatureCard
@@ -767,7 +788,7 @@ desc="O painel organiza os principais dados em formato copiável, reduzindo lan�
               compact
               icon={FileCheck2}
               title="Validador Anest+"
-              desc="O documento pode ser conferido em ambiente próprio de validação, ajudando a verificar dados técnicos e integridade esperada do arquivo."
+              desc="O PDF assinado pode ser conferido no site do Anest+, permitindo verificar os dados técnicos da assinatura e a integridade esperada do documento."
             />
 
             <FeatureCard
@@ -790,8 +811,8 @@ desc="O painel organiza os principais dados em formato copiável, reduzindo lan�
               light
               compact
               icon={Scale}
-              title="Mais rastreabilidade"
-              desc="A padronização do registro fortalece a clareza documental e facilita a revisão posterior pela instituição."
+              title="Rastreabilidade institucional"
+              desc="A ficha assinada carrega informações técnicas de autoria, data, assinatura e conteúdo assinado, facilitando revisão posterior pela instituição."
             />
           </div>
         </div>
