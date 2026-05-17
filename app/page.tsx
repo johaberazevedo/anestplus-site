@@ -328,7 +328,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-zinc-950 selection:bg-[#162014] selection:text-white">
       {/* HEADER */}
       <header className="fixed top-0 z-[100] w-full border-b border-zinc-200/60 bg-white/90 backdrop-blur-xl print:hidden">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-3 text-zinc-950">
             <Image
               src="/brand/anest-symbol.png"
@@ -343,7 +343,7 @@ export default function Home() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-8 text-[13px] font-bold uppercase tracking-wider text-zinc-500 lg:flex">
+          <nav className="hidden items-center gap-5 text-[12px] font-bold uppercase tracking-wider text-zinc-500 xl:flex xl:gap-8 xl:text-[13px]">
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -355,22 +355,29 @@ export default function Home() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/institucional"
-              className="hidden h-10 items-center rounded-xl border border-zinc-200 bg-white px-5 text-[13px] font-bold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 lg:inline-flex"
-            >
-              Solução para Hospitais
-            </Link>
+          <div className="flex shrink-0 items-center gap-2 xl:gap-3">
+<Link
+  href="/institucional"
+  className="hidden h-10 items-center rounded-xl border border-zinc-200 bg-white px-4 text-[13px] font-bold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 lg:inline-flex xl:px-5"
+>
+  Solução para Hospitais
+</Link>
 
-            <a
-              href={APPSTORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden h-10 items-center rounded-xl bg-[#162014] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] lg:inline-flex"
-            >
-              Baixar na App Store
-            </a>
+<Link
+  href="/pro/login"
+  className="hidden h-10 items-center whitespace-nowrap rounded-xl border border-[#B9963B]/25 bg-[#FAFAF7] px-4 text-[13px] font-bold text-zinc-800 shadow-sm transition-all hover:bg-[#F6F4EB] lg:inline-flex xl:px-5"
+>
+  Conta Anest+
+</Link>
+
+<a
+  href={APPSTORE_URL}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="hidden h-10 items-center rounded-xl bg-[#162014] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] lg:inline-flex"
+>
+  Baixar na App Store
+</a>
 
             <button
               type="button"
@@ -403,13 +410,21 @@ export default function Home() {
               </a>
             ))}
             <div className="my-2 h-px w-full bg-zinc-100" />
-            <Link
-              href="/institucional"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-lg text-zinc-500 transition-colors hover:text-zinc-900"
-            >
-              Para Hospitais (Institucional)
-            </Link>
+<Link
+  href="/institucional"
+  onClick={() => setIsMenuOpen(false)}
+  className="text-lg text-zinc-500 transition-colors hover:text-zinc-900"
+>
+  Para Hospitais (Institucional)
+</Link>
+
+<Link
+  href="/pro/login"
+  onClick={() => setIsMenuOpen(false)}
+  className="text-lg text-zinc-500 transition-colors hover:text-zinc-900"
+>
+  Acessar Conta Anest+
+</Link>
           </div>
 
           <div className="space-y-4 pt-10">
@@ -1035,13 +1050,30 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   <div className="mx-auto max-w-6xl">
     <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
       <div>
-        <SectionHeading
-          eyebrow="Conta Anest+"
-          title="A ponte entre o seu celular e o sistema do hospital"
-          desc="Quando a sincronização estiver ativada, seus casos concluídos ficam disponíveis em um painel web seguro por tempo limitado. Assim, você pode localizar, revisar, imprimir ou encaminhar a ficha ao prontuário eletrônico do hospital com mais facilidade."
-        />
+<SectionHeading
+  eyebrow="Conta Anest+"
+  title="A ponte entre o seu celular e o sistema do hospital"
+  desc="Quando a sincronização estiver ativada, seus casos concluídos ficam disponíveis em um painel web seguro por tempo limitado. Assim, você pode localizar, revisar, imprimir ou encaminhar a ficha ao prontuário eletrônico do hospital com mais facilidade."
+/>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+<div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+  <Link
+    href="/pro/login"
+    className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#162014] px-6 text-[14px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D]"
+  >
+    Acessar Conta Anest+
+    <ChevronRight className="ml-2" size={17} />
+  </Link>
+
+  <Link
+    href="/validar"
+    className="inline-flex h-12 items-center justify-center rounded-2xl border border-[#B9963B]/25 bg-[#FAFAF7] px-6 text-[14px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#F6F4EB]"
+  >
+    Validar uma ficha
+  </Link>
+</div>
+
+<div className="mt-8 grid gap-4 sm:grid-cols-2">
           <FeatureCard
             compact
             icon={FileText}
