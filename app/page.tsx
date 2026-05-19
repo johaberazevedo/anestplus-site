@@ -33,7 +33,8 @@ import {
 const APPSTORE_URL = "https://apps.apple.com/br/app/anest/id6753714859";
 const OFFER_CODE_URL =
   "https://apps.apple.com/redeem?ctx=offercodes&id=6753714859&code=ANESTFRIEND";
-const WHATSAPP_URL = "https://wa.me/5571992288755";
+const WHATSAPP_URL =
+  "https://wa.me/5571992288755?text=Ol%C3%A1%2C%20estava%20no%20site%20do%20Anest%2B%20e%20queria%20tirar%20uma%20d%C3%BAvida.";
 const INSTAGRAM_URL = "https://instagram.com/anestplus";
 const EMAIL = "anestplus@outlook.com";
 
@@ -61,7 +62,7 @@ function SectionHeading({
   compact?: boolean;
 }) {
   return (
-    <div className={center ? "mx-auto max-w-4xl text-center" : "max-w-4xl"}>
+    <div className={center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
       {eyebrow ? (
         <p
           className={`text-[10px] font-semibold uppercase tracking-[0.22em] sm:text-[11px] ${
@@ -86,7 +87,7 @@ function SectionHeading({
         <p
           className={`mt-4 text-[14px] leading-relaxed sm:text-base md:text-lg md:leading-8 ${
             light ? "text-zinc-300" : "text-[#71717A]"
-          } ${center ? "mx-auto max-w-3xl" : "max-w-3xl"}`}
+          } ${center ? "mx-auto max-w-2xl" : "max-w-2xl"}`}
         >
           {desc}
         </p>
@@ -101,20 +102,22 @@ function FeatureCard({
   icon: Icon,
   compact = false,
   light = false,
+  className = "",
 }: {
   title: string;
   desc: string;
   icon: LucideIcon;
   compact?: boolean;
   light?: boolean;
+  className?: string;
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-[24px] border shadow-sm transition-colors duration-300 md:rounded-[28px] ${
+      className={`group relative flex h-full flex-col overflow-hidden rounded-[24px] border shadow-sm transition-colors duration-300 md:rounded-[28px] ${
         light
           ? "border-white/10 bg-white/5 hover:border-[#B9963B]/35 hover:bg-white/[0.07]"
           : "border-zinc-200/80 bg-white hover:border-[#B9963B]/35"
-      } ${compact ? "p-5" : "p-6 md:p-7"}`}
+      } ${compact ? "p-5" : "p-6 md:p-7"} ${className}`}
     >
       {!light ? (
         <>
@@ -124,24 +127,28 @@ function FeatureCard({
       ) : null}
 
       <div
-        className={`relative z-10 mb-4 inline-flex rounded-2xl p-2.5 transition-colors duration-300 sm:p-3 ${
+        className={`relative z-10 mb-5 flex items-center gap-3 rounded-2xl px-3.5 py-2.5 transition-colors duration-300 sm:px-4 sm:py-3 ${
           light
             ? "bg-white/10 text-[#D9C57D]"
             : "bg-zinc-50 text-[#7A865F] group-hover:bg-[#B9963B]/10 group-hover:text-[#B9963B]"
         }`}
       >
-        <Icon size={20} className="sm:h-[22px] sm:w-[22px]" strokeWidth={1.7} />
-      </div>
+        <Icon
+          size={20}
+          className="shrink-0 sm:h-[22px] sm:w-[22px]"
+          strokeWidth={1.7}
+        />
 
-      <h3
-        className={`relative z-10 font-bold tracking-tight ${
-          compact
-            ? "text-[1.1rem] md:text-[1.28rem]"
-            : "text-[1.15rem] md:text-[1.35rem]"
-        } ${light ? "text-white" : "text-zinc-950"}`}
-      >
-        {title}
-      </h3>
+        <h3
+          className={`font-bold tracking-tight ${
+            compact
+              ? "text-[1rem] leading-snug md:text-[1.12rem]"
+              : "text-[1.05rem] leading-snug md:text-[1.18rem]"
+          } ${light ? "text-white" : "text-zinc-950"}`}
+        >
+          {title}
+        </h3>
+      </div>
 
       <p
         className={`relative z-10 mt-2 text-[14px] leading-relaxed md:text-[15px] md:leading-7 ${
@@ -164,7 +171,7 @@ function FlowStepCard({
   desc: string;
 }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+    <div className="h-full rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#B9963B] sm:text-[11px]">
         {step}
       </p>
@@ -180,7 +187,7 @@ function FlowStepCard({
 
 function TestimonialCard({ quote, author }: { quote: string; author: string }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+    <div className="h-full rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
       <p className="text-[15px] leading-relaxed text-zinc-700 md:text-[16px] md:leading-8">
         “{quote}”
       </p>
@@ -195,12 +202,14 @@ function TestimonialCard({ quote, author }: { quote: string; author: string }) {
 function FAQCard({
   title,
   desc,
+  className = "",
 }: {
   title: string;
   desc: string | React.ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px]">
+    <div className={`h-full rounded-[20px] border border-zinc-200/80 bg-white p-5 shadow-sm transition-all hover:border-[#B9963B]/30 hover:shadow-md sm:p-6 md:rounded-[24px] ${className}`}>
       <h3 className="text-[1.05rem] font-bold tracking-tight text-zinc-950 md:text-lg">
         {title}
       </h3>
@@ -371,12 +380,12 @@ export default function Home() {
 </Link>
 
 <a
-  href={APPSTORE_URL}
+  href={OFFER_CODE_URL}
   target="_blank"
   rel="noopener noreferrer"
   className="hidden h-10 items-center rounded-xl bg-[#162014] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] lg:inline-flex"
 >
-  Baixar na App Store
+  Testar 7 dias grátis
 </a>
 
             <button
@@ -434,7 +443,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex h-14 items-center justify-center rounded-2xl bg-[#162014] text-base font-bold text-white"
             >
-              Testar no próximo plantão
+              Testar 7 dias grátis
             </a>
             <a
               href={WHATSAPP_URL}
@@ -455,7 +464,7 @@ export default function Home() {
     rel="noopener noreferrer"
     className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[90] flex h-12 items-center justify-center rounded-2xl bg-[#162014] text-sm font-black text-white shadow-xl shadow-black/20 transition-all lg:hidden"
   >
-    Testar no próximo plantão
+    Testar 7 dias grátis
   </a>
 ) : null}
 
@@ -475,21 +484,22 @@ export default function Home() {
       >
         <div className="flex flex-wrap gap-2">
 <Pill>Criado por um anestesiologista</Pill>
-<Pill>Registro anestésico mais fluido</Pill>
-<Pill>iPhone e iPad</Pill>
+<Pill>Precisão no intraoperatório</Pill>
+<Pill>7 dias grátis</Pill>
         </div>
 
         <h1 className="mt-6 text-[2.4rem] font-black leading-[1.05] tracking-tight text-zinc-950 sm:mt-7 sm:text-5xl md:text-[4.5rem]">
-          Você cuida do paciente.
+          Você conduz com precisão.
           <br />
           <span className="bg-gradient-to-r from-[#7b8461] to-[#b9963b] bg-clip-text text-transparent">
-            O Anest+ cuida da sua rotina.
+            O Anest+ registra no mesmo nível.
           </span>
         </h1>
 
-<p className="mt-5 max-w-3xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
-  Registre a anestesia durante o caso, assine e exporte uma ficha final clara,
-legível e organizada — com menos digitação e mais tranquilidade no plantão.
+<p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
+  Registre a anestesia durante o caso, preserve os detalhes clínicos que importam
+  e finalize com uma ficha clara, legível e organizada — pronta para revisar,
+  assinar e exportar.
 </p>
 
         <div className="mt-8">
@@ -500,7 +510,7 @@ legível e organizada — com menos digitação e mais tranquilidade no plantão
               rel="noopener noreferrer"
               className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
             >
-              Testar no próximo plantão
+              Testar 7 dias grátis
               <ChevronRight className="ml-2" size={18} />
             </a>
 
@@ -515,22 +525,25 @@ legível e organizada — com menos digitação e mais tranquilidade no plantão
           </div>
 
           <p className="mt-3 text-[13px] text-zinc-500 sm:text-sm">
-            Disponível para iPhone e iPad.
+            Disponível para iPhone e iPad. Use em um plantão real antes de decidir.
+          </p>
+
+          <p className="mt-2 text-[12px] leading-5 text-zinc-400 sm:text-[13px]">
+            7 dias grátis. Depois, R$ 89,90/mês. Cancele quando quiser pela App Store.
           </p>
 
           <p className="mt-2 text-[13px] leading-6 text-zinc-500 sm:text-sm">
-            Use em um plantão real e avalie se o Anest+ se adapta à sua rotina.
             O código{" "}
             <span className="font-bold text-zinc-800">ANESTFRIEND</span>{" "}
-            já vai aplicado no resgate.
+            já vai aplicado no resgate para liberar 7 dias grátis, sem compromisso.
           </p>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-2 text-[13px] sm:gap-3 sm:text-sm">
           {[
   "Ficha pronta no fim do caso",
-  "Registro durante a anestesia",
-  "Assinatura e validação",
+  "Detalhes clínicos preservados",
+  "Assinatura e rastreabilidade",
 ].map((item) => (
             <div
               key={item}
@@ -547,7 +560,7 @@ legível e organizada — com menos digitação e mais tranquilidade no plantão
 
         <div className="mt-6">
           <p className="max-w-2xl text-[13px] leading-6 text-zinc-500 sm:text-sm">
-            Quer conhecer ainda mais do app? No{" "}
+            Quer ver mais do app em uso real? No{" "}
             <a
               href={INSTAGRAM_URL}
               target="_blank"
@@ -556,8 +569,8 @@ legível e organizada — com menos digitação e mais tranquilidade no plantão
             >
               Instagram do Anest+
             </a>{" "}
-            você encontra vídeos explicando as principais funções, telas
-e recursos do Anest+.
+            você encontra vídeos curtos mostrando telas, fluxos e recursos do
+            Anest+ na prática.
           </p>
         </div>
       </motion.div>
@@ -591,26 +604,26 @@ e recursos do Anest+.
   center
   eyebrow="Feito para o intraoperatório"
   title="Controle o caso com precisão. Registre sem tirar o foco do paciente."
-  desc="Da hemodinâmica aos fármacos, dos parâmetros à evolução, o Anest+ acompanha o ritmo do intraoperatório para transformar dados clínicos em uma ficha clara e organizada."
+  desc="Da hemodinâmica aos fármacos, dos parâmetros à evolução, o Anest+ acompanha o ritmo da sua anestesia e transforma detalhes clínicos em uma ficha clara, organizada e tecnicamente consistente."
 />
 
               <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
                 <FlowStepCard
                   step="Passo 1"
-                  title="Abra o caso com uma estrutura pronta"
-                  desc="Paciente, hospital, técnica e dados iniciais entram em uma ficha já organizada para acompanhar a anestesia desde o início."
+                  title="Comece com contexto clínico organizado"
+                  desc="Paciente, hospital, técnica, procedimento, ASA, alergias e dados iniciais entram em uma ficha preparada para acompanhar a anestesia desde a indução."
                 />
 
                 <FlowStepCard
                   step="Passo 2"
-                  title="Registre sem quebrar o ritmo"
-                  desc="Sinais vitais, parâmetros, fluidos, fármacos e evolução são atualizados com poucos toques durante o caso."
+                  title="Registre sem quebrar o ritmo do caso"
+desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisões ficam organizados com poucos toques enquanto o paciente está sob seus cuidados."
                 />
 
                 <FlowStepCard
                   step="Passo 3"
-                  title="Finalize com clareza"
-                  desc="Ao fim do procedimento, a ficha já está legível, padronizada e pronta para revisão, assinatura e exportação."
+                  title="Finalize com uma ficha à altura da sua anestesia"
+                  desc="Ao fim do procedimento, o registro está legível, padronizado e pronto para revisar, assinar, validar e exportar."
                 />
               </div>
             </div>
@@ -619,38 +632,38 @@ e recursos do Anest+.
       </section>
 
       {/* VALIDAÇÃO EM HOSPITAIS */}
-      <section className="px-5 pb-4 pt-12 sm:px-6 md:pt-16">
+      <section className="px-5 pb-4 pt-10 sm:px-6 md:pt-14">
         <div className="mx-auto max-w-5xl text-center">
-<p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
-  Já utilizado em rotina real de centro cirúrgico
-</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
+            Já rodando na rotina de centros cirúrgicos como:
+          </p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 sm:gap-6">
-            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(11,42,58,0.18)]">
+          <div className="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14">
+            <div className="flex h-16 items-center justify-center opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0 sm:h-20">
               <Image
                 src="/brand/logo-hgvc2.png"
                 alt="HGVC"
                 width={320}
                 height={110}
                 sizes="(max-width: 640px) 260px, 320px"
-                className="h-auto max-h-[180px] w-auto object-contain"
+                className="h-auto max-h-16 w-auto object-contain sm:max-h-20"
               />
             </div>
 
-            <div className="flex h-[140px] items-center justify-center rounded-[28px] border border-zinc-200 bg-white px-4 shadow-[0_10px_30px_-20px_rgba(11,42,58,0.18)]">
+            <div className="flex h-16 items-center justify-center opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0 sm:h-20">
               <Image
                 src="/brand/logo-afranio-peixoto2.png"
                 alt="Hospital Afrânio Peixoto"
                 width={320}
                 height={110}
                 sizes="(max-width: 640px) 260px, 320px"
-                className="h-auto max-h-[160px] w-auto object-contain"
+                className="h-auto max-h-14 w-auto object-contain sm:max-h-16"
               />
             </div>
           </div>
-<p className="mx-auto mt-5 max-w-2xl text-sm font-medium leading-6 text-zinc-500 sm:text-base">
-  Mais de 10 mil fichas anestésicas já registradas em uso individual e institucional.
-</p>
+          <p className="mx-auto mt-5 max-w-2xl text-sm font-medium leading-6 text-zinc-500 sm:text-base">
+            Mais de 10 mil fichas anestésicas já registradas em uso individual e institucional.
+          </p>
         </div>
       </section>
 
@@ -660,8 +673,8 @@ e recursos do Anest+.
 <SectionHeading
   center
   eyebrow="Uso real na rotina"
-  title="Feito para entrar no dia a dia do anestesiologista"
-  desc="Na prática, o Anest+ precisa ser rápido, claro e discreto o suficiente para acompanhar o caso sem atrapalhar a condução anestésica."
+  title="Feito para quem leva cada detalhe do caso a sério"
+  desc="Na prática, o Anest+ precisa ser rápido, claro e discreto o suficiente para acompanhar a condução anestésica sem competir com a atenção dedicada ao paciente."
 />
 
     <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
@@ -683,6 +696,48 @@ e recursos do Anest+.
   </div>
 </section>
 
+      {/* PARA QUEM E */}
+<section className="px-5 py-14 sm:px-6 md:py-20">
+  <div className="mx-auto max-w-6xl">
+<SectionHeading
+  center
+  eyebrow="Para quem é"
+  title="Para anestesiologistas que tratam o registro como parte da qualidade do cuidado."
+  desc="O Anest+ foi feito para quem registra casos com frequência, atua em plantões, valoriza controle do intraoperatório e quer entregar uma ficha final compatível com a excelência da própria conduta."
+/>
+
+    <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-4">
+      <FeatureCard
+        compact
+        icon={Clock}
+        title="Plantonistas"
+        desc="Para quem precisa abrir, conduzir e finalizar casos sem deixar a documentação acumular no momento mais crítico."
+      />
+
+      <FeatureCard
+        compact
+        icon={Building2}
+        title="Vários hospitais"
+        desc="Para quem atua em locais diferentes e quer manter hospitais, logos e rotinas organizados."
+      />
+
+      <FeatureCard
+        compact
+        icon={FileText}
+        title="Ficha legível"
+        desc="Para quem quer transformar detalhes do caso em um PDF padronizado, revisável e fácil de anexar."
+      />
+
+      <FeatureCard
+        compact
+        icon={ShieldCheck}
+        title="Rastreabilidade"
+        desc="Para quem valoriza autoria, assinatura, validação e consistência técnica no documento final."
+      />
+    </div>
+  </div>
+</section>
+
       {/* ORIGEM DO PRODUTO */}
 <section
   id="problema"
@@ -696,20 +751,21 @@ e recursos do Anest+.
         </p>
 
         <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-5xl">
-          Feito por quem conhece a anestesia por dentro.
+          Feito por quem sabe que anestesia é controle fino, não improviso.
         </h2>
 
 <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-600 sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
   O Anest+ nasceu da rotina do centro cirúrgico: enquanto a atenção principal
   permanece no paciente, sinais, parâmetros, fármacos, horários, evolução e
-  detalhes do caso também precisam ser registrados com clareza, precisão e
-  continuidade.
+  detalhes do caso precisam ser registrados com a mesma precisão e disciplina
+  que orientam a condução anestésica.
 </p>
 
         <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-zinc-500 sm:mt-5 sm:text-base sm:leading-8">
-          Em vez de tentar transformar a anestesia em um formulário rígido, o
-          app organiza o registro em etapas compatíveis com a prática real:
-          abertura do caso, acompanhamento, descrição, assinatura e exportação.
+          Em vez de transformar a anestesia em um formulário rígido, o app
+          organiza o registro em etapas compatíveis com a prática real:
+          abertura do caso, monitorização, fármacos, descrição, assinatura e
+          exportação.
         </p>
 
         <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#B9963B]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
@@ -718,7 +774,7 @@ e recursos do Anest+.
             className="text-[#7A865F] sm:h-[18px] sm:w-[18px]"
           />
           <span className="text-[12px] font-bold uppercase tracking-wide text-zinc-700 sm:text-sm">
-            Local-first, privado e com acesso seguro pela conta Anest+
+            Local-first, privado e pensado para a rotina real do centro cirúrgico
           </span>
         </div>
       </div>
@@ -738,12 +794,11 @@ e recursos do Anest+.
             </div>
             <div>
               <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                Registro disperso
+                Detalhe clínico disperso
               </h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
                 Quando dados do caso ficam espalhados entre memória, papel e
-                anotações rápidas, a revisão final se torna mais lenta e menos
-                previsível.
+                anotações rápidas, a sequência técnica perde nitidez na revisão final.
               </p>
             </div>
           </div>
@@ -756,12 +811,12 @@ e recursos do Anest+.
             </div>
             <div>
               <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                Fechamento mais demorado
+                Fechamento que rouba foco
               </h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
                 O fim do procedimento costuma concentrar despertar, passagem,
 organização da sala e documentação. A ficha não precisa ser
-mais um ponto de atraso nesse momento.
+mais uma carga mental nesse momento.
               </p>
             </div>
           </div>
@@ -774,11 +829,11 @@ mais um ponto de atraso nesse momento.
             </div>
             <div>
               <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                Documento final pouco padronizado
+                Registro que não acompanha a qualidade da sua técnica
               </h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
-                A legibilidade, a sequência dos dados e a consistência do registro
-impactam diretamente a revisão, a guarda do documento e a rotina do hospital.
+                Uma anestesia bem conduzida merece um registro legível, sequencial
+e consistente para revisão, guarda e rotina hospitalar.
               </p>
             </div>
           </div>
@@ -805,13 +860,13 @@ impactam diretamente a revisão, a guarda do documento e a rotina do hospital.
 
             <div className="order-1 lg:order-2">
               <h2 className="text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:text-4xl md:text-[2.8rem]">
-  Abra o caso em poucos passos e siga com a ficha já estruturada
+  Comece com uma ficha estruturada para acompanhar o caso desde a indução
 </h2>
 
 <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
   O Anest+ organiza os dados iniciais do paciente, procedimento, técnica
-  anestésica, hospital e plano em uma ficha pronta para acompanhar o caso
-  desde o início.
+  anestésica, hospital e plano em uma ficha pronta para sustentar o registro
+  desde a indução até a saída de sala.
 </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -822,10 +877,13 @@ impactam diretamente a revisão, a guarda do documento e a rotina do hospital.
   "Alergias e observações iniciais",
   "Horário de início do caso",
   "Estrutura pronta para evoluir",
-].map((item) => (
+  "Leitura auxiliar de dados iniciais",
+].map((item, index, arr) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm"
+                    className={`flex items-center gap-3 rounded-[16px] border border-[#B9963B]/15 bg-white px-4 py-3.5 text-[13px] font-semibold text-zinc-800 shadow-sm sm:rounded-2xl sm:px-5 sm:py-4 sm:text-sm ${
+                      index === arr.length - 1 ? "sm:col-span-2" : ""
+                    }`}
                   >
                     <CheckCircle2
                       size={18}
@@ -846,46 +904,46 @@ impactam diretamente a revisão, a guarda do documento e a rotina do hospital.
           <div className="mb-10 md:mb-14">
             <SectionHeading
               title="Da monitorização à evolução, cada detalhe no lugar certo"
-              desc="Durante a anestesia, o Anest+ ajuda a registrar sinais, parâmetros, fluidos, fármacos e evolução com poucos toques — mantendo a ficha organizada enquanto sua atenção permanece na condução clínica."
+              desc="Durante a anestesia, o Anest+ ajuda a registrar sinais, parâmetros, fluidos, fármacos e evolução com poucos toques, mantendo a ficha organizada enquanto sua atenção permanece no paciente e na condução clínica."
 />
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-start">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-5 md:grid-cols-2">
 <FeatureCard
   icon={Activity}
 title="Monitorização traduzida em registro"
-desc="Frequência, pressão e demais parâmetros acompanham o caso com atualizações rápidas, mantendo a ficha coerente com a condução anestésica."
+desc="Frequência, pressão e demais parâmetros acompanham o caso com atualizações rápidas, mantendo o registro coerente com a hemodinâmica observada."
 />
 
 <FeatureCard
   icon={Settings2}
   title="Parâmetros na mesma tela"
-  desc="Monitores, gases, acessos, alergias e ajustes do caso ficam acessíveis sem tirar o anestesiologista da tela principal."
+  desc="Monitores, gases, acessos, alergias e ajustes ficam acessíveis para preservar contexto e reduzir perda de informação."
 />
 
 <FeatureCard
   icon={Droplets}
   title="Fluidos com distribuição automática"
-  desc="Informe o volume administrado e deixe o app organizar a distribuição na ficha, mantendo o registro mais claro e proporcional."
+  desc="Informe o volume administrado e deixe o app organizar a distribuição na ficha, mantendo o balanço mais claro e proporcional."
 />
 
 <FeatureCard
   icon={ClipboardPen}
   title="Evolução construída durante o caso"
-  desc="Registre indução, manutenção, intercorrências e destino enquanto o caso acontece, sem depender só da memória no final."
+  desc="Registre indução, manutenção, intercorrências e destino enquanto o caso acontece, sem depender da memória no final."
 />
 
 <FeatureCard
   icon={ShieldCheck}
   title="Fármacos com dose e via"
-  desc="As medicações ficam registradas de forma estruturada, facilitando conferência, revisão e leitura do documento final."
+  desc="As medicações ficam registradas com dose, via e sequência, facilitando conferência, revisão e leitura do documento final."
 />
 
 <FeatureCard
   icon={CheckCircle2}
-  title="Sem pendências na saída de sala"
-  desc="O registro vai sendo formado durante o caso, eliminando o esforço de puxar tudo da memória no fim da cirurgia."
+  title="Menos reconstrução no fim do caso"
+  desc="O registro vai sendo formado durante a anestesia, reduzindo o esforço de lembrar, reorganizar e conferir tudo apenas na saída de sala."
 />
             </div>
 
@@ -911,17 +969,18 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#B9963B] sm:text-[11px]">
-                O alívio no final do plantão
+                A paz no final do seu plantão
               </p>
 
               <h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-[2.8rem]">
-                Termine o caso com a ficha pronta, não com mais trabalho
+                Finalize com uma ficha à altura da sua anestesia
               </h2>
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Ao término do procedimento, o registro já está consolidado em
-                uma estrutura limpa, legível e padronizada — pronto para
-                revisar, assinar, exportar e seguir para a rotina do hospital.
+                Ao término do procedimento, a ficha já está consolidada em uma
+                estrutura limpa, legível e padronizada. Menos reconstrução no fim
+                do caso, menos carga mental na saída de sala e mais clareza para
+                revisar, assinar, validar e exportar.
               </p>
 
               <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
@@ -929,28 +988,28 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   compact
   icon={FileCheck2}
   title="Um documento à altura do caso"
-  desc="Técnica, fármacos, parâmetros, sinais vitais e descrição ficam reunidos em um PDF claro, coerente e pronto para revisão."
+  desc="Técnica, fármacos, parâmetros, sinais vitais e descrição ficam reunidos em um PDF claro, coerente e fácil de conferir."
 />
 
 <FeatureCard
   compact
   icon={ShieldCheck}
   title="Menos fragilidade do papel"
-  desc="O registro digital reduz rasuras, melhora a leitura e deixa a ficha mais consistente para conferência."
+  desc="O registro digital reduz rasuras, melhora a leitura e deixa a ficha mais consistente para conferência técnica."
 />
 
 <FeatureCard
   compact
   icon={CheckCircle2}
-  title="Revisão mais objetiva"
-  desc="Com os dados estruturados, fica mais fácil conferir o caso antes de assinar e exportar."
+  title="Revisão criteriosa"
+  desc="Com os dados estruturados, fica mais fácil conferir sequência, coerência e completude antes de assinar."
 />
 
 <FeatureCard
   compact
   icon={Activity}
-  title="Pronto para o próximo passo"
-  desc="A ficha pode ser impressa, baixada, enviada ou anexada conforme a rotina definida pelo serviço."
+  title="Fluxo documental"
+  desc="Depois de revisada, a ficha pode ser impressa, baixada, enviada ou anexada conforme a rotina definida pelo serviço."
 />
               </div>
             </div>
@@ -981,15 +1040,17 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
               </p>
 
 		<h2 className="mt-3 text-[2rem] font-black leading-[1.1] tracking-tight text-zinc-950 sm:mt-4 sm:text-4xl md:text-[2.8rem]">
-		  Assine, exporte e valide a ficha sem sair do app.
+		  A sua ficha merece seguir seu padrão de qualidade.
 		</h2>
 
 <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-  Ao finalizar o registro, o Anest+ permite aplicar uma assinatura eletrônica avançada vinculada ao profissional responsável, após autenticação no próprio dispositivo, como Face ID, Touch ID ou código do aparelho.
+  Ao finalizar o registro, o Anest+ permite aplicar assinatura eletrônica avançada vinculada ao profissional responsável, após autenticação no próprio dispositivo, como Face ID, Touch ID ou código do aparelho.
 </p>
 
 <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:text-base sm:leading-8 md:text-lg">
-  O PDF exportado recebe um marcador técnico de confiança com dados de autoria, assinatura e conteúdo assinado. Depois, o arquivo pode ser conferido no validador do Anest+, diretamente pelo site.
+  O PDF exportado recebe uma camada técnica vinculando autoria, assinatura,
+  momento da assinatura e conteúdo registrado. Depois, o arquivo pode ser
+  conferido no validador do Anest+, diretamente pelo site.
 </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -1007,7 +1068,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
                   rel="noopener noreferrer"
                   className="inline-flex h-12 items-center justify-center rounded-2xl bg-[#162014] px-6 text-[14px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D]"
                 >
-                  Testar no próximo plantão
+                  Testar 7 dias grátis
                 </a>
               </div>
             </div>
@@ -1024,14 +1085,14 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
                 compact
                 icon={FileCheck2}
                 title="Camada criptográfica no PDF"
-                desc="O Anest+ gera uma assinatura digital vinculada ao conteúdo da ficha, ao profissional e ao momento da assinatura."
+                desc="O Anest+ vincula a assinatura ao conteúdo da ficha, ao profissional e ao momento da assinatura."
               />
 
               <FeatureCard
                 compact
                 icon={QrCode}
                 title="Validador Anest+"
-                desc="O PDF pode ser enviado ao validador do site para conferir os dados técnicos da assinatura e a integridade esperada do documento."
+                desc="O PDF pode ser enviado ao validador do site para conferir dados técnicos da assinatura e integridade esperada do documento."
               />
 
               <FeatureCard
@@ -1052,8 +1113,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
       <div>
 <SectionHeading
   eyebrow="Conta Anest+"
-  title="A ponte entre o seu celular e o sistema do hospital"
-  desc="Quando a sincronização estiver ativada, seus casos concluídos ficam disponíveis em um painel web seguro por tempo limitado. Assim, você pode localizar, revisar, imprimir ou encaminhar a ficha ao prontuário eletrônico do hospital com mais facilidade."
+  title="A ponte entre o app e o sistema do hospital"
+  desc="Com a sincronização ativada, as fichas exportadas podem ficar disponíveis por tempo limitado na Conta Anest+. Assim, você localiza, revisa, baixa, imprime ou encaminha o PDF para a rotina documental do hospital com mais facilidade."
 />
 
 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -1078,28 +1139,28 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
             compact
             icon={FileText}
             title="Histórico de fichas"
-            desc="Acesse os casos exportados recentemente, organizados por data e status."
+            desc="Acesse fichas exportadas recentemente, organizadas por data, paciente e status."
           />
 
           <FeatureCard
             compact
             icon={ClipboardList}
             title="Busca rápida"
-            desc="Localize a ficha certa por nome do paciente ou número do prontuário."
+            desc="Localize a ficha certa por nome do paciente ou número do prontuário, sem vasculhar arquivos soltos."
           />
 
           <FeatureCard
             compact
             icon={HardDrive}
             title="Download pelo computador"
-            desc="Baixe seus PDFs para impressão, revisão ou anexação no sistema utilizado pelo hospital."
+            desc="Baixe PDFs para impressão, revisão ou anexação no sistema utilizado pelo hospital."
           />
 
           <FeatureCard
             compact
             icon={EyeOff}
             title="Disponibilidade temporária"
-            desc="As fichas sincronizadas ficam disponíveis por até 30 dias e depois são removidas da infraestrutura do Anest+."
+            desc="A cópia sincronizada fica disponível por até 30 dias na Conta Anest+. A ficha original permanece salva no dispositivo."
           />
         </div>
       </div>
@@ -1195,7 +1256,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
           <SectionHeading
             center
             eyebrow="Recursos complementares"
-            title="O Anest+ continua te ajudando fora da sala"
+            title="O Anest+ também organiza o que sustenta sua rotina fora da sala"
             desc="Depois de resolver o que mais pesa no intraoperatório, o Anest+ também organiza plantões, protocolos e outros pontos da rotina do anestesiologista."
           />
         </div>
@@ -1211,7 +1272,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
               </h2>
               <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
                 Além da ficha anestésica, o app também ajuda a visualizar sua
-                agenda, organizar plantões e manter a rotina menos espalhada.
+                agenda, organizar plantões e manter informações importantes no mesmo ecossistema.
               </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -1219,7 +1280,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   "Agenda de plantões",
   "Recorrências configuráveis",
   "Atividades por hospital",
-  "Rotina menos espalhada",
+  "Rotina profissional centralizada",
 ].map((item) => (
                   <div
                     key={item}
@@ -1251,8 +1312,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
         <div className="mx-auto max-w-6xl">
 <SectionHeading
   eyebrow="Recursos de apoio"
-  title="Protocolos, hospitais e atalhos para uma rotina mais fluida"
-  desc="Além do registro anestésico, o Anest+ reúne recursos que ajudam no dia a dia: hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code e controle financeiro."
+  title="Atalhos para padronizar excelência sem engessar sua prática"
+  desc="Além do registro anestésico, o Anest+ reúne recursos que ajudam no dia a dia: hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code, leitura auxiliar de dados iniciais e controle financeiro."
 />
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
@@ -1261,42 +1322,50 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   compact
   icon={Building2}
   title="Hospitais salvos"
-  desc="Mantenha identidade, nome e logotipo dos locais onde você atua prontos para aparecer no PDF."
+  desc="Mantenha identidade, nome e logotipo dos locais onde você atua prontos para aparecer no documento final."
 />
 
 <FeatureCard
   compact
   icon={ClipboardPen}
   title="Descrição dinâmica"
-  desc="Use textos-base para iniciar a evolução anestésica com mais rapidez, sem escrever tudo do zero."
+  desc="Use textos-base para iniciar uma descrição bem estruturada, preservando espaço para as nuances de cada caso."
 />
 
 <FeatureCard
   compact
   icon={Settings2}
   title="Presets próprios"
-  desc="Salve estruturas de técnicas, medicamentos e parâmetros usados com frequência na sua rotina."
+  desc="Salve estruturas de técnicas, medicamentos e parâmetros que refletem sua prática e seus protocolos."
 />
 
 <FeatureCard
   compact
   icon={Activity}
   title="Grades de monitorização"
-  desc="Monte modelos de acompanhamento compatíveis com diferentes técnicas anestésicas."
+  desc="Monte modelos de acompanhamento compatíveis com diferentes técnicas, durações e necessidades de registro."
 />
 
 <FeatureCard
   compact
   icon={QrCode}
   title="Passagem via QR Code"
-  desc="Compartilhe dados de casos em andamento de forma rápida quando houver necessidade de passagem."
+  desc="Compartilhe dados de casos em andamento de forma rápida quando houver necessidade de continuidade ou passagem."
 />
 
 <FeatureCard
   compact
   icon={Wallet}
   title="Controle financeiro"
-  desc="Acompanhe plantões e valores da sua rotina profissional junto ao restante do ecossistema."
+  desc="Acompanhe plantões e valores da rotina profissional junto ao restante do ecossistema."
+/>
+
+<FeatureCard
+  compact
+  icon={FileText}
+  title="Leitura auxiliar de dados iniciais"
+  desc="Aproveite dados do documento do paciente para acelerar a abertura do caso quando fizer sentido."
+  className="md:col-span-2"
 />
             </div>
 
@@ -1325,7 +1394,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
     <SectionHeading
       light
       eyebrow="Segurança e privacidade"
-      title="Precisão no cuidado. Clareza no documento."
+      title="Precisão no cuidado. Rigor no registro."
       desc="O Anest+ combina registro local-first, autenticação do profissional, assinatura eletrônica avançada, validação do PDF e disponibilidade temporária das fichas sincronizadas."
     />
 
@@ -1351,12 +1420,14 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
         compact
         icon={EyeOff}
         title="Retenção limitada"
-        desc="Quando sincronizadas, as fichas ficam disponíveis por até 30 dias para revisão e download, sendo removidas depois desse período."
+        desc="A janela de 30 dias vale apenas para a cópia web sincronizada, reduzindo exposição de dados sem apagar o registro local."
       />
     </div>
 
     <div className="mt-8 rounded-[24px] border border-[#B9963B]/20 bg-[#B9963B]/5 p-5 text-center text-[13px] leading-6 text-zinc-300 sm:mt-10 sm:p-6 sm:text-sm sm:leading-7">
-      O Anest+ organiza o registro e gera um documento técnico mais claro, mas não substitui a avaliação clínica do anestesiologista nem a guarda documental definitiva pelo hospital ou serviço responsável.
+      <p className="mx-auto max-w-4xl">
+        O Anest+ organiza o registro e gera um documento técnico mais claro, mas não substitui julgamento clínico, vigilância anestésica nem a guarda documental definitiva pelo hospital ou serviço responsável.
+      </p>
     </div>
   </div>
 </section>
@@ -1378,17 +1449,23 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 
       <FAQCard
         title="Vou perder tempo olhando para a tela durante o caso?"
-        desc="Não. A interface foi pensada para interações rápidas, com poucos toques, para que o registro acompanhe o caso sem virar uma tarefa paralela pesada."
+        desc="A proposta é justamente o contrário: interações rápidas, com poucos toques, para que o registro acompanhe o caso sem competir com a vigilância clínica."
       />
 
       <FAQCard
         title="Onde e por quanto tempo ficam salvas minhas fichas?"
-        desc="O registro é criado no dispositivo. Quando a sincronização estiver ativada, uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, ela é removida da infraestrutura do Anest+."
+        desc="O registro principal fica salvo no dispositivo. Quando a sincronização estiver ativada, apenas uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, essa cópia web é removida da infraestrutura do Anest+."
       />
 
       <FAQCard
         title="Como funciona a assinatura eletrônica avançada?"
         desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com dados de autoria, assinatura e conteúdo assinado, permitindo conferência posterior no validador do site."
+      />
+
+      <FAQCard
+        title="Como funciona o teste de 7 dias grátis?"
+        desc="Use o código ANESTFRIEND no resgate pela App Store para ativar 7 dias grátis e testar o Anest+ em um plantão real, sem compromisso."
+        className="md:col-span-2"
       />
     </div>
   </div>
@@ -1470,18 +1547,19 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 
             <div className="relative z-10 mx-auto max-w-3xl">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-[#D9C57D] sm:px-4 sm:py-2 sm:text-[11px]">
-                Criado por quem vive o centro cirúrgico
+                Criado para quem vive a anestesia com rigor
               </div>
 
               <h2 className="text-[2rem] font-black leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[3.5rem] lg:leading-[1.04]">
-                Leve o Anest+ para um plantão real.
+                Teste o Anest+ em um plantão real.
                 <br />
                 Finalize o caso com um registro à altura da sua anestesia.
               </h2>
 
-<p className="mt-4 text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
+<p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
   Use o Anest+ em um plantão real e veja a ficha ganhar forma ao longo do caso:
-  dados organizados, revisão objetiva, assinatura, validação e exportação.
+  detalhes clínicos organizados, revisão criteriosa,
+  assinatura, validação e exportação no fim do procedimento.
 </p>
 
               <div className="mt-8 flex flex-col items-center justify-center">
@@ -1490,10 +1568,14 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
                     ANESTFRIEND
                   </span>
                   <span className="text-center text-[14px] font-medium text-[#d8dccf] sm:text-left sm:text-[15px]">
-                    Ative 7 dias grátis e teste em um plantão real, sem compromisso.
+                    Ative 7 dias grátis e teste em um plantão real. Depois, R$ 89,90/mês.
                   </span>
                 </div>
               </div>
+
+              <p className="mt-3 text-center text-[12px] leading-5 text-[#d8dccf]/70 sm:text-[13px]">
+                Cancele quando quiser pela App Store.
+              </p>
 
               <div className="mt-8 flex flex-col flex-wrap justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
                 <a
@@ -1502,7 +1584,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
                   rel="noopener noreferrer"
                   className="rounded-[14px] bg-[#B9963B] px-6 py-3.5 text-[15px] font-black text-[#162014] shadow-2xl transition-transform hover:scale-[1.02] sm:rounded-2xl sm:px-8 sm:py-4 sm:text-base"
                 >
-                  Testar no próximo plantão
+                  Testar 7 dias grátis
                 </a>
 
                 <a
