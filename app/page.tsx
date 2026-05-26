@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { gsap, useGSAP } from "@/lib/animations/gsap";
 import {
   Menu,
   X,
@@ -37,14 +38,6 @@ const WHATSAPP_URL =
   "https://wa.me/5571992288755?text=Ol%C3%A1%2C%20estava%20no%20site%20do%20Anest%2B%20e%20queria%20tirar%20uma%20d%C3%BAvida.";
 const INSTAGRAM_URL = "https://instagram.com/anestplus";
 const EMAIL = "anestplus@outlook.com";
-
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-[#B9963B]/25 bg-[#FAFAF7] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#506047] shadow-sm backdrop-blur-sm sm:text-[11px]">
-      {children}
-    </span>
-  );
-}
 
 function SectionHeading({
   eyebrow,
@@ -205,7 +198,7 @@ function FAQCard({
   className = "",
 }: {
   title: string;
-  desc: string | React.ReactNode;
+  desc: string;
   className?: string;
 }) {
   return (
@@ -274,14 +267,14 @@ function VideoDemo() {
             </div>
           </div>
 
-          <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-white/10 bg-black/45 p-3 text-white backdrop-blur-md sm:bottom-4 sm:left-4 sm:right-4 sm:p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#D9C57D]">
-              Veja em ação
-            </p>
-            <p className="mt-1 text-sm font-black leading-tight sm:text-base">
-              Video real do app.
-            </p>
-          </div>
+          <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-[#B9963B]/25 bg-[#FAFAF7]/95 p-3 text-zinc-950 shadow-lg backdrop-blur-md sm:bottom-4 sm:left-4 sm:right-4 sm:p-4">
+  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#7A865F]">
+    Veja em ação
+  </p>
+  <p className="mt-1 text-sm font-black leading-tight text-zinc-950 sm:text-base">
+    Vídeo real do app.
+  </p>
+</div>
         </button>
       ) : (
         <video
@@ -304,6 +297,10 @@ function VideoDemo() {
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showStickyCta, setShowStickyCta] = useState(false);
+  const [isHeaderSolid, setIsHeaderSolid] = useState(false);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const heroMediaRef = useRef<HTMLVideoElement | null>(null);
+  const tensionLayerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
@@ -313,17 +310,24 @@ export default function Home() {
   }, [isMenuOpen]);
 
   useEffect(() => {
-    function handleScroll() {
-      setShowStickyCta(window.scrollY > 620);
-    }
+  function handleScroll() {
+    const scrollY = window.scrollY;
+    const heroBottom = heroRef.current?.offsetHeight ?? window.innerHeight;
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    setShowStickyCta(scrollY > 620);
+    setIsHeaderSolid(scrollY >= heroBottom - 88);
+  }
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("resize", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, []);
 
   const navLinks = [
     { href: "#produto", label: "Produto" },
@@ -333,18 +337,104 @@ export default function Home() {
     { href: "#contato", label: "Contato" },
   ];
 
+const isLightHeader = isMenuOpen || isHeaderSolid;
+
+  useGSAP(
+    () => {
+      const hero = heroRef.current;
+      const tensionLayer = tensionLayerRef.current;
+
+      if (!hero) {
+        return;
+      }
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const words = gsap.utils.toArray<HTMLElement>(".hero-word", hero);
+      const introItems = gsap.utils.toArray<HTMLElement>(
+        ".hero-intro-item",
+        hero,
+      );
+
+      if (reducedMotion) {
+        gsap.set([words, introItems], {
+          clearProps: "all",
+          opacity: 1,
+        });
+        gsap.set(tensionLayer, { opacity: 0 });
+        return;
+      }
+
+      gsap.set(words, { yPercent: 110, opacity: 0 });
+      gsap.set(introItems, { y: 20, opacity: 0 });
+      gsap.set(tensionLayer, { opacity: 1 });
+
+      const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+      timeline
+        .to(tensionLayer, {
+          opacity: 0,
+          duration: 1,
+          ease: "expo.out",
+          delay: 0.28,
+        })
+        .to(
+          words,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.05,
+            stagger: 0.055,
+            ease: "expo.out",
+          },
+          "-=0.48",
+        )
+        .to(
+          introItems,
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.85,
+            stagger: 0.08,
+          },
+          "-=0.55",
+        );
+
+      return () => {
+        timeline.kill();
+      };
+    },
+    { scope: heroRef },
+  );
+
   return (
     <div className="min-h-screen bg-white text-zinc-950 selection:bg-[#162014] selection:text-white">
       {/* HEADER */}
-      <header className="fixed top-0 z-[100] w-full border-b border-zinc-200/60 bg-white/90 backdrop-blur-xl print:hidden">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3 sm:px-6">
-          <Link href="/" className="flex items-center gap-3 text-zinc-950">
+<header
+  className={`fixed top-0 z-[100] w-full border-b transition-colors duration-300 print:hidden ${
+    isMenuOpen
+      ? "border-zinc-200 bg-white text-zinc-950"
+      : isHeaderSolid
+      ? "border-zinc-200/55 bg-white/58 text-zinc-950 backdrop-blur-md"
+      : "border-white/10 bg-black/[0.08] text-white backdrop-blur-sm"
+  }`}
+>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 sm:px-6">
+          <Link
+            href="/"
+            className={`flex items-center gap-3 ${
+  isLightHeader ? "text-zinc-950" : "text-white"
+}`}
+          >
             <Image
               src="/brand/anest-symbol.png"
               alt="Logo do Anest+"
               width={44}
               height={44}
-              className="h-10 w-10 rounded-[10px] object-cover sm:h-11 sm:w-11"
+              className={`h-10 w-10 rounded-[10px] object-cover ring-1 sm:h-11 sm:w-11 ${
+  isLightHeader ? "ring-zinc-200" : "ring-white/20"
+}`}
               priority
             />
             <span className="text-[1.5rem] font-black tracking-[-0.06em] sm:text-[1.7rem]">
@@ -352,12 +442,18 @@ export default function Home() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-5 text-[12px] font-bold uppercase tracking-wider text-zinc-500 xl:flex xl:gap-8 xl:text-[13px]">
+          <nav
+            className={`hidden items-center gap-5 text-[12px] font-bold uppercase tracking-wider xl:flex xl:gap-8 xl:text-[13px] ${
+  isLightHeader ? "text-zinc-500" : "text-white/64"
+}`}
+          >
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="transition-colors hover:text-zinc-950"
+                className={`transition-colors ${
+  isLightHeader ? "hover:text-zinc-950" : "hover:text-white"
+}`}
               >
                 {link.label}
               </a>
@@ -367,14 +463,22 @@ export default function Home() {
           <div className="flex shrink-0 items-center gap-2 xl:gap-3">
 <Link
   href="/institucional"
-  className="hidden h-10 items-center rounded-xl border border-zinc-200 bg-white px-4 text-[13px] font-bold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 lg:inline-flex xl:px-5"
+  className={`hidden h-10 items-center rounded-xl border px-4 text-[13px] font-bold shadow-sm transition-all lg:inline-flex xl:px-5 ${
+  isLightHeader
+    ? "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+    : "border-white/14 bg-white/[0.07] text-white/80 hover:bg-white/[0.12] hover:text-white"
+}`}
 >
   Solução para Hospitais
 </Link>
 
 <Link
   href="/pro/login"
-  className="hidden h-10 items-center whitespace-nowrap rounded-xl border border-[#B9963B]/25 bg-[#FAFAF7] px-4 text-[13px] font-bold text-zinc-800 shadow-sm transition-all hover:bg-[#F6F4EB] lg:inline-flex xl:px-5"
+  className={`hidden h-10 items-center whitespace-nowrap rounded-xl border px-4 text-[13px] font-bold shadow-sm transition-all lg:inline-flex xl:px-5 ${
+  isLightHeader
+    ? "border-[#B9963B]/25 bg-[#FAFAF7] text-zinc-800 hover:bg-[#F6F4EB]"
+    : "border-[#D9C57D]/30 bg-[#D9C57D]/10 text-white hover:bg-[#D9C57D]/16"
+}`}
 >
   Conta Anest+
 </Link>
@@ -383,7 +487,11 @@ export default function Home() {
   href={OFFER_CODE_URL}
   target="_blank"
   rel="noopener noreferrer"
-  className="hidden h-10 items-center rounded-xl bg-[#162014] px-5 text-[13px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] lg:inline-flex"
+  className={`hidden h-10 items-center rounded-xl px-5 text-[13px] font-bold shadow-sm transition-all lg:inline-flex ${
+  isLightHeader
+    ? "bg-[#162014] text-white hover:bg-[#22331D]"
+    : "border border-white/16 bg-white/[0.10] text-white hover:bg-white/[0.16]"
+}`}
 >
   Testar 7 dias grátis
 </a>
@@ -392,7 +500,11 @@ export default function Home() {
               type="button"
               aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="relative z-50 flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-900 shadow-sm lg:hidden"
+              className={`relative z-50 flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm lg:hidden ${
+  isLightHeader
+    ? "border-zinc-200 bg-white text-zinc-900"
+    : "border-white/15 bg-white/10 text-white"
+}`}
             >
               {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -469,126 +581,185 @@ export default function Home() {
 ) : null}
 
       {/* HERO */}
-<section className="relative overflow-hidden px-5 pb-14 pt-28 sm:px-6 md:pb-18 md:pt-36">
-  <div className="pointer-events-none absolute inset-0 -z-10">
-    <div className="absolute -top-44 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-[#22331d]/10 blur-3xl sm:h-[620px] sm:w-[620px]" />
-    <div className="absolute right-[-100px] top-8 h-[300px] w-[300px] rounded-full bg-[#8f9c69]/12 blur-3xl sm:h-[420px] sm:w-[420px]" />
+<section
+  ref={heroRef}
+  className="relative flex min-h-[94svh] overflow-hidden bg-[#08100d] px-5 pb-10 pt-28 text-white sm:px-6 md:min-h-[92svh] md:pt-32 lg:min-h-[92svh]"
+>
+  <div className="absolute inset-0">
+<video
+  ref={heroMediaRef}
+  className="absolute inset-0 h-full w-full object-cover object-[86%_center] opacity-90 md:object-[76%_center] lg:object-[82%_center] xl:object-center"
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="metadata"
+  poster="/screens/anest-hero-generated.png"
+  aria-label="Ambiente de centro cirúrgico com monitorização anestésica"
+>
+  <source src="/videos/anest-hero-atmosphere.mp4" type="video/mp4" />
+</video>
+    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,8,6,0.94)_0%,rgba(4,8,6,0.76)_34%,rgba(4,8,6,0.24)_68%,rgba(4,8,6,0.48)_100%)]" />
+    <div
+      ref={tensionLayerRef}
+      className="absolute inset-0 bg-[#050907]"
+      aria-hidden="true"
+    />
   </div>
 
-  <div className="mx-auto max-w-7xl">
-    <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
-      <motion.div
-        initial={{ opacity: 0, x: -18 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.45 }}
-      >
-        <div className="flex flex-wrap gap-2">
-<Pill>Criado por um anestesiologista</Pill>
-<Pill>Precisão no intraoperatório</Pill>
-<Pill>7 dias grátis</Pill>
-        </div>
-
-        <h1 className="mt-6 text-[2.4rem] font-black leading-[1.05] tracking-tight text-zinc-950 sm:mt-7 sm:text-5xl md:text-[4.5rem]">
-          Você conduz com precisão.
-          <br />
-          <span className="bg-gradient-to-r from-[#7b8461] to-[#b9963b] bg-clip-text text-transparent">
-            O Anest+ registra no mesmo nível.
+  <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-end pb-10 sm:pb-12 lg:items-center lg:pb-0">
+    <div className="max-w-5xl">
+      <div className="hero-intro-item flex flex-wrap gap-2">
+        {[
+          "Anest+",
+          "Criado por um anestesiologista",
+          "Feito para a rotina real da anestesia",
+        ].map((item) => (
+          <span
+            key={item}
+            className="inline-flex items-center rounded-full border border-white/14 bg-white/[0.08] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#E7D79A] backdrop-blur-md sm:px-4 sm:text-[11px]"
+          >
+            {item}
           </span>
-        </h1>
+        ))}
+      </div>
 
-<p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-zinc-500 sm:mt-7 sm:text-base sm:leading-7 md:text-[1.22rem] md:leading-8">
-  Registre a anestesia durante o caso, preserve os detalhes clínicos que importam
-  e finalize com uma ficha clara, legível e organizada — pronta para revisar,
-  assinar e exportar.
+      <h1 className="mt-5 max-w-5xl text-[clamp(2.35rem,5vw,5rem)] font-black leading-[0.98] tracking-tight text-white sm:mt-6">
+  <span className="block">
+    {["Uma", "anestesia", "bem", "conduzida"].map((word) => (
+      <span
+        key={word}
+        className="mr-[0.16em] inline-block overflow-hidden pb-[0.08em]"
+      >
+        <span className="hero-word inline-block will-change-transform">
+          {word}
+        </span>
+      </span>
+    ))}
+  </span>
+
+  <span className="block">
+  {["merece", "uma", "ficha", "à", "altura."].map((word) => (
+    <span
+      key={word}
+      className="mr-[0.16em] inline-block overflow-hidden pb-[0.08em]"
+    >
+      <span className="hero-word inline-block text-[#E0CF8A] will-change-transform">
+        {word}
+      </span>
+    </span>
+  ))}
+</span>
+</h1>
+
+<p className="hero-intro-item mt-4 max-w-2xl text-base leading-7 text-white/76 sm:text-lg sm:leading-8 md:text-xl">
+  O Anest+ ajuda você a registrar sinais, fármacos, parâmetros, evolução e
+  eventos importantes enquanto o caso acontece. No final, revise, assine e
+  exporte uma ficha clara, legível e compatível com a qualidade da sua anestesia.
 </p>
 
-        <div className="mt-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
-            <a
-              href={OFFER_CODE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#1a2718] px-7 text-[15px] font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-[#22331d] sm:text-base"
-            >
-              Testar 7 dias grátis
-              <ChevronRight className="ml-2" size={18} />
-            </a>
+      <div className="hero-intro-item mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a
+          href={OFFER_CODE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-14 items-center justify-center rounded-2xl bg-white px-7 text-[15px] font-black text-[#111A0F] shadow-2xl shadow-black/20 transition-all hover:bg-[#F4E8C1] sm:text-base"
+        >
+          Testar 7 dias grátis
+          <ChevronRight className="ml-2" size={18} />
+        </a>
 
-            <a
-              href={APPSTORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-14 items-center justify-center rounded-2xl border border-[#b9963b]/25 bg-[#fbfaf5] px-7 text-[15px] font-bold text-zinc-900 shadow-sm transition-all hover:bg-[#f6f4eb] sm:text-base"
-            >
-              Ver na App Store
-            </a>
-          </div>
+        <a
+          href={APPSTORE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-14 items-center justify-center rounded-2xl border border-white/16 bg-white/[0.08] px-7 text-[15px] font-bold text-white backdrop-blur-md transition-all hover:bg-white/[0.14] sm:text-base"
+        >
+          Ver na App Store
+        </a>
+      </div>
 
-          <p className="mt-3 text-[13px] text-zinc-500 sm:text-sm">
-            Disponível para iPhone e iPad. Use em um plantão real antes de decidir.
-          </p>
-
-          <p className="mt-2 text-[12px] leading-5 text-zinc-400 sm:text-[13px]">
-            7 dias grátis. Depois, R$ 89,90/mês. Cancele quando quiser pela App Store.
-          </p>
-
-          <p className="mt-2 text-[13px] leading-6 text-zinc-500 sm:text-sm">
-            O código{" "}
-            <span className="font-bold text-zinc-800">ANESTFRIEND</span>{" "}
-            já vai aplicado no resgate para liberar 7 dias grátis, sem compromisso.
-          </p>
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-2 text-[13px] sm:gap-3 sm:text-sm">
-          {[
-  "Ficha pronta no fim do caso",
-  "Detalhes clínicos preservados",
-  "Assinatura e rastreabilidade",
-].map((item) => (
-            <div
-              key={item}
-              className="inline-flex items-center gap-2 rounded-full border border-[#b9963b]/18 bg-[#fafaf7] px-3 py-2 font-semibold text-zinc-700 shadow-sm sm:px-4 sm:py-2.5"
-            >
-              <CheckCircle2
-                size={15}
-                className="shrink-0 text-[#7a865f]"
-              />
-              {item}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          <p className="max-w-2xl text-[13px] leading-6 text-zinc-500 sm:text-sm">
-            Quer ver mais do app em uso real? No{" "}
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-zinc-800 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:text-zinc-950 hover:decoration-[#b9963b]"
-            >
-              Instagram do Anest+
-            </a>{" "}
-            você encontra vídeos curtos mostrando telas, fluxos e recursos do
-            Anest+ na prática.
-          </p>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.08 }}
-        className="relative mx-auto mt-8 w-full max-w-[280px] sm:max-w-[320px] lg:mt-0"
-      >
-        <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_center,rgba(185,150,59,0.22),transparent_68%)] blur-xl sm:rounded-[46px] sm:blur-2xl" />
-        <div className="relative">
-          <VideoDemo />
-        </div>
-      </motion.div>
+      <div className="hero-intro-item mt-5 flex max-w-4xl flex-wrap gap-2 text-[12px] text-white/76 sm:gap-3 sm:text-sm">
+        {[
+          "Ficha pronta no fim do caso",
+          "Detalhes clínicos preservados",
+          "Assinatura e rastreabilidade",
+        ].map((item) => (
+          <span
+            key={item}
+            className="inline-flex items-center gap-2 rounded-full border border-white/13 bg-white/[0.07] px-3 py-2 font-semibold backdrop-blur-md sm:px-4"
+          >
+            <CheckCircle2 size={15} className="shrink-0 text-[#D9C57D]" />
+            {item}
+          </span>
+        ))}
+      </div>
     </div>
   </div>
+
 </section>
+
+      {/* PROVA REAL DO APP */}
+      <section className="border-b border-zinc-200/70 bg-white px-5 py-14 sm:px-6 md:py-18">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_0.7fr] lg:items-center">
+          <div>
+            
+
+            <h2 className="mt-5 max-w-3xl text-[1.9rem] font-black leading-[1.08] tracking-tight text-zinc-950 sm:text-4xl md:text-[2.8rem]">
+              Veja o Anest+ funcionando antes de baixar.
+            </h2>
+
+            <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-zinc-600 sm:text-base sm:leading-8 md:text-lg">
+              O vídeo real do app mostra a criação da ficha na prática, com
+              telas, fluxos e recursos que sustentam o registro anestésico
+              durante o caso.
+            </p>
+
+            <div className="mt-6 space-y-2 text-[13px] leading-6 text-zinc-500 sm:text-sm">
+              <p>
+                Disponível para iPhone e iPad. Use em um plantão real antes de
+                decidir.
+              </p>
+              <p>
+                7 dias grátis. Depois, R$ 89,90/mês. Cancele quando quiser pela
+                App Store.
+              </p>
+              <p>
+                O código{" "}
+                <span className="font-bold text-zinc-800">ANESTFRIEND</span>{" "}
+                já vai aplicado no resgate para liberar 7 dias grátis.
+              </p>
+            </div>
+
+            <p className="mt-5 max-w-2xl text-[13px] leading-6 text-zinc-500 sm:text-sm">
+              Quer ver mais do app em uso real? No{" "}
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-zinc-800 underline decoration-[#b9963b]/60 underline-offset-4 transition-colors hover:text-zinc-950 hover:decoration-[#b9963b]"
+              >
+                Instagram do Anest+
+              </a>{" "}
+              você encontra vídeos curtos mostrando telas, fluxos e recursos do
+              Anest+ na prática.
+            </p>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            viewport={{ once: true, margin: "-80px" }}
+            className="relative mx-auto w-full max-w-[320px]"
+          >
+            <div className="absolute inset-0 rounded-[36px] bg-[radial-gradient(circle_at_center,rgba(185,150,59,0.2),transparent_68%)] blur-2xl" />
+            <div className="relative">
+              <VideoDemo />
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* QUEBRA DE OBJEÇÃO DO INTRAOPERATÓRIO */}
       <section id="como-funciona" className="px-5 py-14 sm:px-6 md:py-20">
@@ -635,7 +806,7 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
       <section className="px-5 pb-4 pt-10 sm:px-6 md:pt-14">
         <div className="mx-auto max-w-5xl text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-400 sm:text-[12px]">
-            Já rodando na rotina de centros cirúrgicos como:
+            Já em uso na rotina de centros cirúrgicos como:
           </p>
 
           <div className="mx-auto mt-6 flex max-w-3xl flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14">
@@ -708,32 +879,32 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
 
     <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-4">
       <FeatureCard
-        compact
-        icon={Clock}
-        title="Plantonistas"
-        desc="Para quem precisa abrir, conduzir e finalizar casos sem deixar a documentação acumular no momento mais crítico."
-      />
+  compact
+  icon={Clock}
+  title="Para quem quer agilidade"
+  desc="Para quem precisa abrir, conduzir e finalizar casos com agilidade, sem deixar a documentação pesar no fim do procedimento."
+/>
 
-      <FeatureCard
-        compact
-        icon={Building2}
-        title="Vários hospitais"
-        desc="Para quem atua em locais diferentes e quer manter hospitais, logos e rotinas organizados."
-      />
+<FeatureCard
+  compact
+  icon={Building2}
+  title="Para quem atua em vários hospitais"
+  desc="Mantenha hospitais, logos e rotinas organizados para gerar fichas compatíveis com cada local de atuação."
+/>
 
-      <FeatureCard
-        compact
-        icon={FileText}
-        title="Ficha legível"
-        desc="Para quem quer transformar detalhes do caso em um PDF padronizado, revisável e fácil de anexar."
-      />
+<FeatureCard
+  compact
+  icon={FileText}
+  title="Para quem registra muitos casos"
+  desc="Transforme sinais, fármacos, horários, parâmetros e evolução em um documento final mais claro e fácil de revisar."
+/>
 
-      <FeatureCard
-        compact
-        icon={ShieldCheck}
-        title="Rastreabilidade"
-        desc="Para quem valoriza autoria, assinatura, validação e consistência técnica no documento final."
-      />
+<FeatureCard
+  compact
+  icon={ShieldCheck}
+  title="Para quem valoriza autoria"
+  desc="Assinatura, validação e rastreabilidade ajudam a entregar uma ficha mais consistente e vinculada ao profissional responsável."
+/>
     </div>
   </div>
 </section>
@@ -942,8 +1113,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 
 <FeatureCard
   icon={CheckCircle2}
-  title="Menos reconstrução no fim do caso"
-  desc="O registro vai sendo formado durante a anestesia, reduzindo o esforço de lembrar, reorganizar e conferir tudo apenas na saída de sala."
+  title="Sua ficha criada durante a anestesia"
+  desc="O caso vai sendo documentado ao longo da condução, deixando o fechamento mais simples, claro e seguro."
 />
             </div>
 
@@ -977,11 +1148,11 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
               </h2>
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Ao término do procedimento, a ficha já está consolidada em uma
-                estrutura limpa, legível e padronizada. Menos reconstrução no fim
-                do caso, menos carga mental na saída de sala e mais clareza para
-                revisar, assinar, validar e exportar.
-              </p>
+  Ao término do procedimento, a ficha já está consolidada em uma estrutura
+  limpa, legível e padronizada. O registro foi construído ao longo do caso,
+  deixando a revisão, a assinatura, a validação e a exportação mais simples
+  na saída de sala.
+</p>
 
               <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
 <FeatureCard
@@ -1044,7 +1215,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 		</h2>
 
 <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-  Ao finalizar o registro, o Anest+ permite aplicar assinatura eletrônica avançada vinculada ao profissional responsável, após autenticação no próprio dispositivo, como Face ID, Touch ID ou código do aparelho.
+  Ao finalizar a ficha, o Anest+ permite aplicar assinatura eletrônica avançada vinculada ao profissional responsável, após autenticação no próprio dispositivo, como Face ID, Touch ID ou código do aparelho.
 </p>
 
 <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:text-base sm:leading-8 md:text-lg">
@@ -1553,7 +1724,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
               <h2 className="text-[2rem] font-black leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[3.5rem] lg:leading-[1.04]">
                 Teste o Anest+ em um plantão real.
                 <br />
-                Finalize o caso com um registro à altura da sua anestesia.
+                Finalize com uma ficha à altura da sua anestesia.
               </h2>
 
 <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-[#d8dccf] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl">
