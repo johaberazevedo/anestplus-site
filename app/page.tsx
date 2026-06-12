@@ -775,7 +775,7 @@ const isLightHeader = isMenuOpen || isHeaderSolid;
   center
   eyebrow="Feito para o intraoperatório"
   title="Controle o caso com precisão. Registre sem tirar o foco do paciente."
-  desc="Da hemodinâmica aos fármacos, dos parâmetros à evolução, o Anest+ acompanha o ritmo da sua anestesia e transforma detalhes clínicos em uma ficha clara, organizada e tecnicamente consistente."
+  desc="Da hemodinâmica aos fármacos, dos parâmetros à evolução, o Anest+ acompanha o ritmo da sua anestesia e ajuda a transformar detalhes relevantes em uma ficha clara, organizada e fácil de revisar."
 />
 
               <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
@@ -794,7 +794,7 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
                 <FlowStepCard
                   step="Passo 3"
                   title="Finalize com uma ficha à altura da sua anestesia"
-                  desc="Ao fim do procedimento, o registro está legível, padronizado e pronto para revisar, assinar, validar e exportar."
+                  desc="Ao fim do procedimento, o registro já está organizado para revisar, assinar, validar e exportar com mais fluidez na saída de sala."
                 />
               </div>
             </div>
@@ -845,7 +845,7 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
   center
   eyebrow="Uso real na rotina"
   title="Feito para quem leva cada detalhe do caso a sério"
-  desc="Na prática, o Anest+ precisa ser rápido, claro e discreto o suficiente para acompanhar a condução anestésica sem competir com a atenção dedicada ao paciente."
+  desc="No centro cirúrgico, o registro precisa acompanhar a anestesia sem tomar o lugar da vigilância clínica. O Anest+ foi pensado para quem quer chegar ao fim do caso com a ficha praticamente pronta para revisar e exportar."
 />
 
     <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-3">
@@ -874,36 +874,36 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
   center
   eyebrow="Para quem é"
   title="Para anestesiologistas que tratam o registro como parte da qualidade do cuidado."
-  desc="O Anest+ foi feito para quem registra casos com frequência, atua em plantões, valoriza controle do intraoperatório e quer entregar uma ficha final compatível com a excelência da própria conduta."
+  desc="O Anest+ foi feito para quem registra casos com frequência, atua em plantões, circula por diferentes hospitais e entende que a ficha também precisa acompanhar o padrão da sua conduta."
 />
 
     <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-4">
-      <FeatureCard
+<FeatureCard
   compact
   icon={Clock}
   title="Para quem quer agilidade"
-  desc="Para quem precisa abrir, conduzir e finalizar casos com agilidade, sem deixar a documentação pesar no fim do procedimento."
+  desc="Abra, conduza e finalize casos com mais fluidez, sem deixar toda a ficha para o fim do procedimento."
 />
 
 <FeatureCard
   compact
   icon={Building2}
   title="Para quem atua em vários hospitais"
-  desc="Mantenha hospitais, logos e rotinas organizados para gerar fichas compatíveis com cada local de atuação."
+  desc="Mantenha hospitais, logos e padrões de identificação prontos para gerar fichas compatíveis com cada local de atuação."
 />
 
 <FeatureCard
   compact
   icon={FileText}
   title="Para quem registra muitos casos"
-  desc="Transforme sinais, fármacos, horários, parâmetros e evolução em um documento final mais claro e fácil de revisar."
+  desc="Transforme sinais, fármacos, horários, parâmetros e evolução em um PDF final claro, com leitura mais limpa para revisão e rotina do serviço."
 />
 
 <FeatureCard
   compact
   icon={ShieldCheck}
   title="Para quem valoriza autoria"
-  desc="Assinatura, validação e rastreabilidade ajudam a entregar uma ficha mais consistente e vinculada ao profissional responsável."
+  desc="Assinatura, validação e rastreabilidade reforçam a identificação do profissional responsável pela ficha."
 />
     </div>
   </div>
@@ -971,7 +971,7 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
           Em vez de transformar a anestesia em um formulário rígido, o app
           organiza o registro em etapas compatíveis com a prática real:
           abertura do caso, monitorização, fármacos, descrição, assinatura e
-          exportação.
+          exportação, respeitando o jeito como o caso acontece.
         </p>
 
         <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-[#B9963B]/20 bg-white px-4 py-2.5 shadow-sm sm:mt-7 sm:gap-3 sm:rounded-2xl sm:px-5 sm:py-3">
@@ -1017,11 +1017,11 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
             </div>
             <div>
               <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                Fechamento que rouba foco
+                Fim do caso com muita coisa acontecendo
               </h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
                 O fim do procedimento costuma concentrar despertar, passagem,
-organização da sala e documentação. A ficha não precisa ser
+organização da sala e revisão do registro. A ficha não precisa ser
 mais uma carga mental nesse momento.
               </p>
             </div>
@@ -1035,11 +1035,11 @@ mais uma carga mental nesse momento.
             </div>
             <div>
               <h3 className="text-[1.1rem] font-bold tracking-tight text-zinc-950 sm:text-lg">
-                Registro que não acompanha a qualidade da sua técnica
+                Registro que não acompanha a qualidade da sua anestesia
               </h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-zinc-500 sm:mt-2 sm:text-sm sm:leading-7">
-                Uma anestesia bem conduzida merece um registro legível, sequencial
-e consistente para revisão, guarda e rotina hospitalar.
+                Uma anestesia bem conduzida merece um registro legível,
+                sequencial e consistente para revisão, guarda e rotina hospitalar.
               </p>
             </div>
           </div>
@@ -1123,7 +1123,7 @@ e consistente para revisão, guarda e rotina hospitalar.
                 <div className="mt-6 grid gap-3">
                   {[
                     ["1", "Avaliação guiada", "Dados clínicos, sistemas, via aérea, exames e contexto especial do paciente."],
-                    ["2", "Escores e alertas", "Cálculos e pontos de atenção aparecem como apoio documental para conferência profissional."],
+                    ["2", "Escores e alertas", "Cálculos e pontos de atenção aparecem como apoio para conferência profissional."],
                     ["3", "PDF ou ficha", "A avaliação pode ser exportada em PDF ou usada para iniciar a ficha anestésica."],
                   ].map(([step, title, desc]) => (
                     <div
@@ -1147,7 +1147,7 @@ e consistente para revisão, guarda e rotina hospitalar.
 
 <p className="mt-5 text-[12px] leading-5 text-zinc-500 sm:text-[13px]">
   Recurso disponível no Anest+ Pro. Escores, alertas e informações
-  de apoio têm finalidade documental e auxiliar, sempre sujeitos à
+  de apoio têm finalidade informativa e auxiliar, sempre sujeitos à
   conferência, interpretação e validação do profissional responsável.
 </p>
               </div>
@@ -1256,7 +1256,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 <FeatureCard
   icon={CheckCircle2}
   title="Sua ficha criada durante a anestesia"
-  desc="O caso vai sendo documentado ao longo da condução, deixando o fechamento mais simples, claro e seguro."
+  desc="O caso vai sendo documentado ao longo da condução, deixando a revisão final mais simples, clara e direta."
 />
             </div>
 
@@ -1276,7 +1276,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
         </div>
       </section>
 
-      {/* 3. FECHAMENTO DA FICHA */}
+      {/* 3. REVISÃO E EXPORTAÇÃO */}
       <section className="bg-zinc-50/60 px-5 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
@@ -1290,10 +1290,9 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
               </h2>
 
               <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-  Ao término do procedimento, a ficha já está consolidada em uma estrutura
-  limpa, legível e padronizada. O registro foi construído ao longo do caso,
-  deixando a revisão, a assinatura, a validação e a exportação mais simples
-  na saída de sala.
+  Ao término do procedimento, a ficha já está organizada em uma estrutura limpa,
+  legível e fácil de revisar. O registro foi construído ao longo do caso,
+  deixando revisão, assinatura, validação e exportação mais diretas na saída de sala.
 </p>
 
               <div className="mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2">
@@ -1569,8 +1568,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
           <SectionHeading
             center
             eyebrow="Recursos complementares"
-            title="O Anest+ também organiza o que sustenta sua rotina fora da sala"
-            desc="Depois de resolver o que mais pesa no intraoperatório, o Anest+ também organiza plantões, protocolos e outros pontos da rotina do anestesiologista."
+            title="Além da ficha, ferramentas para a rotina real da anestesia"
+            desc="Depois de resolver o que mais pesa no intraoperatório, o Anest+ Pro também conecta pré-anestésica, plantões, hospitais, presets, protocolos, QR Code e controle financeiro em um ecossistema feito para quem vive a rotina da anestesia."
           />
         </div>
       </section>
@@ -1584,8 +1583,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
                 Plantões organizados no mesmo ecossistema
               </h2>
               <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-[#71717A] sm:mt-5 sm:text-base sm:leading-8 md:text-lg">
-                Além da ficha anestésica, o app também ajuda a visualizar sua
-                agenda, organizar plantões e manter informações importantes no mesmo ecossistema.
+                Além da ficha anestésica, o app também ajuda a visualizar sua agenda, acompanhar recorrências, organizar atividades por hospital e manter informações importantes no mesmo ecossistema.
               </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4">
@@ -1625,8 +1623,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
         <div className="mx-auto max-w-6xl">
 <SectionHeading
   eyebrow="Recursos de apoio"
-  title="Atalhos para padronizar excelência sem engessar sua prática"
-  desc="Além do registro anestésico, o Anest+ Pro reúne recursos que ajudam no dia a dia: pré-anestésica, hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code, leitura auxiliar de dados iniciais e controle financeiro."
+  title="Atalhos para padronizar sua rotina sem engessar sua prática"
+  desc="Além do registro anestésico, o Anest+ Pro reúne pré-anestésica, hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code, leitura auxiliar de dados iniciais e controle financeiro para apoiar sua rotina."
 />
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
@@ -1744,7 +1742,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 
     <div className="mt-8 rounded-[24px] border border-[#B9963B]/20 bg-[#B9963B]/5 p-5 text-center text-[13px] leading-6 text-zinc-300 sm:mt-10 sm:p-6 sm:text-sm sm:leading-7">
       <p className="mx-auto max-w-4xl">
-        O Anest+ organiza o registro e gera um documento técnico mais claro, mas não substitui julgamento clínico, vigilância anestésica nem a guarda documental definitiva pelo hospital ou serviço responsável.
+        O Anest+ organiza o registro e gera um documento técnico mais claro, mas não ocupa o lugar do julgamento clínico, da vigilância anestésica nem da guarda definitiva pelo hospital ou serviço responsável.
       </p>
     </div>
   </div>
@@ -1761,43 +1759,43 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 
     <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2">
   <FAQCard
-    title="O Anest+ substitui a ficha de papel do hospital?"
-    desc="Ele foi criado para organizar o registro anestésico e gerar um PDF final claro, legível e assinável. Em ambientes institucionais, o uso deve seguir a rotina definida pelo hospital ou serviço."
+    title="O Anest+ toma o lugar da ficha de papel do hospital?"
+    desc="O Anest+ organiza o registro anestésico e gera um PDF claro, legível e assinável. Em ambientes institucionais, o uso deve seguir a rotina definida pelo hospital ou serviço."
   />
 
   <FAQCard
     title="E se meu hospital já usa prontuário eletrônico?"
-    desc="O Anest+ não tenta substituir todo o sistema do hospital. Ele ajuda a organizar a ficha anestésica, gerar um PDF claro e apoiar a rotina definida pelo serviço, inclusive quando o PDF precisa ser impresso, baixado ou enviado para outro sistema."
+    desc="O Anest+ não tenta ocupar o lugar do sistema do hospital. Ele apoia a criação da ficha anestésica e a geração do PDF quando o serviço precisa imprimir, baixar, anexar ou encaminhar o arquivo."
   />
 
   <FAQCard
     title="Vou perder tempo olhando para a tela durante o caso?"
-    desc="A proposta é justamente o contrário: interações rápidas, com poucos toques, para que o registro acompanhe o caso sem competir com a vigilância clínica."
+    desc="A proposta é acompanhar o caso com interações rápidas e poucos toques. O app foi pensado para registrar sem tirar o foco da condução anestésica."
   />
 
   <FAQCard
     title="Funciona sem internet durante o caso?"
-    desc="Sim. O registro principal é criado e atualizado no dispositivo. A conexão é necessária apenas para recursos que dependem de conta, sincronização, validação ou acesso web."
+    desc="Sim. A ficha principal é criada e atualizada no dispositivo. A conexão entra nos recursos que dependem de conta, sincronização, validação ou acesso web."
   />
 
   <FAQCard
     title="Onde e por quanto tempo ficam salvas minhas fichas?"
-    desc="O registro principal fica salvo no dispositivo. Quando a sincronização estiver ativada, apenas uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, essa cópia web é removida da infraestrutura do Anest+."
+    desc="O registro principal fica salvo no dispositivo. Com a sincronização ativada, uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Depois desse prazo, a cópia web é removida da infraestrutura do Anest+."
   />
 
   <FAQCard
-    title="A pré-anestésica substitui a avaliação clínica?"
-    desc="Não. A pré-anestésica do Anest+ Pro organiza dados, escores, alertas e pontos de atenção com finalidade documental e auxiliar. A interpretação e a validação permanecem sob responsabilidade do profissional."
+    title="A pré-anestésica toma o lugar da avaliação clínica?"
+    desc="Não. A pré-anestésica do Anest+ Pro organiza dados, escores, alertas e pontos de atenção como apoio à avaliação. A interpretação e a validação permanecem sob responsabilidade do profissional."
   />
 
   <FAQCard
     title="Como funciona a assinatura eletrônica avançada?"
-    desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com dados de autoria, assinatura e conteúdo assinado, permitindo conferência posterior no validador do site."
+    desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com autoria, assinatura e conteúdo assinado, permitindo conferência posterior pelo validador do site."
   />
 
   <FAQCard
     title="Como funciona o teste de 7 dias grátis?"
-    desc="Use o código ANESTFRIEND no resgate pela App Store para ativar 7 dias grátis e testar o Anest+ em um plantão real, sem compromisso."
+    desc="Use o código ANESTFRIEND no resgate pela App Store para ativar 7 dias grátis e testar o Anest+ em um plantão real. Depois, a assinatura segue pela App Store e pode ser cancelada por lá."
   />
 </div>
   </div>
