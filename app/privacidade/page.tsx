@@ -65,17 +65,29 @@ export default function PrivacidadePage() {
           Política de Privacidade
         </motion.h1>
         <motion.p variants={fadeUpVariants} className="mt-6 text-lg leading-8 text-zinc-500">
-          Levamos a privacidade a sério. O aplicativo Anest+ é controlado pela equipe de desenvolvimento do app. Contato Oficial: <strong>anestplus@outlook.com</strong>.
+          Levamos a privacidade a sério. O aplicativo e os serviços Anest+ são operados por Johaber Medrado Azevedo. Contato oficial: <strong>anestplus@outlook.com</strong>.
         </motion.p>
 
         <div className="mt-14 space-y-6">
           <PolicySection title="Coleta e natureza dos dados" icon={Database}>
             <div className="space-y-4">
-              <p>O Anest+ foi projetado para funcionar <strong>localmente</strong>, sem coleta de dados pelo desenvolvedor e <strong>sem envio</strong> de informações a servidores do controlador. O app <strong>não utiliza</strong> SDKs de analytics de terceiros.</p>
+              <p>O Anest+ individual foi projetado para funcionar <strong>localmente por padrão</strong>. Determinados recursos do Anest+ Pro ou de fluxos institucionais, quando utilizados pelo usuário ou pela instituição, podem envolver conta autenticada, sincronização opcional, cópia web temporária, listagem, download e tratamento técnico de arquivos e metadados necessários ao funcionamento do serviço. O app <strong>não utiliza</strong> SDKs de analytics de terceiros.</p>
               <ul className="space-y-4">
                 <li className="flex gap-3">
                   <ShieldAlert className="mt-1 shrink-0 text-zinc-400" size={18} />
-                  <span><strong>Dados locais (não saem do dispositivo):</strong> prontuários, sinais vitais, fármacos, anotações e PDFs exportados. Esses dados são armazenados apenas localmente, sem envio a servidores externos.</span>
+                  <span><strong>Dados locais por padrão:</strong> fichas anestésicas, avaliações pré-anestésicas do Pro individual, sinais vitais, fármacos, anotações, hospitais personalizados, logos e PDFs exportados permanecem no dispositivo salvo ação do usuário ou uso de funcionalidade opcional de sincronização, compartilhamento, exportação ou dashboard.</span>
+                </li>
+                <li className="flex gap-3">
+                  <Database className="mt-1 shrink-0 text-zinc-400" size={18} />
+                  <span><strong>Dados de pré-anestésica no Pro individual:</strong> podem incluir identificação do paciente, procedimento previsto, comorbidades, alergias, medicações, hábitos, exame físico, via aérea, exames, escalas de risco, alertas, recomendações, orientações e informações de consentimento/responsável quando preenchidas.</span>
+                </li>
+                <li className="flex gap-3">
+                  <UserCog className="mt-1 shrink-0 text-zinc-400" size={18} />
+                  <span><strong>Conta, assinatura e acesso Pro:</strong> dados de conta como nome, e-mail, CRM/RQE e metadados necessários à autenticação podem ser tratados. A assinatura individual é verificada pela App Store/StoreKit; dados completos de pagamento e cartão são processados pela Apple, não pelo Anest+.</span>
+                </li>
+                <li className="flex gap-3">
+                  <Lock className="mt-1 shrink-0 text-zinc-400" size={18} />
+                  <span><strong>Dados sincronizados opcionalmente:</strong> quando o usuário usa recursos Pro de dashboard, uma cópia web temporária de arquivos e metadados pode ser enviada para infraestrutura vinculada ao serviço. No fluxo Pro, essa cópia fica disponível na Conta Anest+ por até 30 dias para consulta, revisão, download ou impressão, enquanto o registro original permanece no dispositivo. Em fluxo institucional, arquivos e metadados podem ser tratados conforme a implantação autorizada.</span>
                 </li>
                 <li className="flex gap-3">
                   <MapPin className="mt-1 shrink-0 text-zinc-400" size={18} />
@@ -89,25 +101,30 @@ export default function PrivacidadePage() {
             </div>
           </PolicySection>
 
-          <PolicySection title="Finalidade do tratamento" icon={Settings2}>
+          <PolicySection title="Finalidades de uso dos dados" icon={Settings2}>
             <ul className="list-inside list-disc space-y-2 marker:text-[#b9963b]">
               <li>Gerar e manter o <strong>registro anestésico digital</strong> do profissional.</li>
+              <li>Criar, manter, exportar e converter <strong>avaliações pré-anestésicas</strong> no Anest+ Pro individual.</li>
               <li>Identificar o <strong>hospital</strong> selecionado para aplicação do logotipo institucional no relatório.</li>
-              <li>Sugerir a seleção de hospital por <strong>geofencing institucional</strong>, quando a permissão de localização estiver ativa, assim como limitar o uso do aplicativo ao ambiente hospitalar.</li>
+              <li>Sugerir a seleção de hospital por <strong>geofencing institucional</strong>, quando a permissão de localização estiver ativa, e apoiar regras de acesso vinculadas a fluxos institucionais quando aplicável.</li>
+              <li>Verificar assinatura, compras e direito de acesso Pro por meio da App Store.</li>
+              <li>Viabilizar sincronização opcional, dashboard autenticado, listagem, download, conferência e produção quando o usuário ou a instituição utiliza esses recursos.</li>
             </ul>
           </PolicySection>
 
           <PolicySection title="Armazenamento e segurança" icon={Lock}>
             <div className="space-y-4">
-              <p>Todos os dados clínicos são armazenados <strong>apenas no dispositivo</strong>, protegidos pelos mecanismos do iOS (PIN, Touch ID ou Face ID). O desenvolvedor <strong>não tem acesso remoto</strong> aos registros médicos. Não há sincronização em nuvem pelo aplicativo, nem compartilhamento com terceiros.</p>
+              <p>No uso individual sem sincronização, os dados clínicos permanecem no dispositivo, protegidos pelos mecanismos do iOS (PIN, Touch ID ou Face ID). Quando o usuário conecta sua conta, sincroniza fichas ou utiliza dashboard Pro, determinados arquivos e metadados podem ser tratados em infraestrutura de apoio necessária ao serviço.</p>
+              <p>No fluxo Pro com sincronização ativada, a cópia web tem finalidade operacional e temporária, permitindo revisão, download ou impressão pela Conta Anest+. Essa cópia fica disponível por até 30 dias e, após esse prazo, é removida da infraestrutura do Anest+. O registro original permanece salvo no dispositivo.</p>
+              <p>Nos fluxos institucionais, a sincronização, listagem, conferência, produção e download de fichas podem ocorrer em ambiente autenticado e vinculado ao serviço. Esses recursos são distintos da assinatura Pro individual e dependem do contexto de implantação institucional.</p>
               <p>O aplicativo oferece, <strong>por iniciativa exclusiva do usuário</strong>, a funcionalidade de exportação e importação de dados (backup local), permitindo que o próprio usuário gere arquivos para cópia, restauração ou migração entre dispositivos.</p>
-              <p>Esses arquivos <strong>não são enviados, armazenados ou acessados pelo desenvolvedor</strong>, permanecendo sob controle exclusivo do usuário, que é responsável por sua guarda, armazenamento e eventual compartilhamento em serviços de sua escolha.</p>
+              <p>Arquivos exportados, compartilhados ou armazenados pelo próprio usuário fora do app permanecem sob responsabilidade do usuário. Arquivos sincronizados opcionalmente possuem finalidade operacional, especialmente consulta, download, conferência e posterior integração ao fluxo documental do hospital ou serviço de saúde quando aplicável.</p>
             </div>
           </PolicySection>
 
           <PolicySection title="Contexto institucional e responsabilidade" icon={Scale}>
             <p>
-              Em ambiente institucional, os <strong>hospitais</strong> são <strong>responsáveis pela governança e pelo tratamento</strong> dos dados clínicos gerados sob sua custódia (por exemplo, retenção, acesso interno e integrações locais), em conformidade com a <strong>LGPD (Lei nº 13.709/2018)</strong> e normas aplicáveis.
+              Em ambiente institucional, os <strong>hospitais</strong> são <strong>responsáveis pela governança e pelo tratamento</strong> dos dados clínicos gerados sob sua custódia (por exemplo, retenção, acesso interno, integração ao prontuário oficial, produção e rotinas administrativas), em conformidade com a <strong>LGPD (Lei nº 13.709/2018)</strong> e normas aplicáveis. A avaliação pré-anestésica do Anest+ Pro individual não faz parte do fluxo institucional descrito nesta Política.
             </p>
           </PolicySection>
 
@@ -115,12 +132,12 @@ export default function PrivacidadePage() {
             <div className="space-y-4">
               <p>O usuário pode, a qualquer momento: <strong>confirmar</strong> a existência de tratamento; solicitar <strong>acesso, correção, portabilidade ou exclusão</strong>; <strong>revogar consentimentos</strong>; e pedir informações adicionais sobre o tratamento.</p>
               <p>Para dados sob sua guarda no dispositivo, use os recursos do app (ex.: exclusão) e/ou entre em contato pelo e-mail <strong>anestplus@outlook.com</strong>. Em contexto institucional, contate também o hospital responsável quando os dados estiverem sob sua governança.</p>
-              <p><strong>Base Legal:</strong> O Anest+ não realiza tratamento de dados clínicos como controlador. Quando aplicável, o tratamento de dados pessoais não sensíveis (como dados de contato para suporte) fundamenta-se no art. 7º, incisos I, V e IX da LGPD. O Anest+ <strong>não realiza transferências internacionais</strong> de dados.</p>
+              <p><strong>Base Legal:</strong> O tratamento de dados pessoais ocorre conforme as bases legais aplicáveis previstas na legislação brasileira, inclusive execução do serviço, cumprimento de obrigações legais, exercício regular de direitos, proteção da vida, tutela da saúde e legítimo interesse, sempre observados finalidade e necessidade. Determinados provedores técnicos podem possuir infraestrutura fora do Brasil; quando aplicável, eventual transferência internacional observará salvaguardas compatíveis com a legislação aplicável.</p>
             </div>
           </PolicySection>
 
           <motion.div variants={fadeUpVariants} className="pt-8 text-center text-sm font-medium text-zinc-400">
-            Última atualização: Março de 2026 • Versão 1.3.0
+            Última atualização: Junho de 2026 • Versão 1.5.0
           </motion.div>
         </div>
       </motion.div>

@@ -7,22 +7,22 @@ export const metadata: Metadata = {
     template: "%s | Anest+",
   },
   description:
-    "O Anest+ fortalece o registro anestésico com ficha anestésica digital, mais segurança no preenchimento, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
+    "O Anest+ fortalece a documentação anestésica com avaliação pré-anestésica, ficha anestésica digital, assinatura, validação e fluxos institucionais de produção e conferência.",
   metadataBase: new URL("https://anestplus.com"),
   openGraph: {
     type: "website",
     url: "https://anestplus.com",
     siteName: "Anest+",
-    title: "Anest+ — Ficha anestésica digital com mais segurança e padronização",
+    title: "Anest+ — Documentação anestésica com mais segurança e padronização",
     description:
-      "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
+      "Avaliação pré-anestésica, ficha anestésicaZ, assinatura, validação e fluxos institucionais para a rotina real da anestesia.",
     locale: "pt_BR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anest+ — Ficha anestésica digital com mais segurança e padronização",
+    title: "Anest+ — Documentação anestésica com mais segurança e padronização",
     description:
-      "Mais segurança no registro anestésico, ficha legível, padronização da equipe e um fluxo pensado para a rotina real do centro cirúrgico.",
+      "Avaliação pré-anestésica, ficha legível, assinatura, validação e fluxos institucionais para a rotina real da anestesia.",
   },
   icons: {
     icon: "/favicon.ico",

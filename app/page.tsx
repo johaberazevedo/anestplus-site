@@ -469,7 +469,7 @@ const isLightHeader = isMenuOpen || isHeaderSolid;
     : "border-white/14 bg-white/[0.07] text-white/80 hover:bg-white/[0.12] hover:text-white"
 }`}
 >
-  Solução para Hospitais
+  Para Grupos e Hospitais
 </Link>
 
 <Link
@@ -536,7 +536,7 @@ const isLightHeader = isMenuOpen || isHeaderSolid;
   onClick={() => setIsMenuOpen(false)}
   className="text-lg text-zinc-500 transition-colors hover:text-zinc-900"
 >
-  Para Hospitais (Institucional)
+  Para grupos e serviços
 </Link>
 
 <Link
@@ -909,6 +909,41 @@ desc="Sinais vitais, parâmetros, fluidos, fármacos, intercorrências e decisõ
   </div>
 </section>
 
+
+      {/* PONTE INSTITUCIONAL */}
+      <section className="px-5 pb-4 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-[#FAFAF7] px-5 py-7 shadow-[0_18px_50px_-36px_rgba(22,32,20,0.18)] sm:rounded-[32px] sm:px-7 sm:py-8 md:px-8">
+            <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-[#B9963B]/10 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A865F] sm:text-[11px]">
+                  Para equipes
+                </p>
+
+                <h2 className="mt-2 text-[1.45rem] font-black leading-tight tracking-tight text-zinc-950 sm:text-2xl md:text-[1.9rem]">
+                  Coordena um grupo ou serviço de anestesiologia?
+                </h2>
+
+                <p className="mt-3 text-[14px] leading-7 text-zinc-600 sm:text-base">
+                  Conheça o fluxo institucional do Anest+ para padronizar fichas,
+                  presets, assinatura, produção e conferência em uma rotina de equipe.
+                </p>
+              </div>
+
+              <Link
+                href="/institucional"
+                className="inline-flex h-12 shrink-0 items-center justify-center rounded-2xl bg-[#162014] px-5 text-[14px] font-bold text-white shadow-sm transition-all hover:bg-[#22331D] sm:px-6"
+              >
+                Ver solução para grupos e serviços
+                <ChevronRight className="ml-2" size={17} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ORIGEM DO PRODUTO */}
 <section
   id="problema"
@@ -1013,6 +1048,113 @@ e consistente para revisão, guarda e rotina hospitalar.
     </div>
   </div>
 </section>
+
+      {/* PRÉ-ANESTÉSICA PRO */}
+      <section className="bg-white px-5 py-12 sm:px-6 md:py-18">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+            <div className="max-w-2xl">
+              <SectionHeading
+                eyebrow="Antes da sala"
+                title="Pré-anestésica com contexto clínico, escores e saída pronta para o caso."
+                desc="Registre história, exame, via aérea, exames complementares, riscos e planejamento em um fluxo guiado. O Anest+ Pro organiza escores selecionados, destaca pontos de atenção e permite gerar o PDF da avaliação ou iniciar a ficha anestésica com os dados principais já estruturados."
+              />
+
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                {[
+                  {
+                    icon: ClipboardList,
+                    title: "Fluxo guiado",
+                    desc: "Paciente, procedimento, história, sistemas, exame físico, escores, planejamento e consentimento em etapas.",
+                  },
+                  {
+                    icon: AlertCircle,
+                    title: "Escores do seu dia a dia",
+                    desc: "STOP-Bang, Apfel, RCRI, ARISCAT, CFS, AUB-HAS2, VSG-CRI, PRPS modificado e DASI/METs quando aplicáveis.",
+                  },
+                  {
+                    icon: FileCheck2,
+                    title: "Alertas e conferência",
+                    desc: "Pontos de atenção para SAOS, NVPO, risco cardíaco, pulmonar, fragilidade, TEV, aspiração, GLP-1/GIP e jejum.",
+                  },
+                  {
+                    icon: FileText,
+                    title: "PDF e ficha",
+                    desc: "Exporte a avaliação pré-anestésica ou use a pré para iniciar a ficha anestésica com contexto clínico preservado.",
+                  },
+                ].map(({ icon: Icon, title, desc }) => (
+                  <div
+                    key={title}
+                    className="rounded-[20px] border border-zinc-200/80 bg-white p-4 shadow-sm transition-colors hover:border-[#B9963B]/30 sm:p-5"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#F6F7F1] text-[#7A865F]">
+                        <Icon size={19} strokeWidth={1.8} />
+                      </div>
+                      <div>
+                        <h3 className="text-[1rem] font-black leading-snug tracking-tight text-zinc-950">
+                          {title}
+                        </h3>
+                        <p className="mt-1.5 text-[13px] leading-6 text-zinc-500">
+                          {desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-[28px] border border-[#B9963B]/15 bg-[#FAFAF7] p-5 shadow-[0_24px_60px_-42px_rgba(22,32,20,0.22)] sm:p-6 md:p-8">
+              <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#B9963B]/10 blur-3xl" />
+              <div className="relative">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A865F] sm:text-[11px]">
+                  Fluxo conectado
+                </p>
+                <h3 className="mt-3 text-[1.8rem] font-black leading-tight tracking-tight text-zinc-950 sm:text-4xl">
+                  Da avaliação pré-anestésica ao registro intraoperatório.
+                </h3>
+                <p className="mt-4 max-w-2xl text-[14px] leading-7 text-zinc-600 sm:text-base sm:leading-8">
+                  A pré-anestésica documenta o planejamento, reúne escores e
+                  pontos de atenção, gera um PDF próprio e pode ajudar a iniciar
+                  a ficha quando o paciente chegar ao centro cirúrgico.
+                </p>
+
+                <div className="mt-6 grid gap-3">
+                  {[
+                    ["1", "Avaliação guiada", "Dados clínicos, sistemas, via aérea, exames e contexto especial do paciente."],
+                    ["2", "Escores e alertas", "Cálculos e pontos de atenção aparecem como apoio documental para conferência profissional."],
+                    ["3", "PDF ou ficha", "A avaliação pode ser exportada em PDF ou usada para iniciar a ficha anestésica."],
+                  ].map(([step, title, desc]) => (
+                    <div
+                      key={step}
+                      className="flex gap-4 rounded-[18px] border border-white/70 bg-white/72 p-4 shadow-sm backdrop-blur"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#162014] text-sm font-black text-white">
+                        {step}
+                      </div>
+                      <div>
+                        <p className="font-black tracking-tight text-zinc-950">
+                          {title}
+                        </p>
+                        <p className="mt-1 text-[13px] leading-6 text-zinc-500">
+                          {desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+<p className="mt-5 text-[12px] leading-5 text-zinc-500 sm:text-[13px]">
+  Recurso disponível no Anest+ Pro. Escores, alertas e informações
+  de apoio têm finalidade documental e auxiliar, sempre sujeitos à
+  conferência, interpretação e validação do profissional responsável.
+</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* 1. NOVO CASO */}
       <section
@@ -1179,8 +1321,8 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 <FeatureCard
   compact
   icon={Activity}
-  title="Fluxo documental"
-  desc="Depois de revisada, a ficha pode ser impressa, baixada, enviada ou anexada conforme a rotina definida pelo serviço."
+  title="Ficha pronta para a rotina"
+  desc="Depois de revisada, a ficha pode ser impressa, baixada ou enviada conforme a rotina definida pelo serviço."
 />
               </div>
             </div>
@@ -1285,7 +1427,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 <SectionHeading
   eyebrow="Conta Anest+"
   title="A ponte entre o app e o sistema do hospital"
-  desc="Com a sincronização ativada, as fichas exportadas podem ficar disponíveis por tempo limitado na Conta Anest+. Assim, você localiza, revisa, baixa, imprime ou encaminha o PDF para a rotina documental do hospital com mais facilidade."
+  desc="Com a sincronização ativada, as fichas exportadas podem ficar disponíveis por tempo limitado na Conta Anest+. Assim, você localiza, revisa, baixa, imprime ou encaminha o PDF conforme a rotina do hospital com mais facilidade."
 />
 
 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -1324,7 +1466,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
             compact
             icon={HardDrive}
             title="Download pelo computador"
-            desc="Baixe PDFs para impressão, revisão ou anexação no sistema utilizado pelo hospital."
+            desc="Baixe PDFs para impressão, revisão ou envio ao sistema utilizado pelo hospital."
           />
 
           <FeatureCard
@@ -1484,11 +1626,17 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
 <SectionHeading
   eyebrow="Recursos de apoio"
   title="Atalhos para padronizar excelência sem engessar sua prática"
-  desc="Além do registro anestésico, o Anest+ reúne recursos que ajudam no dia a dia: hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code, leitura auxiliar de dados iniciais e controle financeiro."
+  desc="Além do registro anestésico, o Anest+ Pro reúne recursos que ajudam no dia a dia: pré-anestésica, hospitais salvos, textos dinâmicos, presets próprios, grades de monitorização, passagem por QR Code, leitura auxiliar de dados iniciais e controle financeiro."
 />
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
             <div className="grid gap-4 md:grid-cols-2">
+<FeatureCard
+  compact
+  icon={ClipboardList}
+  title="Pré-anestésica"
+  desc="Estruture avaliação pré-operatória, escores, pontos de atenção e PDF antes do procedimento."
+/>
               <FeatureCard
   compact
   icon={Building2}
@@ -1535,8 +1683,7 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   compact
   icon={FileText}
   title="Leitura auxiliar de dados iniciais"
-  desc="Aproveite dados do documento do paciente para acelerar a abertura do caso quando fizer sentido."
-  className="md:col-span-2"
+  desc="Use leitura auxiliar para preencher dados iniciais quando disponível, sempre com conferência manual antes de salvar."
 />
             </div>
 
@@ -1613,32 +1760,46 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
     />
 
     <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:grid-cols-2">
-      <FAQCard
-        title="O Anest+ substitui a ficha de papel do hospital?"
-        desc="Ele foi criado para organizar o registro anestésico e gerar um PDF final claro, legível e assinável. Em ambientes institucionais, o uso deve seguir a rotina definida pelo hospital ou serviço."
-      />
+  <FAQCard
+    title="O Anest+ substitui a ficha de papel do hospital?"
+    desc="Ele foi criado para organizar o registro anestésico e gerar um PDF final claro, legível e assinável. Em ambientes institucionais, o uso deve seguir a rotina definida pelo hospital ou serviço."
+  />
 
-      <FAQCard
-        title="Vou perder tempo olhando para a tela durante o caso?"
-        desc="A proposta é justamente o contrário: interações rápidas, com poucos toques, para que o registro acompanhe o caso sem competir com a vigilância clínica."
-      />
+  <FAQCard
+    title="E se meu hospital já usa prontuário eletrônico?"
+    desc="O Anest+ não tenta substituir todo o sistema do hospital. Ele ajuda a organizar a ficha anestésica, gerar um PDF claro e apoiar a rotina definida pelo serviço, inclusive quando o PDF precisa ser impresso, baixado ou enviado para outro sistema."
+  />
 
-      <FAQCard
-        title="Onde e por quanto tempo ficam salvas minhas fichas?"
-        desc="O registro principal fica salvo no dispositivo. Quando a sincronização estiver ativada, apenas uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, essa cópia web é removida da infraestrutura do Anest+."
-      />
+  <FAQCard
+    title="Vou perder tempo olhando para a tela durante o caso?"
+    desc="A proposta é justamente o contrário: interações rápidas, com poucos toques, para que o registro acompanhe o caso sem competir com a vigilância clínica."
+  />
 
-      <FAQCard
-        title="Como funciona a assinatura eletrônica avançada?"
-        desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com dados de autoria, assinatura e conteúdo assinado, permitindo conferência posterior no validador do site."
-      />
+  <FAQCard
+    title="Funciona sem internet durante o caso?"
+    desc="Sim. O registro principal é criado e atualizado no dispositivo. A conexão é necessária apenas para recursos que dependem de conta, sincronização, validação ou acesso web."
+  />
 
-      <FAQCard
-        title="Como funciona o teste de 7 dias grátis?"
-        desc="Use o código ANESTFRIEND no resgate pela App Store para ativar 7 dias grátis e testar o Anest+ em um plantão real, sem compromisso."
-        className="md:col-span-2"
-      />
-    </div>
+  <FAQCard
+    title="Onde e por quanto tempo ficam salvas minhas fichas?"
+    desc="O registro principal fica salvo no dispositivo. Quando a sincronização estiver ativada, apenas uma cópia fica disponível na Conta Anest+ por até 30 dias para revisão, download ou impressão. Após esse prazo, essa cópia web é removida da infraestrutura do Anest+."
+  />
+
+  <FAQCard
+    title="A pré-anestésica substitui a avaliação clínica?"
+    desc="Não. A pré-anestésica do Anest+ Pro organiza dados, escores, alertas e pontos de atenção com finalidade documental e auxiliar. A interpretação e a validação permanecem sob responsabilidade do profissional."
+  />
+
+  <FAQCard
+    title="Como funciona a assinatura eletrônica avançada?"
+    desc="Antes de assinar, o profissional autentica no dispositivo. Depois, o Anest+ aplica uma camada técnica ao PDF com dados de autoria, assinatura e conteúdo assinado, permitindo conferência posterior no validador do site."
+  />
+
+  <FAQCard
+    title="Como funciona o teste de 7 dias grátis?"
+    desc="Use o código ANESTFRIEND no resgate pela App Store para ativar 7 dias grátis e testar o Anest+ em um plantão real, sem compromisso."
+  />
+</div>
   </div>
 </section>
 

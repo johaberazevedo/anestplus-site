@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { Scale, ShieldAlert, Copyright, LifeBuoy, MapPin, CheckCircle2 } from "lucide-react";
+import { Scale, ShieldAlert, Copyright, MapPin, CheckCircle2 } from "lucide-react";
 
 const fadeUpVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -72,8 +72,8 @@ export default function TermosPage() {
 
           <TermSection title="Objeto" icon={Scale}>
             <div className="space-y-4">
-              <p>O Anest+ é um software destinado a auxiliar profissionais de saúde no registro anestésico digital, organização de informações do ato anestésico e exportação de relatórios em PDF, podendo incluir identificação do hospital/local selecionado (como nome e/ou logotipo).</p>
-              <p>O Anest+ não substitui prontuários oficiais da instituição, não realiza diagnóstico, prescrição ou conduta clínica, e não substitui o julgamento do profissional. O conteúdo registrado e o documento exportado são de responsabilidade exclusiva do usuário que os produz e assina.</p>
+              <p>O Anest+ é um software destinado a auxiliar profissionais de saúde no registro anestésico digital, organização de informações do ato anestésico, avaliação pré-anestésica no Anest+ Pro individual, planejamento pré-operatório, exportação de relatórios em PDF e, quando aplicável, sincronização opcional para acesso em área autenticada.</p>
+              <p>O Anest+ não substitui prontuários oficiais da instituição, não realiza diagnóstico, prescrição ou definição autônoma de conduta clínica, e não substitui o julgamento do profissional. Alertas, campos de apoio, escalas, classificações e informações geradas no contexto da avaliação pré-anestésica possuem finalidade documental e auxiliar, devendo ser conferidos, interpretados e validados pelo profissional responsável. O conteúdo registrado, exportado ou sincronizado é de responsabilidade exclusiva do usuário que o produz, confere e assina.</p>
               <p><strong>Geofencing institucional:</strong> quando a permissão de localização estiver ativa, o app pode auxiliar a seleção do hospital por meio de geofencing processado <strong>no dispositivo</strong>, exclusivamente para fins institucionais.</p>
               <p><strong>Integração ao prontuário:</strong> ao imprimir/exportar o relatório gerado pelo Anest+ e assiná-lo e carimbá-lo, o documento pode passar a integrar o prontuário do paciente, conforme normas da instituição e legislação aplicável. O conteúdo é de responsabilidade do profissional anestesiologista que o assinou.</p>
             </div>
@@ -85,6 +85,14 @@ export default function TermosPage() {
               <p>O Anest+ é disponibilizado “no estado em que se encontra”. O desenvolvedor não garante disponibilidade contínua, ausência de erros nem adequação a finalidades clínicas específicas.</p>
               <p>O Anest+ (incluindo código, design, fluxos, modelos de dados e funcionalidades) é de titularidade exclusiva do desenvolvedor e protegido pela legislação aplicável (Lei do Software e Direitos Autorais).</p>
               <p>É proibido: (i) engenharia reversa, descompilação, desmontagem ou tentativa de extração de código-fonte; (ii) copiar, modificar, sublicenciar, vender, redistribuir ou disponibilizar o app ou partes dele; (iii) utilizar marcas e identidade visual do Anest+ para fins promocionais sem autorização.</p>
+            </div>
+          </TermSection>
+
+          <TermSection title="Anest+ Pro e assinatura" icon={CheckCircle2}>
+            <div className="space-y-4">
+              <p>O Anest+ Pro individual é uma modalidade pessoal do aplicativo, destinada ao uso do próprio anestesiologista. Determinadas funcionalidades podem exigir assinatura Pro ativa, incluindo, conforme disponibilidade técnica, versão do aplicativo e regras comerciais vigentes, avaliação pré-anestésica, PDF da avaliação pré-anestésica, conversão da pré-anestésica em ficha anestésica, hospitais personalizados, calendário, produção pessoal e uso ampliado.</p>
+              <p>A assinatura Pro individual pode ser processada pela App Store. Cobrança, renovação, cancelamento, reembolso, restauração de compras e gerenciamento do método de pagamento seguem as regras da Apple e devem ser administrados pelo usuário em sua conta da App Store.</p>
+              <p>Recursos institucionais, dashboards hospitalares, produção institucional, implantação por unidade e fluxos multiusuário não integram automaticamente a assinatura Pro individual e dependem de arranjo específico com o hospital, grupo ou serviço de saúde.</p>
             </div>
           </TermSection>
 
@@ -100,7 +108,7 @@ export default function TermosPage() {
           <TermSection title="Contexto institucional e responsabilidade" icon={Scale}>
             <div className="space-y-4">
               <p>Em ambiente institucional, os <strong>hospitais</strong> são <strong>responsáveis por suas diretrizes, padronizações, guarda, acesso e governança</strong> dos dados clínicos gerados em suas unidades, em conformidade com a <strong>LGPD (Lei nº 13.709/2018)</strong> e demais normas aplicáveis.</p>
-              <p>Quando utilizado em contexto institucional, o hospital/serviço de saúde é responsável por suas diretrizes internas, governança, acesso e guarda de documentos clínicos gerados no ambiente de trabalho, bem como por adequação à LGPD e demais normas aplicáveis.</p>
+              <p>O uso institucional pode envolver implantação por unidade, identidade visual institucional, painel de produção, listagem, conferência, download de fichas e fluxos operacionais próprios. A avaliação pré-anestésica do Anest+ Pro não integra automaticamente o fluxo institucional, salvo contratação, implantação ou habilitação específica.</p>
             </div>
           </TermSection>
 
@@ -109,7 +117,7 @@ export default function TermosPage() {
           </TermSection>
 
           <TermSection title="Privacidade e proteção de dados" icon={Scale}>
-            <p>A coleta e o tratamento de dados seguem a <strong>Política de Privacidade</strong> vigente. Os dados clínicos permanecem <strong>apenas no dispositivo</strong> do usuário; o desenvolvedor <strong>não acessa, não armazena e não processa</strong> registros clínicos em servidores próprios.</p>
+            <p>A coleta e o tratamento de dados seguem a Política de Privacidade vigente. O Anest+ opera com dados locais por padrão no app individual. Determinados recursos Pro ou institucionais, quando habilitados, podem envolver sincronização, armazenamento técnico, armazenamento temporário, área autenticada, dashboard, listagem, download e tratamento de arquivos e metadados necessários ao funcionamento do serviço, observadas as bases legais, regras de segurança e responsabilidades descritas na Política de Privacidade.</p>
           </TermSection>
 
           <TermSection title="Disposições Finais" icon={MapPin}>
@@ -122,7 +130,7 @@ export default function TermosPage() {
           </TermSection>
 
           <motion.div variants={fadeUpVariants} className="pt-8 text-center text-sm font-medium text-zinc-400">
-            Última atualização: Janeiro de 2026 • Versão 1.3.0
+            Última atualização: Junho de 2026 • Versão 1.5.0
           </motion.div>
         </div>
       </motion.div>
