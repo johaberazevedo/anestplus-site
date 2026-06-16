@@ -2,6 +2,19 @@
 
 import { Fragment, FormEvent, useMemo, useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { SupportChatErrorBoundary } from "@/components/support-chat/SupportChatErrorBoundary";
+
+const SupportChatWidget = dynamic(
+  () =>
+    import("@/components/support-chat/SupportChatWidget").then(
+      (mod) => mod.SupportChatWidget
+    ),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 type FichaProducao = {
   id: string;
@@ -576,6 +589,10 @@ export default function ProducaoPage() {
           </div>
         ) : null}
       </div>
+
+      <SupportChatErrorBoundary>
+        <SupportChatWidget area="production" />
+      </SupportChatErrorBoundary>
     </main>
   );
 }
