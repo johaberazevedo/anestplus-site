@@ -47,6 +47,8 @@ type FichaProducao = {
   needsReview: boolean;
 };
 
+type TipoProducao = "geral" | "chd";
+
 const HOSPITAIS = [
   { id: "hgvitoria", label: "HGVC" },
   { id: "afraniopeixoto", label: "Afrânio" },
@@ -80,6 +82,28 @@ function formatDuration(minutes: number | null) {
   return `${h}h${String(m).padStart(2, "0")}`;
 }
 
+function isFichaChd(ficha: FichaProducao) {
+  return ficha.tipoAnestesiaBruto.toLocaleUpperCase("pt-BR").includes("CHD");
+}
+
+function buildLinhasParaColar(fichas: FichaProducao[]) {
+  return fichas
+    .map((ficha) =>
+      [
+        ficha.data,
+        ficha.turno === "REVISAR" ? "" : ficha.turno,
+        ficha.registro,
+        ficha.paciente.toLocaleUpperCase("pt-BR"),
+        ficha.empresa,
+        ficha.anestesista.toLocaleUpperCase("pt-BR"),
+        ficha.tipoAnestesiaProducao.startsWith("REVISAR")
+          ? ""
+          : ficha.tipoAnestesiaProducao,
+      ].join("\t")
+    )
+    .join("\n");
+}
+
 export default function ProducaoPage() {
   const [hospitalId, setHospitalId] = useState("hgvitoria");
   const [date, setDate] = useState(todayISO());
@@ -87,6 +111,7 @@ export default function ProducaoPage() {
   const [loading, setLoading] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [tipoProducao, setTipoProducao] = useState<TipoProducao>("geral");
   const [copied, setCopied] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -102,27 +127,30 @@ export default function ProducaoPage() {
     );
   }, [fichas]);
 
-    const linhasParaColar = useMemo(() => {
-    return fichasValidas
-      .map((ficha) =>
-        [
-          ficha.data,
-          ficha.turno === "REVISAR" ? "" : ficha.turno,
-          ficha.registro,
-          ficha.paciente.toLocaleUpperCase("pt-BR"),
-          ficha.empresa,
-          ficha.anestesista.toLocaleUpperCase("pt-BR"),
-          ficha.tipoAnestesiaProducao.startsWith("REVISAR")
-            ? ""
-            : ficha.tipoAnestesiaProducao,
-        ].join("\t")
-      )
-      .join("\n");
-  }, [fichasValidas]);
+  const fichasExibidas = useMemo(
+    () =>
+      fichasValidas.filter((ficha) =>
+        tipoProducao === "chd" ? isFichaChd(ficha) : !isFichaChd(ficha)
+      ),
+    [fichasValidas, tipoProducao]
+  );
 
-  const totalRevisar = fichasValidas.filter((f) => f.needsReview).length;
+  const linhasParaColar = useMemo(
+    () => buildLinhasParaColar(fichasExibidas),
+    [fichasExibidas]
+  );
 
-  const totalVersoesExtras = fichasValidas.reduce(
+  const linhasTitulo =
+    tipoProducao === "chd" ? "produção CHD" : "produção geral";
+
+  const emptyTitle =
+    tipoProducao === "chd"
+      ? "Nenhuma produção CHD encontrada"
+      : "Nenhuma produção geral encontrada";
+
+  const totalRevisar = fichasExibidas.filter((f) => f.needsReview).length;
+
+  const totalVersoesExtras = fichasExibidas.reduce(
     (total, ficha) => total + Math.max(0, ficha.versionCount - 1),
     0
   );
@@ -147,6 +175,7 @@ export default function ProducaoPage() {
     setHasSearched(true);
     setLoading(true);
     setError("");
+    setCopied(false);
     setFichas([]);
     setExpandedIds(new Set());
 
@@ -282,7 +311,7 @@ export default function ProducaoPage() {
           onSubmit={buscarProducao}
           className="mb-8 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm sm:p-6"
         >
-          <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
+          <div className="grid gap-4 lg:grid-cols-[1.15fr_0.9fr_1.35fr_auto]">
             <div>
               <label className="mb-2 block text-sm font-bold text-zinc-700">
                 Hospital
@@ -328,6 +357,41 @@ export default function ProducaoPage() {
               />
             </div>
 
+            <div>
+              <label className="mb-2 block text-sm font-bold text-zinc-700">
+                Tipo de produção
+              </label>
+
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { id: "geral" as const, label: "Produção geral" },
+                  { id: "chd" as const, label: "Produção CHD" },
+                ].map((tipo) => {
+                  const active = tipo.id === tipoProducao;
+
+                  return (
+                    <button
+                      key={tipo.id}
+                      type="button"
+                      onClick={() => {
+                        setTipoProducao(tipo.id);
+                        setCopied(false);
+                        setExpandedIds(new Set());
+                      }}
+                      className={[
+                        "rounded-full px-4 py-2 text-sm font-bold transition",
+                        active
+                          ? "border border-[#1a2718] bg-[#1a2718] text-white shadow-md shadow-[#1a2718]/20"
+                          : "border border-zinc-300 bg-white text-zinc-700 hover:border-[#b9963b]/50 hover:bg-[#fafaf7]",
+                      ].join(" ")}
+                    >
+                      {tipo.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="flex items-end">
               <button
                 type="submit"
@@ -346,13 +410,13 @@ export default function ProducaoPage() {
           </div>
         ) : null}
 
-        {fichasValidas.length > 0 ? (
+        {fichasExibidas.length > 0 ? (
           <div className="mb-6 grid gap-4 md:grid-cols-4">
             <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-zinc-400">
                 Casos únicos
               </p>
-              <p className="mt-2 text-3xl font-black">{fichasValidas.length}</p>
+              <p className="mt-2 text-3xl font-black">{fichasExibidas.length}</p>
             </div>
 
             <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm">
@@ -377,7 +441,7 @@ export default function ProducaoPage() {
               <button
                 type="button"
                 onClick={copiarLinhas}
-                disabled={fichasValidas.length === 0}
+                disabled={fichasExibidas.length === 0}
                 className="w-full rounded-2xl bg-[#1a2718] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#22331d] disabled:opacity-50"
               >
                 {copied ? "Copiado!" : "Copiar linhas para planilha"}
@@ -393,20 +457,20 @@ export default function ProducaoPage() {
               Selecione o hospital e a data para gerar as linhas da planilha.
             </p>
           </div>
-        ) : !loading && !error && fichasValidas.length === 0 ? (
+        ) : !loading && !error && fichasExibidas.length === 0 ? (
           <div className="rounded-[28px] border border-zinc-200 bg-white px-6 py-14 text-center shadow-sm">
-            <h2 className="text-lg font-bold">Nenhuma ficha encontrada</h2>
+            <h2 className="text-lg font-bold">{emptyTitle}</h2>
             <p className="mt-2 text-sm text-zinc-500">
-              Não há fichas institucionais para esse hospital nessa data.
+              Altere o tipo de produção ou busque outra data para conferir.
             </p>
           </div>
         ) : null}
 
-        {fichasValidas.length > 0 ? (
+        {fichasExibidas.length > 0 ? (
           <div className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
             <div className="border-b border-zinc-200 px-6 py-5">
               <h2 className="text-base font-bold">
-                Linhas da produção — {hospitalLabel}
+                Linhas da {linhasTitulo} — {hospitalLabel}
               </h2>
               <p className="mt-2 text-xs font-medium text-zinc-500">
                 A tabela principal usa sempre a versão mais recente. Casos com
@@ -446,7 +510,7 @@ export default function ProducaoPage() {
                 </thead>
 
                 <tbody>
-                  {fichasValidas.map((ficha) => {
+                  {fichasExibidas.map((ficha) => {
                     const isDownloading = downloadingId === ficha.id;
 
                     return (
