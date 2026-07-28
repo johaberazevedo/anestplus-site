@@ -38,6 +38,21 @@ const WHATSAPP_URL =
   "https://wa.me/5571992288755?text=Ol%C3%A1%2C%20estava%20no%20site%20do%20Anest%2B%20e%20queria%20tirar%20uma%20d%C3%BAvida.";
 const INSTAGRAM_URL = "https://instagram.com/anestplus";
 const EMAIL = "anestplus@outlook.com";
+const RESIDENCY_ACCESS_EMAIL_URL = `mailto:${EMAIL}?subject=${encodeURIComponent(
+  "Solicitação de acesso pela residência",
+)}&body=${encodeURIComponent(
+  `Olá! Gostaria de solicitar acesso ao módulo de avaliação pré-anestésica pela residência médica.
+
+E-mail da Conta Anest+:
+Nome completo:
+CRM:
+UF do CRM:
+Cidade:
+Estado:
+Núcleo ou programa de residência:
+
+Anexarei o comprovante de vínculo com programa reconhecido pela SBA ou pelo MEC.`,
+)}`;
 
 function SectionHeading({
   eyebrow,
@@ -1049,7 +1064,7 @@ mais uma carga mental nesse momento.
   </div>
 </section>
 
-      {/* PRÉ-ANESTÉSICA PRO */}
+      {/* PRÉ-ANESTÉSICA */}
       <section className="bg-white px-5 py-12 sm:px-6 md:py-18">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
@@ -1146,11 +1161,41 @@ mais uma carga mental nesse momento.
                 </div>
 
 <p className="mt-5 text-[12px] leading-5 text-zinc-500 sm:text-[13px]">
-  Recurso disponível no Anest+ Pro. Escores, alertas e informações
-  de apoio têm finalidade informativa e auxiliar, sempre sujeitos à
-  conferência, interpretação e validação do profissional responsável.
+  Recurso disponível no Anest+ Pro ou por acesso residencial individual
+  autorizado. Escores, alertas e informações de apoio têm finalidade
+  informativa e auxiliar, sempre sujeitos à conferência, interpretação
+  e validação do profissional responsável.
 </p>
               </div>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-[24px] border border-[#B9963B]/20 bg-[#B9963B]/5 p-5 shadow-sm sm:mt-10 sm:p-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7A865F] sm:text-[11px]">
+                  Acesso para residência médica
+                </p>
+                <h3 className="mt-2 text-[1.25rem] font-black tracking-tight text-zinc-950 sm:text-2xl">
+                  Acesso gratuito à pré-anestésica para residentes
+                </h3>
+                <p className="mt-3 text-[14px] leading-7 text-zinc-600 sm:text-[15px]">
+                  Residentes de Anestesiologia podem solicitar acesso gratuito
+                  ao módulo de avaliação pré-anestésica durante o período
+                  autorizado da residência. A liberação é individual,
+                  vinculada à Conta Anest+ e depende da validação do programa e
+                  do comprovante de residência reconhecida pela SBA ou pelo MEC.
+                  Essa modalidade não libera os demais recursos do Anest+ Pro.
+                </p>
+              </div>
+
+              <a
+                href={RESIDENCY_ACCESS_EMAIL_URL}
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#162014] px-5 py-3.5 text-[14px] font-black text-white shadow-sm transition-transform hover:scale-[1.02] sm:rounded-2xl"
+              >
+                <Mail size={18} />
+                Solicitar acesso
+              </a>
             </div>
           </div>
         </div>
@@ -1786,6 +1831,11 @@ desc="Frequência, pressão e demais parâmetros acompanham o caso com atualiza�
   <FAQCard
     title="A pré-anestésica toma o lugar da avaliação clínica?"
     desc="Não. A pré-anestésica do Anest+ Pro organiza dados, escores, alertas e pontos de atenção como apoio à avaliação. A interpretação e a validação permanecem sob responsabilidade do profissional."
+  />
+
+  <FAQCard
+    title="Como solicitar o acesso gratuito pela residência?"
+    desc="Primeiro, crie sua Conta Anest+ usando o mesmo e-mail que será informado na solicitação. Depois, envie para anestplus@outlook.com seu nome, e-mail da conta, CRM, cidade, estado, núcleo de residência e comprovante de vínculo com programa reconhecido pela SBA ou pelo MEC. Após a validação, o acesso ao módulo de avaliação pré-anestésica será vinculado individualmente à sua conta pelo período autorizado. Essa modalidade não libera os demais recursos do Anest+ Pro."
   />
 
   <FAQCard

@@ -119,6 +119,8 @@ export default function PrivacidadePage() {
               <p>Nos fluxos institucionais, a sincronização, listagem, conferência, produção e download de fichas podem ocorrer em ambiente autenticado e vinculado ao serviço. Esses recursos são distintos da assinatura Pro individual e dependem do contexto de implantação institucional.</p>
               <p>O aplicativo oferece, <strong>por iniciativa exclusiva do usuário</strong>, a funcionalidade de exportação e importação de dados (backup local), permitindo que o próprio usuário gere arquivos para cópia, restauração ou migração entre dispositivos.</p>
               <p>Arquivos exportados, compartilhados ou armazenados pelo próprio usuário fora do app permanecem sob responsabilidade do usuário. Arquivos sincronizados opcionalmente possuem finalidade operacional, especialmente consulta, download, conferência e posterior integração ao fluxo documental do hospital ou serviço de saúde quando aplicável.</p>
+              <p>No uso individual, inclusive em atendimento particular ou on-line, cabe ao profissional destinar o documento ao prontuário correspondente e adotar medidas adequadas de guarda, integridade, disponibilidade, sigilo, backup e conservação. Quando o atendimento ocorrer em instituição de saúde, a custódia e a governança seguem as responsabilidades e os procedimentos da instituição que assiste o paciente.</p>
+              <p>Quando o Anest+ apresenta orientação para assinatura externa com o Certificado Digital do CFM pelo VIDaaS, não ocorre integração automática nem compartilhamento de dados com esse serviço. O Anest+ não recebe nem armazena certificado, senha, PIN ou credenciais do VIDaaS. Os documentos exportados pelo Anest+ não retornam automaticamente ao aplicativo após a assinatura. Cabe ao profissional ou à instituição responsável pelo atendimento destiná-los ao prontuário correspondente e mantê-los conforme o fluxo de guarda adotado em cada contexto.</p>
             </div>
           </PolicySection>
 
@@ -137,7 +139,7 @@ export default function PrivacidadePage() {
           </PolicySection>
 
           <motion.div variants={fadeUpVariants} className="pt-8 text-center text-sm font-medium text-zinc-400">
-            Última atualização: Junho de 2026 • Versão 1.5.0
+            Última atualização: Julho de 2026 • Versão 1.5.0
           </motion.div>
         </div>
       </motion.div>

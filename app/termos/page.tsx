@@ -98,8 +98,10 @@ export default function TermosPage() {
 
           <TermSection title="Responsabilidades do usuário" icon={ShieldAlert}>
             <div className="space-y-4">
-              <p>O usuário é exclusivamente responsável por: (i) conteúdo, exatidão e completude das informações registradas; (ii) guarda do dispositivo e sigilo de credenciais; (iii) procedimentos de segurança e backup locais; (iv) conformidade com normas éticas e regulatórias aplicáveis.</p>
+              <p>O usuário é responsável, no âmbito de sua atuação, por: (i) conteúdo, exatidão e completude das informações registradas; (ii) guarda do dispositivo e sigilo de credenciais; (iii) procedimentos de segurança e backup locais; (iv) conformidade com normas éticas e regulatórias aplicáveis.</p>
               <p>É responsabilidade do usuário <strong>conferir, assinar e carimbar</strong> o relatório antes de integrá-lo ao prontuário.</p>
+              <p>No uso individual, inclusive em atendimento particular ou on-line, cabe ao profissional responsável providenciar a inclusão do documento no prontuário correspondente e assegurar sua guarda, integridade, disponibilidade, sigilo e conservação pelo prazo aplicável. Quando o atendimento ocorrer em instituição de saúde, a guarda seguirá as responsabilidades e os procedimentos da instituição que assiste o paciente.</p>
+              <p>O Anest+ pode orientar o usuário a assinar externamente o PDF com certificado digital, inclusive o Certificado Digital do CFM em nuvem utilizado pelo VIDaaS. Essa orientação não constitui integração com o serviço externo. A assinatura digital do arquivo não transfere ao Anest+ a responsabilidade por sua guarda nem transforma recursos temporários de sincronização em repositório definitivo de prontuários.</p>
               <p>O app é fornecido “no estado em que se encontra” (“as is”). O desenvolvedor não se responsabiliza por decisões clínicas, condutas médicas, interpretação de dados, nem por desfechos assistenciais.</p>
               <p>Também não se responsabiliza por perdas decorrentes de: uso inadequado do app; erros/omissões de digitação; falhas do dispositivo, do sistema operacional, de rede, impressoras ou infraestrutura; ou perda de dados por desinstalação, troca de aparelho e ausência de backup local.</p>
             </div>
@@ -130,7 +132,7 @@ export default function TermosPage() {
           </TermSection>
 
           <motion.div variants={fadeUpVariants} className="pt-8 text-center text-sm font-medium text-zinc-400">
-            Última atualização: Junho de 2026 • Versão 1.5.0
+            Última atualização: Julho de 2026 • Versão 1.5.0
           </motion.div>
         </div>
       </motion.div>
