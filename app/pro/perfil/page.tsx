@@ -6,6 +6,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 
+async function checkResidencyProfileLock(userId: string) {
+  const { data, error } = await supabase
+    .from("institutional_entitlements")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("feature", "pre_anesthetic")
+    .limit(1);
+
+  if (error) {
+    throw new Error(
+      "Não foi possível confirmar a situação do perfil. Tente novamente."
+    );
+  }
+
+  return (data?.length ?? 0) > 0;
+}
+
 export default function ProPerfilPage() {
   const router = useRouter();
 
@@ -15,6 +32,9 @@ export default function ProPerfilPage() {
   const [rqe, setRqe] = useState("");
 
   const [checkingSession, setCheckingSession] = useState(true);
+  const [isResidencyProfileLocked, setIsResidencyProfileLocked] = useState(true);
+  const [residencyLockCheckFailed, setResidencyLockCheckFailed] =
+    useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -34,6 +54,23 @@ export default function ProPerfilPage() {
         return;
       }
 
+      try {
+        const isLocked = await checkResidencyProfileLock(session.user.id);
+
+        if (!mounted) return;
+
+        setIsResidencyProfileLocked(isLocked);
+        setResidencyLockCheckFailed(false);
+      } catch {
+        if (!mounted) return;
+
+        setIsResidencyProfileLocked(true);
+        setResidencyLockCheckFailed(true);
+        setErrorMsg(
+          "Não foi possível confirmar a situação do perfil. A edição permanece bloqueada por segurança."
+        );
+      }
+
       setEmail(session.user.email ?? "");
       setFullName(String(session.user.user_metadata?.full_name ?? ""));
       setCrm(String(session.user.user_metadata?.crm ?? ""));
@@ -50,11 +87,50 @@ export default function ProPerfilPage() {
 
   async function handleSave(e: FormEvent) {
     e.preventDefault();
+
+    if (isResidencyProfileLocked) {
+      setErrorMsg(
+        "Os dados profissionais deste perfil estão vinculados ao acesso da residência."
+      );
+      return;
+    }
+
     setSaving(true);
     setErrorMsg(null);
     setSuccessMsg(null);
 
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.replace("/pro/login");
+        return;
+      }
+
+      let isLocked: boolean;
+
+      try {
+        isLocked = await checkResidencyProfileLock(session.user.id);
+        setResidencyLockCheckFailed(false);
+      } catch {
+        setIsResidencyProfileLocked(true);
+        setResidencyLockCheckFailed(true);
+        setErrorMsg(
+          "Não foi possível confirmar a situação do perfil. A edição permanece bloqueada por segurança."
+        );
+        return;
+      }
+
+      if (isLocked) {
+        setIsResidencyProfileLocked(true);
+        setErrorMsg(
+          "Os dados profissionais deste perfil estão vinculados ao acesso da residência."
+        );
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({
         data: {
           full_name: fullName.trim(),
@@ -139,6 +215,15 @@ export default function ProPerfilPage() {
           {errorMsg && (
             <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm">
               {errorMsg}
+              {residencyLockCheckFailed ? (
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="ml-2 underline decoration-red-300 underline-offset-2"
+                >
+                  Tentar novamente
+                </button>
+              ) : null}
             </div>
           )}
 
@@ -147,6 +232,14 @@ export default function ProPerfilPage() {
               {successMsg}
             </div>
           )}
+
+          {isResidencyProfileLocked && !residencyLockCheckFailed ? (
+            <div className="mb-5 rounded-2xl border border-[#b9963b]/30 bg-[#b9963b]/5 px-4 py-3 text-sm leading-6 text-[#6f5d2c]">
+              Os dados profissionais deste perfil estão vinculados ao acesso da
+              residência. Para editá-los, utilize o aplicativo com uma
+              assinatura Anest+ Pro ativa.
+            </div>
+          ) : null}
 
           <form onSubmit={handleSave} className="space-y-5">
             <div className="relative group">
@@ -177,6 +270,7 @@ export default function ProPerfilPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
+                disabled={isResidencyProfileLocked}
                 className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10"
                 placeholder="Seu nome"
               />
@@ -195,6 +289,7 @@ export default function ProPerfilPage() {
                   type="text"
                   value={crm}
                   onChange={(e) => setCrm(e.target.value)}
+                  disabled={isResidencyProfileLocked}
                   className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10"
                   placeholder="Seu CRM"
                 />
@@ -212,6 +307,7 @@ export default function ProPerfilPage() {
                   type="text"
                   value={rqe}
                   onChange={(e) => setRqe(e.target.value)}
+                  disabled={isResidencyProfileLocked}
                   className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10"
                   placeholder="Seu RQE"
                 />
@@ -220,7 +316,7 @@ export default function ProPerfilPage() {
 
             <button
               type="submit"
-              disabled={saving}
+              disabled={saving || isResidencyProfileLocked}
               className="w-full rounded-2xl bg-[#1a2718] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#1a2718]/20 transition hover:bg-[#22331d] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {saving ? "Salvando..." : "Salvar alterações"}
