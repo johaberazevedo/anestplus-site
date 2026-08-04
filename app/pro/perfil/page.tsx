@@ -9,10 +9,10 @@ import { supabase } from "@/lib/supabaseClient";
 async function checkResidencyProfileLock(userId: string) {
   const { data, error } = await supabase
     .from("institutional_entitlements")
-    .select("id")
+    .select("starts_at, expires_at")
     .eq("user_id", userId)
     .eq("feature", "pre_anesthetic")
-    .limit(1);
+    .eq("status", "active");
 
   if (error) {
     throw new Error(
@@ -20,7 +20,15 @@ async function checkResidencyProfileLock(userId: string) {
     );
   }
 
-  return (data?.length ?? 0) > 0;
+  const now = Date.now();
+  return (data ?? []).some((entitlement) => {
+    const startsAt = new Date(entitlement.starts_at).getTime();
+    const expiresAt = entitlement.expires_at
+      ? new Date(entitlement.expires_at).getTime()
+      : null;
+
+    return startsAt <= now && (expiresAt === null || expiresAt > now);
+  });
 }
 
 export default function ProPerfilPage() {
