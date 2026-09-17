@@ -36,24 +36,17 @@ export default function ProConfirmedPage() {
             </div>
 
             <p className="text-sm leading-7 text-zinc-600">
-              Seu e-mail foi confirmado. Agora você já pode entrar na sua conta
-              do <span className="font-medium text-zinc-950">Anest+ Pro</span>{" "}
-              e acessar suas fichas com segurança.
+              Seu e-mail foi confirmado. Você já pode fechar esta página e
+              voltar ao aplicativo para entrar na sua Conta Anest+. Se preferir
+              acessar suas fichas pelo navegador, utilize o botão abaixo.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8">
               <Link
                 href="/pro/login"
                 className="inline-flex items-center justify-center rounded-2xl bg-[#1a2718] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#22331d]"
               >
-                Entrar na conta
-              </Link>
-
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center rounded-2xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-700 transition hover:bg-[#fafaf7]"
-              >
-                Ir para o site
+                Entrar pelo site
               </Link>
             </div>
           </div>

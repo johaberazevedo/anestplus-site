@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
+import PreAnestheticPanel from "./PreAnestheticPanel";
 
 type Ficha = {
   id: string;
@@ -85,6 +86,7 @@ function getExpiryTone(expiresAt?: string) {
 export default function ProDashboardPage() {
   const router = useRouter();
   const today = todayISO();
+  const [documentTab, setDocumentTab] = useState<"anesthesia" | "pre">("anesthesia");
 
   const [userId, setUserId] = useState<string>("");
   const [crm, setCrm] = useState<string>("");
@@ -551,6 +553,18 @@ export default function ProDashboardPage() {
           </div>
         </div>
 
+        <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Tipo de documento">
+          <button type="button" aria-pressed={documentTab === "anesthesia"} onClick={() => setDocumentTab("anesthesia")}
+            className={`rounded-full border px-5 py-2.5 text-sm font-bold transition ${documentTab === "anesthesia" ? "border-[#1a2718] bg-[#1a2718] text-white" : "border-zinc-300 bg-white text-zinc-600"}`}>
+            Fichas anestésicas
+          </button>
+          <button type="button" aria-pressed={documentTab === "pre"} onClick={() => setDocumentTab("pre")}
+            className={`rounded-full border px-5 py-2.5 text-sm font-bold transition ${documentTab === "pre" ? "border-[#1a2718] bg-[#1a2718] text-white" : "border-zinc-300 bg-white text-zinc-600"}`}>
+            Pré-anestésicas
+          </button>
+        </div>
+        {documentTab === "pre" ? <PreAnestheticPanel key={userId} /> : null}
+        <div hidden={documentTab !== "anesthesia"}>
         <form
           onSubmit={buscarFichas}
           className="mb-10 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm sm:p-6"
@@ -903,9 +917,10 @@ export default function ProDashboardPage() {
             </div>
           </>
         ) : null}
+        </div>
       </div>
 
-      {confirmOpen && fichaToDelete ? (
+      {documentTab === "anesthesia" && confirmOpen && fichaToDelete ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/40 px-4 backdrop-blur-[2px]">
           <div className="w-full max-w-md rounded-[28px] border border-zinc-200 bg-white p-6 shadow-2xl">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-xl text-red-600">
