@@ -149,7 +149,7 @@ export default function SegurancaPage() {
         >
           <motion.div variants={fadeUpVariants} className="flex flex-wrap gap-2">
             <Pill>Trust Layer ativa</Pill>
-            <Pill>Dados só no dispositivo</Pill>
+            <Pill>Registro local durante o caso</Pill>
             <Pill>Mais segurança no registro</Pill>
           </motion.div>
 
@@ -167,7 +167,7 @@ export default function SegurancaPage() {
 
           <motion.div variants={fadeUpVariants} className="mt-10 grid gap-3 text-sm sm:grid-cols-3">
             {[
-              "Dados sem comunicação com nuvem ou servidores",
+              "Registro local e envio conforme a modalidade",
               "Menos risco de glosa por erros de preenchimento",
               "Mais clareza e confiança no documento final",
             ].map((item) => (
@@ -200,8 +200,8 @@ export default function SegurancaPage() {
           >
             <Card
               icon={HardDrive}
-              title="Dados no domínio do anestesiologista"
-              desc="Os dados permanecem no próprio dispositivo, sem comunicação com nuvem ou servidores, mantendo o conteúdo sempre sob controle direto do usuário."
+              title="A ficha começa no dispositivo"
+              desc="Crie e atualize a ficha no aparelho durante o atendimento. O envio de documentos segue o fluxo institucional ou a sincronização opcional do Pro."
             />
             <Card
               icon={ShieldCheck}
@@ -220,13 +220,13 @@ export default function SegurancaPage() {
             />
             <Card
               icon={Scale}
-              title="Mais segurança documental"
-              desc="Uma ficha mais clara, organizada e legível fortalece a documentação anestésica e reduz fragilidades típicas do registro manuscrito."
+              title="Backup protegido por senha"
+              desc="Crie uma cópia criptografada dos dados do app e guarde o arquivo e a senha em locais seguros. Os PDFs originais precisam ser preservados separadamente."
             />
             <Card
               icon={EyeOff}
-              title="Menos exposição desnecessária"
-              desc="O app foi pensado para apoiar a documentação do caso com foco objetivo no registro, sem depender de compartilhamentos ou fluxos externos desnecessários."
+              title="Proteção de acesso"
+              desc="Autenticação no iPhone, identificação por PIN no iPad institucional e bloqueio por inatividade ajudam a proteger o acesso aos registros."
             />
           </motion.div>
         </div>
@@ -289,18 +289,18 @@ export default function SegurancaPage() {
           >
             <Card
               icon={Lock}
-              title="Sem dependência de servidores"
-              desc="O fluxo do app não depende de comunicação com servidores para guardar os dados do anestesiologista e das fichas."
+              title="Envio institucional"
+              desc="Ao exportar, o app envia o PDF e os dados necessários ao serviço institucional. Confira o resultado do envio e a disponibilidade no painel."
             />
             <Card
               icon={HardDrive}
-              title="Uso local"
-              desc="As informações permanecem no dispositivo do próprio usuário, reforçando autonomia e controle sobre o conteúdo gerado."
+              title="Sincronização opcional no Pro"
+              desc="Você escolhe se deseja enviar fichas e avaliações pré-anestésicas à Conta Anest. A agenda de plantões permanece local e pode integrar seu backup protegido."
             />
             <Card
               icon={ShieldCheck}
-              title="Responsabilidade no contexto real"
-              desc="A experiência foi pensada para unir praticidade, privacidade e mais segurança no registro dentro da rotina real da anestesiologia."
+              title="Acesso temporário aos documentos"
+              desc="A cópia web facilita consulta e download. Providencie a destinação ao prontuário e a guarda dos documentos; o painel não é um arquivo permanente."
             />
           </motion.div>
         </div>
@@ -357,7 +357,7 @@ export default function SegurancaPage() {
               </h2>
 
               <p className="mt-6 text-lg leading-8 text-zinc-600">
-                NNo Anest+, segurança significa dados no domínio do anestesiologista,
+                No Anest+, segurança combina proteção de acesso, backup e controle dos documentos,
 ficha legível, menos fragilidade do papel manuscrito, cópias
 acessíveis e mais segurança no registro com apoio da Trust Layer.
               </p>

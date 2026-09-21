@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: "Anest+",
     title: "Anest+ — Documentação anestésica com mais segurança e padronização",
     description:
-      "Avaliação pré-anestésica, ficha anestésicaZ, assinatura, validação e fluxos institucionais para a rotina real da anestesia.",
+      "Avaliação pré-anestésica, ficha anestésica, assinatura, validação e fluxos institucionais para a rotina real da anestesia.",
     locale: "pt_BR",
   },
   twitter: {

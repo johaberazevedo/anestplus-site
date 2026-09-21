@@ -361,10 +361,10 @@ desc="Com aplicação da identidade da unidade nos documentos finais e uma apres
                 </a>
 
                 <Link
-                  href="/contato"
+                  href="/institucional"
                   className="inline-flex h-14 items-center justify-center rounded-2xl border border-zinc-200 bg-white px-8 text-sm font-bold text-zinc-900 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-zinc-50 hover:shadow-md"
                 >
-                  Ir para contato
+                  Conhecer o fluxo institucional
                 </Link>
               </div>
             </div>

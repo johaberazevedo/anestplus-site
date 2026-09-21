@@ -648,6 +648,27 @@ export function getSupportReply(
   const socialResult = socialReply(normalizedMessage, context);
   if (socialResult) return socialResult;
 
+  // Dúvidas específicas não devem virar orientações genéricas de login/download.
+  const specificTopics: SupportIntent[] = [
+    "anest_backup",
+    "anest_pre_sync",
+    "anest_copy_deletion",
+    "anest_sync_modes",
+  ];
+  const specificTopic = findBestItem(normalizedMessage);
+  if (specificTopic && specificTopics.includes(specificTopic.item.intent)) {
+    return makeResult({
+      reply: specificTopic.item.answer,
+      intent: specificTopic.item.intent,
+      confidence: confidenceFromScore(specificTopic.score),
+      matchedTitle: specificTopic.item.title,
+      matchedScore: specificTopic.score,
+      activeFlow: "idle",
+      collected: context?.collected,
+    });
+  }
+
+
 const isHospitalDashboardActionMessage =
   area !== "production" &&
   includesAny(normalizedMessage, [

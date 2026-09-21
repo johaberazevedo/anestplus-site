@@ -19,8 +19,6 @@ import {
   Wallet,
   FileCheck2,
   Lock,
-  SlidersHorizontal,
-  Droplets,
   type LucideIcon,
 } from "lucide-react";
 
@@ -435,7 +433,7 @@ export default function ProdutoClient() {
               <Card
                 icon={ShieldCheck}
                 title="Medicamentos estruturados"
-                desc="Dose, via e organização clara para manter a prescrição coerente e o registro final consistente."
+                desc="Registre dose e via de cada medicação e confira tudo em uma ficha organizada ao fim do procedimento."
               />
               <Card
                 icon={CheckCircle2}
@@ -588,13 +586,36 @@ export default function ProdutoClient() {
             <Card
               icon={Scan}
               title="Scanner inteligente"
-              desc="O OCR lê identificações ou cabeçalhos de exames para extrair Nome, Idade e Registro na hora."
+              desc="Use a leitura de identificações ou cabeçalhos de exames como apoio ao preenchimento. Confira nome, idade e registro antes de salvar."
             />
             <Card
               icon={Calendar}
               title="Calendário e financeiro"
-              desc="Organize plantões, crie escalas com recorrência automática e acompanhe sua produção por hospital."
+              desc="No Pro, organize plantões recorrentes e acompanhe valores recebidos e pendentes por hospital."
             />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-zinc-50/60 px-6 py-20 md:py-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-14 max-w-3xl">
+            <h2 className="text-4xl font-black tracking-tight text-zinc-950 md:text-5xl">
+              Antes do caso. Depois da saída de sala.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-zinc-500 md:text-xl">
+              Prepare a avaliação no Pro, acompanhe a anestesia e tenha caminhos claros para consultar os documentos e cuidar dos dados que você registrou.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card icon={ClipboardPen} title="Pré-anestésica no Pro"
+              desc="Reúna história, exame, via aérea e planejamento em uma avaliação guiada. Confira os escores e pontos de atenção, gere o PDF ou inicie a ficha anestésica com os dados já preenchidos." />
+            <Card icon={FileText} title="Documentos na Conta Anest"
+              desc="Com a sincronização do Pro ativada, consulte e baixe fichas e avaliações pré-anestésicas enviadas à sua conta. O acesso é temporário, para facilitar a destinação dos PDFs ao prontuário." />
+            <Card icon={Lock} title="Backup protegido, sob seus cuidados"
+              desc="Crie uma cópia criptografada dos dados do app para restaurar em uma modalidade compatível. Guarde o arquivo e a senha; os PDFs originais devem ser salvos separadamente." />
+            <Card icon={ShieldCheck} title="Acesso protegido entre os atendimentos"
+              desc="Autenticação no iPhone e PIN por profissional no iPad institucional ajudam a proteger os registros. O bloqueio por inatividade acompanha as pausas do uso." />
           </div>
         </div>
       </section>
@@ -607,8 +628,8 @@ export default function ProdutoClient() {
               Organização além da ficha
             </h2>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-zinc-500 md:text-xl">
-              O Anest+ também ajuda a visualizar plantões, automatizar escalas e acompanhar
-              sua produção financeira no mesmo ecossistema, com privacidade total e armazenamento local.
+              No Anest+ Pro, acompanhe os próximos plantões e veja o que já recebeu e o que
+              ainda está pendente. Sua agenda fica organizada no aparelho para acompanhar sua rotina profissional.
             </p>
           </div>
 
@@ -626,8 +647,8 @@ export default function ProdutoClient() {
               />
               <Card
                 icon={Lock}
-                title="Privacidade 100% local"
-                desc="Plantões, fichas de pacientes e faturamento ficam armazenados apenas no seu próprio dispositivo."
+                title="Sua agenda fica no aparelho"
+                desc="Locais, horários, valores e pagamentos dos plantões não são enviados à Conta Anest. A sincronização de fichas e avaliações pré-anestésicas é um recurso separado."
               />
             </div>
 

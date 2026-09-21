@@ -636,7 +636,7 @@ export default function Institucional() {
               <SectionHeading
                 eyebrow="Produção e conferência de faturamento"
                 title="Da ficha anestésica à produção do dia, com mais eficiência."
-                desc="O Anest+ também pode reunir as fichas geradas pela equipe em um painel de produção por hospital e data, facilitando a conferência dos casos, a cópia para planilhas e o acesso aos PDFs quando necessário."
+                desc="O painel reúne os documentos recebidos por hospital e data para facilitar a conferência dos casos, a cópia para planilhas e o download dos PDFs. O acesso segue as permissões institucionais, e a disponibilidade é temporária: os documentos devem ser destinados ao prontuário e à guarda do serviço."
               />
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -805,16 +805,16 @@ export default function Institucional() {
               light
               compact
               icon={EyeOff}
-              title="Menos exposição desnecessária"
-              desc="O fluxo foi pensado para reduzir compartilhamentos soltos e manter o envio da ficha dentro de uma lógica mais controlada."
+              title="Uso compartilhado com identificação profissional"
+              desc="No iPad institucional, cada profissional utiliza seu perfil e PIN. O bloqueio por inatividade ajuda a proteger o acesso durante as pausas do uso."
             />
 
 <FeatureCard
   light
   compact
   icon={ClipboardList}
-  title="Pronta para a rotina do hospital"
-  desc="A ficha final pode ser revisada, assinada, impressa, baixada ou enviada conforme a rotina definida pelo hospital."
+  title="Da exportação ao painel"
+  desc="Ao exportar, o app envia o PDF ao serviço institucional. Confira o resultado e a disponibilidade no painel; gerar o arquivo no aparelho não confirma seu recebimento."
 />
 
 <FeatureCard

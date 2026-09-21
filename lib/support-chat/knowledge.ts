@@ -27,6 +27,10 @@ export type SupportIntent =
   | "anest_production_versions"
   | "anest_production_download"
   | "anest_trust_layer"
+  | "anest_backup"
+  | "anest_pre_sync"
+  | "anest_copy_deletion"
+  | "anest_sync_modes"
   | "anest_privacy"
   | "anest_appstore_subscription"
   | "human_support"
@@ -628,6 +632,114 @@ export const KNOWLEDGE_ITEMS: KnowledgeItem[] = [
     requiresHandoff: true,
   },
   {
+    "intent": "anest_backup",
+    "product": "anest",
+    "title": "Backup protegido e senha",
+    "keywords": [
+        {
+            "term": "backup",
+            "weight": 8
+        },
+        {
+            "term": "senha do backup",
+            "weight": 12
+        },
+        {
+            "term": "restaurar",
+            "weight": 7
+        },
+        {
+            "term": "restauracao",
+            "weight": 7
+        },
+        {
+            "term": "trocar de aparelho",
+            "weight": 7
+        }
+    ],
+    "answer": "O backup protegido cria um arquivo criptografado dos dados do app. Guarde o arquivo e a senha em locais seguros: a senha não pode ser recuperada pelo Anest+. No iPhone, a criação e a restauração exigem autenticação do proprietário do aparelho.\n\nO backup não inclui os PDFs originais, que devem ser preservados separadamente. A restauração respeita a modalidade e a compatibilidade informadas pelo app; o backup do Pro é compatível somente com o Anest+ Pro. Ela não recupera sessões de login nem concede acesso Pro.\n\nBackup e sincronização são recursos distintos: a Conta Anest disponibiliza os documentos enviados, não uma cópia completa para restaurar o aplicativo. Não envie sua senha nem o arquivo de backup pelo chat."
+},
+  {
+    "intent": "anest_pre_sync",
+    "product": "anest",
+    "title": "Pré-anestésicas na Conta Anest",
+    "keywords": [
+        {
+            "term": "pre-anestesica",
+            "weight": 7
+        },
+        {
+            "term": "pre anestesica",
+            "weight": 7
+        },
+        {
+            "term": "preanestesica",
+            "weight": 7
+        },
+        {
+            "term": "avaliacao pre",
+            "weight": 7
+        }
+    ],
+    "answer": "No Anest+ Pro, fichas anestésicas e avaliações pré-anestésicas usam o mesmo controle de sincronização na Conta. Ele vem desativado. Quando ativado e atendidos os requisitos de acesso e conexão, os PDFs exportados e os metadados necessários podem ser enviados à sua conta.\n\nConfira se a sincronização está ativa, se há conexão e se o documento aparece na área correspondente da Conta Anest. A exportação local, sozinha, não confirma o envio. Desativar o controle impede novos envios, mas não apaga os anteriores. O módulo de avaliação pré-anestésica não faz parte do Anest+ institucional para iPhone aqui descrito."
+},
+  {
+    "intent": "anest_copy_deletion",
+    "product": "anest",
+    "title": "Exclusão local e cópias dos documentos",
+    "keywords": [
+        {
+            "term": "excluir",
+            "weight": 6
+        },
+        {
+            "term": "apagar",
+            "weight": 6
+        },
+        {
+            "term": "exclusao",
+            "weight": 6
+        },
+        {
+            "term": "apaguei",
+            "weight": 6
+        },
+        {
+            "term": "exclui",
+            "weight": 6
+        }
+    ],
+    "answer": "Excluir uma ficha no aparelho não apaga automaticamente a cópia enviada ao serviço, arquivos de backup ou PDFs já compartilhados. Cada cópia precisa ser administrada no local em que está armazenada.\n\nDa mesma forma, remover um documento da Conta Anest não exclui a ficha original no aparelho. Antes de excluir, confira se os documentos necessários foram destinados ao prontuário e à guarda correspondente."
+},
+  {
+    "intent": "anest_sync_modes",
+    "product": "anest",
+    "title": "Envio institucional e sincronização Pro",
+    "keywords": [
+        {
+            "term": "como funciona a sincronizacao",
+            "weight": 12
+        },
+        {
+            "term": "opcional",
+            "weight": 12
+        },
+        {
+            "term": "envio automatico",
+            "weight": 12
+        },
+        {
+            "term": "diferenca entre institucional e pro",
+            "weight": 12
+        },
+        {
+            "term": "sincronizacao institucional",
+            "weight": 12
+        }
+    ],
+    "answer": "No Anest+ institucional, ao exportar uma ficha, o app envia o PDF e os metadados necessários, conforme os requisitos do app e a conexão. Confira o resultado informado e a disponibilidade no painel.\n\nNo Pro, a sincronização é opcional e vem desativada. Você pode ativá-la na Conta para enviar fichas e avaliações pré-anestésicas. Ela é independente do backup protegido e não envia a agenda de plantões.\n\nEm ambos os casos, a cópia web é temporária e não substitui a guarda dos documentos no prontuário."
+},
+  {
     intent: "anest_privacy",
     product: "anest",
     title: "Privacidade, dados locais e localização",
@@ -641,7 +753,6 @@ export const KNOWLEDGE_ITEMS: KnowledgeItem[] = [
       "localizacao",
       "localização",
       "geofencing",
-      "backup",
       "dados do paciente",
       "dados clinicos",
       "dados clínicos",
