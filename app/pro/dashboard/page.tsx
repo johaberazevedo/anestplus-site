@@ -7,7 +7,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import PreAnestheticPanel from "./PreAnestheticPanel";
 
-type Ficha = {
+type FichaResumo = {
   id: string;
   patient_name: string;
   record_number: string;
@@ -15,12 +15,23 @@ type Ficha = {
   anesthesia_type: string | null;
   start_date_time: string;
   end_date_time: string | null;
-  file_key: string;
-  file_name: string;
   uploaded_at: string;
   expires_at?: string;
   last_downloaded_at?: string | null;
 };
+
+type FichaPessoal = FichaResumo & {
+  hospital_code?: never;
+  file_key: string;
+  file_name: string;
+};
+type FichaInstitucional = FichaResumo & {
+  hospital_code: string;
+  hospital_name: string;
+  document_id: string;
+};
+type Ficha = FichaPessoal | FichaInstitucional;
+const fichasInstitucionais = "/api/pro/conta/fichas-institucionais";
 
 function todayISO() {
   const now = new Date();
@@ -99,7 +110,11 @@ export default function ProDashboardPage() {
   const [dateTo, setDateTo] = useState<string>(today);
 
   const [search, setSearch] = useState<string>("");
-  const [fichas, setFichas] = useState<Ficha[]>([]);
+  const [fichas, setFichas] = useState<FichaPessoal[]>([]);
+  const [institucionais, setInstitucionais] = useState<FichaInstitucional[]>([]);
+  const [erroInstitucional, setErroInstitucional] = useState(false);
+  const buscaAtual = useRef<AbortController | null>(null);
+  const donoDaBusca = useRef<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
@@ -156,6 +171,14 @@ export default function ProDashboardPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (donoDaBusca.current && donoDaBusca.current !== session?.user.id) {
+        donoDaBusca.current = null;
+        buscaAtual.current?.abort();
+        setLoading(false);
+        setInstitucionais([]);
+        setErroInstitucional(false);
+        setFichaToDelete((ficha) => ficha?.hospital_code !== undefined ? null : ficha);
+      }
       if (!session && !isSigningOut) {
         router.replace("/pro/login?reason=session-expired");
       }
@@ -163,6 +186,7 @@ export default function ProDashboardPage() {
 
     return () => {
       mounted = false;
+      buscaAtual.current?.abort();
       subscription.unsubscribe();
     };
   }, [router, isSigningOut]);
@@ -214,11 +238,17 @@ export default function ProDashboardPage() {
   async function buscarFichas(e?: FormEvent) {
     if (e) e.preventDefault();
 
+    buscaAtual.current?.abort();
+    const busca = new AbortController();
+    buscaAtual.current = busca;
+    donoDaBusca.current = null;
     setHasSearched(true);
     setLoading(true);
     setError("");
     setSuccess("");
     setFichas([]);
+    setInstitucionais([]);
+    setErroInstitucional(false);
 
     try {
       const {
@@ -244,15 +274,29 @@ export default function ProDashboardPage() {
         params.set("date", date);
       }
 
-      const response = await fetch(`/api/pro/fichas/listar?${params.toString()}`, {
+      if (busca.signal.aborted) return;
+      donoDaBusca.current = session?.user.id ?? null;
+      const options = {
         method: "GET",
-        cache: "no-store",
+        cache: "no-store" as const,
+        signal: busca.signal,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+      };
+      const pessoais = fetch(`/api/pro/fichas/listar?${params.toString()}`, options);
+      // A resposta institucional chega à lista de forma independente.
+      void fetch(`${fichasInstitucionais}?${params.toString()}`, options).then(async (response) => {
+        if (!response.ok) throw new Error("Erro ao buscar fichas institucionais.");
+        const json = await response.json();
+        if (!busca.signal.aborted) setInstitucionais(json.fichas ?? []);
+      }).catch(() => {
+        if (!busca.signal.aborted) setErroInstitucional(true);
       });
 
+      const response = await pessoais;
       const json = await response.json();
+      if (busca.signal.aborted) return;
 
       if (!response.ok) {
         throw new Error(json.error || "Erro ao buscar fichas.");
@@ -260,12 +304,13 @@ export default function ProDashboardPage() {
 
       setFichas(json.fichas ?? []);
     } catch (err) {
+      if (busca.signal.aborted) return;
       const message =
         err instanceof Error ? err.message : "Erro inesperado ao buscar fichas.";
       setError(message);
       setFichas([]);
     } finally {
-      setLoading(false);
+      if (!busca.signal.aborted) setLoading(false);
     }
   }
 
@@ -285,16 +330,15 @@ export default function ProDashboardPage() {
         throw new Error("Sua sessão expirou. Entre novamente.");
       }
 
-      const response = await fetch("/api/pro/fichas/download", {
+      const response = await fetch(ficha.hospital_code !== undefined ? fichasInstitucionais : "/api/pro/fichas/download", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({
-          fileKey: ficha.file_key,
-          fileName: ficha.file_name,
-        }),
+        body: JSON.stringify(ficha.hospital_code !== undefined
+          ? { hospitalCode: ficha.hospital_code, documentId: ficha.document_id }
+          : { fileKey: ficha.file_key, fileName: ficha.file_name }),
       });
 
       const json = await response.json();
@@ -306,13 +350,10 @@ export default function ProDashboardPage() {
       window.open(json.downloadUrl, "_blank");
       setSuccess("Link de download gerado com sucesso.");
 
-      setFichas((prev) =>
-        prev.map((item) =>
-          item.id === ficha.id
-            ? { ...item, last_downloaded_at: new Date().toISOString() }
-            : item
-        )
-      );
+      const markDownloaded = <T extends Ficha>(rows: T[]) => rows.map((item) =>
+        item.id === ficha.id ? { ...item, last_downloaded_at: new Date().toISOString() } : item);
+      if (ficha.hospital_code !== undefined) setInstitucionais(markDownloaded);
+      else setFichas(markDownloaded);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Erro ao baixar a ficha.";
@@ -338,7 +379,8 @@ export default function ProDashboardPage() {
   async function confirmarExclusao() {
     if (!fichaToDelete) return;
 
-    setDeletingId(fichaToDelete.id);
+    const ficha = fichaToDelete;
+    setDeletingId(ficha.id);
     setError("");
     setSuccess("");
 
@@ -353,15 +395,15 @@ export default function ProDashboardPage() {
         throw new Error("Sua sessão expirou. Entre novamente.");
       }
 
-      const response = await fetch("/api/pro/fichas/excluir", {
-        method: "POST",
+      const response = await fetch(ficha.hospital_code !== undefined ? fichasInstitucionais : "/api/pro/fichas/excluir", {
+        method: ficha.hospital_code !== undefined ? "PATCH" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({
-          fichaId: fichaToDelete.id,
-        }),
+        body: JSON.stringify(ficha.hospital_code !== undefined
+          ? { hospitalCode: ficha.hospital_code, documentId: ficha.document_id }
+          : { fichaId: ficha.id }),
       });
 
       const json = await response.json();
@@ -370,8 +412,13 @@ export default function ProDashboardPage() {
         throw new Error(json.error || "Erro ao excluir a ficha.");
       }
 
-      setFichas((prev) => prev.filter((item) => item.id !== fichaToDelete.id));
-      setSuccess("Ficha removida com sucesso.");
+      if (ficha.hospital_code !== undefined) {
+        setInstitucionais((prev) => prev.filter((item) => item.id !== ficha.id));
+        setSuccess("Ficha removida do seu painel.");
+      } else {
+        setFichas((prev) => prev.filter((item) => item.id !== ficha.id));
+        setSuccess("Ficha removida com sucesso.");
+      }
       setConfirmOpen(false);
       setFichaToDelete(null);
     } catch (err) {
@@ -411,7 +458,7 @@ export default function ProDashboardPage() {
   const fichasFiltradas = useMemo(() => {
     const term = search.trim().toLowerCase();
 
-    let result = fichas;
+    let result: Ficha[] = [...fichas, ...institucionais];
 
     if (term) {
       result = result.filter((ficha) => {
@@ -431,7 +478,7 @@ export default function ProDashboardPage() {
 
       return dateB - dateA;
     });
-  }, [fichas, search]);
+  }, [fichas, institucionais, search]);
 
   const dashboardMetrics = useMemo(() => {
     let totalMinutes = 0;
@@ -720,6 +767,12 @@ export default function ProDashboardPage() {
           </div>
         ) : null}
 
+        {erroInstitucional && (
+          <p role="status" className="mb-4 text-sm text-zinc-600">
+            Não foi possível carregar as fichas institucionais. Você pode tentar a busca novamente.
+          </p>
+        )}
+
         {!hasSearched ? (
           <div className="rounded-[28px] border border-zinc-200 bg-white px-6 py-14 text-center shadow-sm">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f6f7f1] text-2xl border border-[#b9963b]/10">
@@ -839,6 +892,9 @@ export default function ProDashboardPage() {
                                   {ficha.record_number}
                                 </span>
                               </div>
+                              {ficha.hospital_code !== undefined && (
+                                <div className="mt-1 text-sm text-zinc-500">{ficha.hospital_name}</div>
+                              )}
                             </div>
                           </td>
 
@@ -904,7 +960,7 @@ export default function ProDashboardPage() {
                                 onClick={() => abrirModalExclusao(ficha)}
                                 disabled={isDeletingThis || isDownloadingThis}
                               >
-                                Excluir
+                                {ficha.hospital_code !== undefined ? "Remover do meu painel" : "Excluir"}
                               </button>
                             </div>
                           </td>
@@ -928,7 +984,7 @@ export default function ProDashboardPage() {
             </div>
 
             <h2 className="text-xl font-black tracking-tight text-zinc-950">
-              Remover ficha da sua conta?
+              {fichaToDelete.hospital_code !== undefined ? "Remover do seu painel?" : "Remover ficha da sua conta?"}
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-zinc-600">
@@ -940,7 +996,9 @@ export default function ProDashboardPage() {
             </p>
 
             <p className="mt-2 text-sm leading-6 text-zinc-500">
-              Essa ação apaga a ficha da visualização da sua Conta Anest+ e não pode ser desfeita.
+              {fichaToDelete.hospital_code !== undefined
+                ? "A ficha será ocultada do seu painel e continuará disponível para o hospital até o vencimento."
+                : "Essa ação apaga a ficha da visualização da sua Conta Anest+ e não pode ser desfeita."}
             </p>
 
             <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
@@ -959,7 +1017,9 @@ export default function ProDashboardPage() {
                 disabled={Boolean(deletingId)}
                 className="rounded-2xl bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-md shadow-red-600/20 transition hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
               >
-                {deletingId ? "Excluindo..." : "Confirmar exclusão"}
+                {fichaToDelete.hospital_code !== undefined
+                  ? (deletingId ? "Removendo..." : "Confirmar remoção")
+                  : (deletingId ? "Excluindo..." : "Confirmar exclusão")}
               </button>
             </div>
           </div>

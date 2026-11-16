@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -340,6 +341,11 @@ export default function AdminDashboardClient() {
             </button>
           </div>
         </header>
+
+        <nav aria-label="Administração" className="mt-5 flex gap-4 text-sm font-bold">
+          <span aria-current="page" className="text-zinc-950">Residentes</span>
+          <Link href="/admin/hospitais" className="text-[#566244] hover:underline">Hospitais</Link>
+        </nav>
 
         <section className="mt-5 grid gap-4 sm:grid-cols-3">
           <div className="rounded-3xl border border-zinc-200 bg-white p-5">
