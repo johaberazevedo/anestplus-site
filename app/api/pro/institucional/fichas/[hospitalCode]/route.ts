@@ -65,7 +65,7 @@ function signedMetadata(payload: string) {
   const data = JSON.parse(payload) as {
     patient?: { name?: unknown; recordNumber?: unknown };
     anesthesiologist?: { name?: unknown; crm?: unknown };
-    procedure?: { anesthesiaPlan?: unknown };
+    procedure?: { procedure?: unknown; plan?: unknown; anesthesiaPlan?: unknown };
     caseTiming?: { procedureDateISO8601?: unknown; startISO8601?: unknown; endISO8601?: unknown };
   };
   const patientName = signedText(data.patient?.name);
@@ -82,6 +82,8 @@ function signedMetadata(payload: string) {
   return {
     patient_name: patientName, record_number: recordNumber,
     anesthesiologist_name: professional, crm,
+    procedure_name: signedText(data.procedure?.procedure),
+    plan_name: signedText(data.procedure?.plan),
     procedure_date: procedureDayFormatter.format(new Date(performedAt)),
     start_date_time: start, end_date_time: end, anesthesia_type: anesthesia,
   };
