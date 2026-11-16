@@ -1,7 +1,7 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { isHospitalCode } from "@/lib/institutional-hospitals";
-import { authenticateProHospitalToken } from "@/lib/pro-hospital-access";
+import { authenticateProHospitalToken, getProHospitalLinksForUser } from "@/lib/pro-hospital-access";
 import { institutionalRetentionMs, institutionalStorage, institutionalUploads } from "@/lib/pro-institutional-submission";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
@@ -43,9 +43,22 @@ type Listing = {
 };
 
 export async function GET(request: Request) {
-  if (process.env.PRO_INSTITUTIONAL_UPLOAD_ENABLED !== "true") return reply({ fichas: [] });
+  const params = new URL(request.url).searchParams;
+  const contextOnly = params.get("context") === "1";
+  if (process.env.PRO_INSTITUTIONAL_UPLOAD_ENABLED !== "true") {
+    return reply(contextOnly ? { hasInstitutionalContext: false } : { fichas: [] });
+  }
   return withOwner(request, async (owner, validAfter) => {
-    const params = new URL(request.url).searchParams;
+    if (contextOnly) {
+      const links = await getProHospitalLinksForUser(owner);
+      if (links.length > 0) return reply({ hasInstitutionalContext: true });
+
+      const { data, error } = await supabaseAdmin.from(institutionalUploads)
+        .select("document_id").eq("user_id", owner)
+        .is("owner_hidden_at", null).gt("uploaded_at", validAfter).limit(1).maybeSingle();
+      if (error) throw error;
+      return reply({ hasInstitutionalContext: data !== null });
+    }
     const from = params.get("date") ?? params.get("date_from");
     const to = params.get("date") ?? params.get("date_to");
     if (!dateOnly(from) || !dateOnly(to) || from > to) {

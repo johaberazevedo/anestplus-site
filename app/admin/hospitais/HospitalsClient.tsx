@@ -8,6 +8,12 @@ import type { InstitutionalHospital } from "@/lib/institutional-hospitals";
 type Account = { id: string; fullName: string; email: string; crm: string; rqe: string };
 type Directory = { users: Account[]; pagination: { lastPage: number } };
 type LinkStatus = { status: string | null; active: boolean };
+const accessLabels = {
+  app: "acesso ao app institucional",
+  coordination: "acesso à coordenação",
+  billing: "acesso ao faturamento",
+};
+type AccessType = keyof typeof accessLabels;
 
 const button = "rounded-xl border border-zinc-200 px-3 py-2 text-sm font-bold text-zinc-800 hover:bg-zinc-50 disabled:opacity-40";
 const input = "mt-1 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-zinc-950";
@@ -262,13 +268,15 @@ function HospitalAccess({ hospital }: { hospital: InstitutionalHospital }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [userId, setUserId] = useState("");
+  const [accessType, setAccessType] = useState<AccessType>("app");
   const [status, setStatus] = useState<LinkStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [directoryError, setDirectoryError] = useState("");
   const [linkError, setLinkError] = useState("");
   const [success, setSuccess] = useState("");
-  const lookup = `hospital-access?${new URLSearchParams({ userId, hospitalCode: hospital.code })}`;
+  const lookup = `hospital-access?${new URLSearchParams({ userId, hospitalCode: hospital.code, accessType })}`;
+  const accessLabel = accessLabels[accessType];
   const query = search.trim().toLocaleLowerCase("pt-BR");
   const accounts = directory?.users.filter((account) =>
     [account.fullName, account.email, account.crm, account.rqe].some((value) => value.toLocaleLowerCase("pt-BR").includes(query)),
@@ -308,12 +316,12 @@ function HospitalAccess({ hospital }: { hospital: InstitutionalHospital }) {
   }
 
   async function changeAccess(action: "grant" | "revoke") {
-    if (action === "revoke" && !window.confirm("Revogar o vínculo desta conta com o hospital?")) return;
+    if (action === "revoke" && !window.confirm(`Revogar o ${accessLabel} desta conta neste hospital?`)) return;
     setSaving(true);
     setLinkError("");
     setSuccess("");
     try {
-      await adminRequest("hospital-access", mutation("POST", { userId, hospitalCode: hospital.code, action }));
+      await adminRequest("hospital-access", mutation("POST", { userId, hospitalCode: hospital.code, action, accessType }));
       setStatus(action === "grant" ? { status: "active", active: true } : { status: "revoked", active: false });
       setSuccess(action === "grant" ? "Vínculo concedido." : "Vínculo revogado.");
     } catch (error) {
@@ -345,6 +353,16 @@ function HospitalAccess({ hospital }: { hospital: InstitutionalHospital }) {
           <span>Página {page}</span>
           <button type="button" disabled={!directory || page >= directory.pagination.lastPage} onClick={() => changePage(page + 1)} className={button}>Próxima</button>
         </div>
+        <label>Tipo de acesso
+          <select value={accessType} onChange={(event) => {
+            setAccessType(event.target.value as AccessType);
+            selectAccount(userId);
+          }} className={input}>
+            <option value="app">App institucional</option>
+            <option value="coordination">Coordenação hospitalar</option>
+            <option value="billing">Faturamento</option>
+          </select>
+        </label>
         {userId && <div className="flex flex-wrap items-center gap-2">
           <span role="status">
             {loading ? "Consultando vínculo…" : !status ? "Vínculo indisponível" : status.active ? "Vínculo ativo" : status.status === "revoked" ? "Vínculo revogado" : status.status ? "Vínculo inativo" : "Sem vínculo"}

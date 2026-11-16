@@ -490,6 +490,8 @@ function friendlyDeviceMode(value?: string): string {
       return "iPhone pessoal";
     case "institutional_ipad":
       return "iPad institucional";
+    case "institutional_pro_ios":
+      return "iPhone (Pro institucional)";
     default:
       return value ?? "—";
   }

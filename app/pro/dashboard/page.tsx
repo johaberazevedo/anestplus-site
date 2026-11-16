@@ -115,6 +115,7 @@ export default function ProDashboardPage() {
   const [erroInstitucional, setErroInstitucional] = useState(false);
   const buscaAtual = useRef<AbortController | null>(null);
   const donoDaBusca = useRef<string | null>(null);
+  const consultaContexto = useRef<{ dono: string; controller: AbortController; resultado: Promise<boolean> } | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
@@ -171,6 +172,10 @@ export default function ProDashboardPage() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (consultaContexto.current && consultaContexto.current.dono !== session?.user.id) {
+        consultaContexto.current.controller.abort();
+        consultaContexto.current = null;
+      }
       if (donoDaBusca.current && donoDaBusca.current !== session?.user.id) {
         donoDaBusca.current = null;
         buscaAtual.current?.abort();
@@ -187,6 +192,8 @@ export default function ProDashboardPage() {
     return () => {
       mounted = false;
       buscaAtual.current?.abort();
+      consultaContexto.current?.controller.abort();
+      consultaContexto.current = null;
       subscription.unsubscribe();
     };
   }, [router, isSigningOut]);
@@ -235,13 +242,36 @@ export default function ProDashboardPage() {
     setUseRange(true);
   }
 
+  function buscarContextoInstitucional(dono: string, accessToken: string) {
+    const anterior = consultaContexto.current;
+    if (anterior?.dono === dono) return anterior.resultado;
+    anterior?.controller.abort();
+
+    const controller = new AbortController();
+    const resultado = fetch(`${fichasInstitucionais}?context=1`, {
+      cache: "no-store",
+      signal: controller.signal,
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }).then(async (response) => {
+      if (!response.ok) throw new Error("Contexto institucional indisponível.");
+      const { hasInstitutionalContext } = await response.json();
+      if (typeof hasInstitutionalContext !== "boolean") throw new Error("Contexto institucional inválido.");
+      return hasInstitutionalContext;
+    }).catch(() => {
+      if (consultaContexto.current?.controller === controller) consultaContexto.current = null;
+      return false;
+    });
+    consultaContexto.current = { dono, controller, resultado };
+    return resultado;
+  }
+
   async function buscarFichas(e?: FormEvent) {
     if (e) e.preventDefault();
 
     buscaAtual.current?.abort();
     const busca = new AbortController();
     buscaAtual.current = busca;
-    donoDaBusca.current = null;
+    donoDaBusca.current = userId || null;
     setHasSearched(true);
     setLoading(true);
     setError("");
@@ -257,7 +287,7 @@ export default function ProDashboardPage() {
 
       const accessToken = session?.access_token?.trim();
 
-      if (!accessToken) {
+      if (!session || !accessToken) {
         throw new Error("Sua sessão expirou. Entre novamente.");
       }
 
@@ -275,7 +305,8 @@ export default function ProDashboardPage() {
       }
 
       if (busca.signal.aborted) return;
-      donoDaBusca.current = session?.user.id ?? null;
+      const dono = session.user.id;
+      donoDaBusca.current = dono;
       const options = {
         method: "GET",
         cache: "no-store" as const,
@@ -285,13 +316,16 @@ export default function ProDashboardPage() {
         },
       };
       const pessoais = fetch(`/api/pro/fichas/listar?${params.toString()}`, options);
+      const contexto = buscarContextoInstitucional(dono, accessToken);
       // A resposta institucional chega à lista de forma independente.
       void fetch(`${fichasInstitucionais}?${params.toString()}`, options).then(async (response) => {
         if (!response.ok) throw new Error("Erro ao buscar fichas institucionais.");
         const json = await response.json();
         if (!busca.signal.aborted) setInstitucionais(json.fichas ?? []);
-      }).catch(() => {
-        if (!busca.signal.aborted) setErroInstitucional(true);
+      }).catch(async () => {
+        if (await contexto && !busca.signal.aborted && donoDaBusca.current === dono) {
+          setErroInstitucional(true);
+        }
       });
 
       const response = await pessoais;

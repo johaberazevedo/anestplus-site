@@ -1,9 +1,21 @@
 export const HOSPITAL_ACCESS_FEATURE = "hospital_access";
+export const HOSPITAL_COORDINATION_FEATURE = "hospital_coordination";
+export const HOSPITAL_BILLING_FEATURE = "hospital_billing";
+export type HospitalAccessFeature = typeof HOSPITAL_ACCESS_FEATURE | typeof HOSPITAL_COORDINATION_FEATURE
+  | typeof HOSPITAL_BILLING_FEATURE;
 export const HOSPITAL_FIELDS = "code,name,latitude,longitude,radius_meters,is_active";
 
 export function isHospitalCode(value: unknown): value is string {
   return typeof value === "string" && value.length <= 80
     && /^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(value);
+}
+
+export function coordinationPath(hospitalCode: unknown): string | null {
+  return isHospitalCode(hospitalCode) ? `/institucional/${hospitalCode}/coordenacao` : null;
+}
+
+export function billingPath(hospitalCode: unknown): string | null {
+  return isHospitalCode(hospitalCode) ? `/institucional/${hospitalCode}/faturamento` : null;
 }
 
 export function parseHospital(body: Record<string, unknown>) {

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import { billingPath, coordinationPath } from "@/lib/institutional-hospitals";
 
 function getFriendlyLoginError(message: string) {
   const normalized = message.toLowerCase().trim();
@@ -37,6 +38,11 @@ function getFriendlyLoginError(message: string) {
 function ProLoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const billing = billingPath(searchParams.get("faturamento"));
+  const coordination = coordinationPath(searchParams.get("coordenacao"));
+  const destination = billing ?? coordination ?? "/pro/dashboard";
+  const subtitle = billing ? "Acesso ao painel de faturamento."
+    : coordination ? "Acesso ao painel de coordenação." : "Acesso seguro às suas fichas.";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,7 +77,7 @@ function ProLoginContent() {
       } = await supabase.auth.getSession();
 
       if (mounted && session) {
-        router.replace("/pro/dashboard");
+        router.replace(destination);
         router.refresh();
       }
     }
@@ -81,7 +87,7 @@ function ProLoginContent() {
     return () => {
       mounted = false;
     };
-  }, [router]);
+  }, [destination, router]);
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -98,7 +104,7 @@ function ProLoginContent() {
         throw new Error(error.message || "Não foi possível entrar.");
       }
 
-      router.replace("/pro/dashboard");
+      router.replace(destination);
       router.refresh();
     } catch (err) {
       const rawMessage =
@@ -125,7 +131,7 @@ function ProLoginContent() {
             Conta Anest+
           </h1>
           <p className="text-sm text-zinc-500">
-            Acesso seguro às suas fichas.
+            {subtitle}
           </p>
         </div>
       </div>
