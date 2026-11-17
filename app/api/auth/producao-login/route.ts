@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createProducaoSession, PRODUCAO_COOKIE, PRODUCAO_SESSION_SECONDS } from "@/lib/producao-session";
 
 export async function POST(request: Request) {
   try {
@@ -22,14 +23,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = NextResponse.json({ ok: true });
+    const session = createProducaoSession();
+    if (!session) {
+      return NextResponse.json(
+        { error: "Sessão de produção não configurada." },
+        { status: 500 }
+      );
+    }
 
-    response.cookies.set("anest_producao_auth", "ok", {
+    const response = NextResponse.json({ ok: true });
+    response.cookies.set(PRODUCAO_COOKIE, session, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 8,
+      maxAge: PRODUCAO_SESSION_SECONDS,
     });
 
     return response;

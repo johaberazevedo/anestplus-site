@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PRODUCAO_COOKIE, validProducaoSession } from "@/lib/producao-session";
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -7,7 +8,7 @@ export function proxy(request: NextRequest) {
     request.cookies.get("anest_dashboard_auth")?.value === "ok";
 
   const authProducao =
-    request.cookies.get("anest_producao_auth")?.value === "ok";
+    validProducaoSession(request.cookies.get(PRODUCAO_COOKIE)?.value);
 
   const isDashboardPage = pathname.startsWith("/dashboard");
   const isProducaoPage = pathname.startsWith("/producao");
@@ -29,6 +30,10 @@ export function proxy(request: NextRequest) {
   if (isProducaoPage || isProducaoApi) {
     if (authProducao) {
       return NextResponse.next();
+    }
+
+    if (isProducaoApi && request.method === "PATCH") {
+      return NextResponse.json({ error: "Entre novamente na Produção." }, { status: 401 });
     }
 
     const loginUrl = new URL("/producao-login", request.url);
