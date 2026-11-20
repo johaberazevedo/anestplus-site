@@ -5,6 +5,9 @@ import { supabase } from "@/lib/supabaseClient";
 
 type RecordPDF = {
   id: string;
+  institutional?: boolean;
+  hospital_code?: string;
+  hospital?: { name: string } | null;
   patient_name: string;
   record_number: string | null;
   export_date: string;
@@ -20,11 +23,11 @@ function today() {
 function displayDate(date: string) {
   return date.split("-").reverse().join("/");
 }
-async function api(operation: string, signal: AbortSignal, payload?: object, params?: URLSearchParams) {
+async function api(operation: string, signal: AbortSignal, payload?: object, params?: URLSearchParams, institutional = false) {
   const { data: { session } } = await supabase.auth.getSession();
   if (signal.aborted) throw new DOMException("Aborted", "AbortError");
   if (!session?.access_token) throw new Error("Sua sessão expirou. Entre novamente na conta.");
-  const response = await fetch(`/api/pro/pre-anestesicas/${operation}${params ? `?${params}` : ""}`, {
+  const response = await fetch(`${institutional ? "/api/pro/conta/pre-anestesicas" : "/api/pro/pre-anestesicas"}/${operation}${params ? `?${params}` : ""}`, {
     method: payload ? "POST" : "GET", signal, cache: "no-store",
     headers: { Authorization: `Bearer ${session.access_token}`, ...(payload ? { "Content-Type": "application/json" } : {}) },
     ...(payload ? { body: JSON.stringify(payload) } : {}),
@@ -78,22 +81,31 @@ export default function PreAnestheticPanel() {
     setLoading(true); setError(""); setSuccess(""); setRecords([]); setSearched(true); setDownloadLink(null);
     try {
       if (!from || !to || from > to) throw new Error("Informe um período válido para a exportação.");
-      const params = new URLSearchParams({ date_from: from, date_to: to });
-      const rows: RecordPDF[] = [];
-      let offset = 0;
-      do {
-        params.set("offset", String(offset));
-        const json = await api("listar", controller.signal, undefined, params);
-        if (controller.signal.aborted) return;
-        if (!Array.isArray(json.fichas)) throw new Error("Resposta inválida ao buscar pré-anestésicas.");
-        rows.push(...json.fichas);
-        if (json.nextOffset === null) break;
-        if (!Number.isSafeInteger(json.nextOffset) || json.nextOffset <= offset) {
-          throw new Error("Não foi possível completar a busca. Tente novamente.");
-        }
-        offset = json.nextOffset;
-      } while (true);
-      setRecords([...new Map(rows.map(row => [row.id, row])).values()]);
+      const fetchRecords = async (institutional: boolean) => {
+        const params = new URLSearchParams({ date_from: from, date_to: to });
+        const rows: RecordPDF[] = [];
+        let offset = 0;
+        do {
+          params.set("offset", String(offset));
+          const json = await api("listar", controller.signal, undefined, params, institutional);
+          if (controller.signal.aborted) return [];
+          if (!Array.isArray(json.fichas)) throw new Error("Resposta inválida ao buscar pré-anestésicas.");
+          rows.push(...json.fichas.map((row: RecordPDF) => ({ ...row, institutional })));
+          if (json.nextOffset === null) break;
+          if (!Number.isSafeInteger(json.nextOffset) || json.nextOffset <= offset) {
+            throw new Error("Não foi possível completar a busca. Tente novamente.");
+          }
+          offset = json.nextOffset;
+        } while (true);
+        return rows;
+      };
+      const results = await Promise.allSettled([fetchRecords(false), fetchRecords(true)]);
+      if (controller.signal.aborted) return;
+      const rows = results.flatMap(result => result.status === "fulfilled" ? result.value : []);
+      if (results.some(result => result.status === "rejected")) {
+        setError("Não foi possível carregar todas as pré-anestésicas. Tente buscar novamente.");
+      }
+      setRecords([...new Map(rows.map(row => [`${row.institutional}:${row.id}`, row])).values()]);
     } catch (err) {
       if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "Falha na busca.");
     } finally {
@@ -107,7 +119,7 @@ export default function PreAnestheticPanel() {
     action.current = controller;
     setBusy(true); setError(""); setSuccess(""); setDownloadLink(null);
     try {
-      const json = await api(operation, controller.signal, { fichaId: row.id });
+      const json = await api(operation, controller.signal, { fichaId: row.id }, undefined, row.institutional);
       if (controller.signal.aborted) return;
       if (operation === "download") {
         if (typeof json.downloadUrl !== "string" || !json.downloadUrl.startsWith("https://")) {
@@ -117,7 +129,7 @@ export default function PreAnestheticPanel() {
         setDownloadLink(json.downloadUrl);
         setSuccess(`PDF de ${row.patient_name} pronto. Toque em “Abrir PDF”.`);
       } else {
-        setRecords(previous => previous.filter(item => item.id !== row.id));
+        setRecords(previous => previous.filter(item => item.id !== row.id || item.institutional !== row.institutional));
         setSelected(null);
         setSuccess("Pré-anestésica removida da conta. A ficha no aplicativo foi preservada.");
       }
@@ -174,15 +186,15 @@ export default function PreAnestheticPanel() {
             <th scope="col" className="px-6 py-4">Paciente</th><th scope="col" className="px-6 py-4">Exportação</th>
             <th scope="col" className="px-6 py-4">Disponível até</th><th scope="col" className="px-6 py-4 text-right">Ações</th>
           </tr></thead>
-          <tbody>{filtered.map(row => <tr key={row.id} className="border-t border-zinc-100">
-            <td className="px-6 py-5"><p className="font-bold">{row.patient_name}</p><p className="mt-1 text-zinc-500">Prontuário: {row.record_number || "Não informado"}</p></td>
+          <tbody>{filtered.map(row => <tr key={`${row.institutional}:${row.id}`} className="border-t border-zinc-100">
+            <td className="px-6 py-5"><p className="font-bold">{row.patient_name}</p><p className="mt-1 text-zinc-500">Prontuário: {row.record_number || "Não informado"}</p>{row.institutional && <p className="mt-1 text-zinc-500">Institucional · {row.hospital?.name ?? row.hospital_code}</p>}</td>
             <td className="px-6 py-5">{displayDate(row.export_date)}</td>
             <td className="px-6 py-5">{new Date(row.expires_at).toLocaleString("pt-BR")}</td>
             <td className="px-6 py-5"><div className="flex justify-end gap-2">
               <button type="button" disabled={busy} className={button} onClick={() => perform("download", row)}>Baixar</button>
               <button type="button" disabled={busy} className="rounded-xl px-3 py-2 font-bold text-red-600 hover:bg-red-50 disabled:opacity-50" onClick={e => {
                 deleteButton.current = e.currentTarget; setError(""); setSuccess(""); setSelected(row);
-              }}>Excluir</button>
+              }}>{row.institutional ? "Remover do meu painel" : "Excluir"}</button>
             </div></td>
           </tr>)}</tbody>
         </table></div>
@@ -190,7 +202,7 @@ export default function PreAnestheticPanel() {
       <dialog ref={dialog} aria-labelledby="pre-delete-title" onCancel={e => { e.preventDefault(); closeDialog(); }} className="fixed inset-0 m-auto w-[calc(100%_-_2rem)] max-w-md rounded-[28px] border border-zinc-200 bg-white p-6 text-zinc-950 shadow-2xl backdrop:bg-zinc-950/40">
         <h2 id="pre-delete-title" className="text-xl font-black">Remover pré-anestésica da conta?</h2>
         <p className="mt-3 text-sm leading-6 text-zinc-600">O PDF de <strong>{selected?.patient_name}</strong> deixará de aparecer na sua conta. Essa ação não pode ser desfeita.</p>
-        <p className="mt-2 text-sm leading-6 text-zinc-500">A ficha e seu bloqueio no aplicativo serão preservados.</p>
+        <p className="mt-2 text-sm leading-6 text-zinc-500">A ficha e seu bloqueio no aplicativo serão preservados.{selected?.institutional && " O acesso do hospital ao PDF já compartilhado será mantido até o prazo de disponibilidade."}</p>
         {error ? <p role="alert" className="mt-3 text-sm text-red-700">{error}</p> : null}
         <div className="mt-6 flex flex-wrap justify-end gap-3">
           <button type="button" autoFocus disabled={busy} onClick={closeDialog} className={button}>Cancelar</button>

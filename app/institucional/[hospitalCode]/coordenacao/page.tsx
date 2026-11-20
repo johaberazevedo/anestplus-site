@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 import HospitalIdentity from "@/components/institutional/HospitalIdentity";
 
 type Hospital = { code: string; name: string };
-type Search = { date: string; field: "patient" | "record"; term: string; page: number };
+type Search = { kind: "fichas" | "pre-anestesicas"; date: string; field: "patient" | "record"; term: string; page: number };
 type Ficha = {
   document_id: string; patient_name: string; record_number: string;
   procedure_date: string; anesthesiologist_name: string | null; crm: string;
@@ -74,6 +74,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
   const [hospitals, setHospitals] = useState<Hospital[] | null>(null);
   const [accessError, setAccessError] = useState("");
   const [date, setDate] = useState(today);
+  const [kind, setKind] = useState<Search["kind"]>("fichas");
   const [field, setField] = useState<Search["field"]>("patient");
   const [term, setTerm] = useState("");
   const [submitted, setSubmitted] = useState<Search | null>(null);
@@ -132,7 +133,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
     setError("");
     setList(null);
     try {
-      const result = await request<Listing>(`${hospitalCode}/fichas`, token, controller.signal, { action: "search", ...filters });
+      const result = await request<Listing>(`${hospitalCode}/${filters.kind}`, token, controller.signal, { action: "search", ...filters });
       if (!controller.signal.aborted) setList(result);
     } catch (error) {
       if (!controller.signal.aborted) reportFailure(error);
@@ -148,7 +149,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
     setDownloading(ficha.document_id);
     setError("");
     try {
-      const { downloadUrl } = await request<{ downloadUrl: string }>(`${hospitalCode}/fichas`, token, controller.signal,
+      const { downloadUrl } = await request<{ downloadUrl: string }>(`${hospitalCode}/${submitted?.kind ?? "fichas"}`, token, controller.signal,
         { action: "download", documentId: ficha.document_id });
       if (!controller.signal.aborted) window.location.assign(downloadUrl);
     } catch (error) {
@@ -160,7 +161,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void search({ date, field, term: term.trim(), page: 1 });
+    void search({ kind, date, field, term: term.trim(), page: 1 });
   }
 
   return (
@@ -200,8 +201,18 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
       {error && <p className={`${panel} text-red-700`} role="alert">{error}</p>}
 
       {hospital && <>
-        <form className={`${panel} grid items-end gap-4 sm:grid-cols-[1fr_1fr_2fr_auto]`} onSubmit={submit}>
-          <label className="text-sm font-semibold">Data do procedimento
+        <form className={`${panel} grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_2fr_auto]`} onSubmit={submit}>
+          <label className="text-sm font-semibold">Documento
+            <select className={input} value={kind} onChange={({ target }) => {
+              searchRequest.current?.abort(); downloadRequest.current?.abort();
+              setKind(target.value === "pre-anestesicas" ? "pre-anestesicas" : "fichas");
+              setList(null); setSubmitted(null); setLoading(false); setDownloading(null);
+            }}>
+              <option value="fichas">Ficha anestésica</option>
+              <option value="pre-anestesicas">Pré-anestésica</option>
+            </select>
+          </label>
+          <label className="text-sm font-semibold">{kind === "pre-anestesicas" ? "Data de exportação" : "Data do procedimento"}
             <input type="date" required value={date} onChange={({ target }) => setDate(target.value)} className={input} />
           </label>
           <label className="text-sm font-semibold">Buscar por
@@ -217,7 +228,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
 
         {loading && <p className={panel} role="status">Buscando fichas…</p>}
         {list && <section className={panel}>
-          <h2 className="text-xl font-bold">Fichas anestésicas</h2>
+          <h2 className="text-xl font-bold">{submitted?.kind === "pre-anestesicas" ? "Pré-anestésicas" : "Fichas anestésicas"}</h2>
           {list.fichas.length === 0 ? <p className="mt-3 text-zinc-600">Nenhuma ficha encontrada.</p> : (
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-left text-sm">
