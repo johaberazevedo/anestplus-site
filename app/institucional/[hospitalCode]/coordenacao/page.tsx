@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { coordinationPath } from "@/lib/institutional-hospitals";
 import { supabase } from "@/lib/supabaseClient";
+import HospitalIdentity from "@/components/institutional/HospitalIdentity";
 
 type Hospital = { code: string; name: string };
 type Search = { date: string; field: "patient" | "record"; term: string; page: number };
@@ -82,17 +83,19 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
   const [error, setError] = useState("");
   const searchRequest = useRef<AbortController | null>(null);
   const downloadRequest = useRef<AbortController | null>(null);
+  const accessRevision = useRef(0);
   const hospital = hospitals?.find(({ code }) => code === hospitalCode);
 
   useEffect(() => {
     const controller = new AbortController();
+    const revision = accessRevision.current;
     void request<{ hospitals: Hospital[] }>("hospitais", token, controller.signal)
       .then(({ hospitals }) => {
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || revision !== accessRevision.current) return;
         setHospitals(hospitals);
         setAccessError("");
       }).catch((error: unknown) => {
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || revision !== accessRevision.current) return;
         setHospitals(null);
         setList(null);
         setAccessError(error instanceof Error ? error.message : "Hospitais indisponíveis.");
@@ -107,6 +110,7 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
 
   function reportFailure(error: unknown) {
     if (error instanceof RequestError && (error.status === 401 || error.status === 403)) {
+      accessRevision.current++;
       searchRequest.current?.abort();
       downloadRequest.current?.abort();
       setList(null);
@@ -164,7 +168,8 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
       <header className={`${panel} flex flex-wrap items-start justify-between gap-4`}>
         <div>
           <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Coordenação hospitalar</h1>
-          {hospital && <p className="mt-1 text-zinc-600">{hospital.name}</p>}
+          {!accessError && <div className={hospital ? "mt-4" : undefined}><HospitalIdentity
+            hospitalCode={hospitalCode} hospital={hospital} /></div>}
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link className={button} href="/pro/dashboard">Minha Conta Anest+</Link>

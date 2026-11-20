@@ -5,6 +5,7 @@ export type InstitutionalDelivery = {
   pdfSha256: string;
   signedPayload: string;
   pdf: Uint8Array;
+  shareWithHospital: boolean;
 };
 
 type VerifiedDocument = { signedPayload: string };
@@ -17,6 +18,7 @@ type SubmissionServices = {
   // Must atomically deduplicate hospital/user/id and compare the PDF hash on replay.
   confirm(delivery: InstitutionalDelivery): Promise<
     "created" | "already_received" | "conflict" | "access_denied" | "expired" | "invalid_metadata"
+    | { status: "created" | "already_received"; hospitalShared: boolean }
   >;
 };
 
@@ -60,7 +62,8 @@ async function sha256(bytes: Uint8Array<ArrayBuffer>) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export async function submitInstitutionalPDF(request: Request, hospitalCode: string, services: SubmissionServices) {
+export async function submitInstitutionalPDF(request: Request, hospitalCode: string, services: SubmissionServices,
+  shareWithHospital = true) {
   if (hospitalCode.length > 80 || !/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(hospitalCode)) {
     return reply({ error: "invalid_hospital" }, 400);
   }
@@ -98,12 +101,15 @@ export async function submitInstitutionalPDF(request: Request, hospitalCode: str
     const id = await sha256(new TextEncoder().encode(document.signedPayload));
     const pdfSha256 = await sha256(pdf);
     if (!await services.hasAccess(userId, hospitalCode)) return reply({ error: "access_denied" }, 403);
-    const result = await services.confirm({ id, hospitalCode, userId, pdfSha256, signedPayload: document.signedPayload, pdf });
+    const result = await services.confirm({ id, hospitalCode, userId, pdfSha256,
+      signedPayload: document.signedPayload, pdf, shareWithHospital });
     if (result === "conflict") return reply({ error: "document_conflict" }, 409);
     if (result === "access_denied") return reply({ error: "access_denied" }, 403);
     if (result === "expired") return reply({ error: "document_expired" }, 410);
     if (result === "invalid_metadata") return reply({ error: "invalid_metadata" }, 422);
-    return reply({ id, status: "received" }, result === "created" ? 201 : 200);
+    const status = typeof result === "string" ? result : result.status;
+    const hospitalShared = typeof result === "string" ? shareWithHospital : result.hospitalShared;
+    return reply({ id, status: "received", hospital_shared: hospitalShared }, status === "created" ? 201 : 200);
   } catch {
     return reply({ error: "temporarily_unavailable" }, 503);
   }

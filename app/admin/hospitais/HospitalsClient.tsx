@@ -9,7 +9,8 @@ type Account = { id: string; fullName: string; email: string; crm: string; rqe: 
 type Directory = { users: Account[]; pagination: { lastPage: number } };
 type LinkStatus = { status: string | null; active: boolean };
 const accessLabels = {
-  app: "acesso ao app institucional",
+  app: "acesso à ficha anestésica",
+  pre_anesthetic: "acesso à pré-anestésica",
   coordination: "acesso à coordenação",
   billing: "acesso ao faturamento",
 };
@@ -358,7 +359,8 @@ function HospitalAccess({ hospital }: { hospital: InstitutionalHospital }) {
             setAccessType(event.target.value as AccessType);
             selectAccount(userId);
           }} className={input}>
-            <option value="app">App institucional</option>
+            <option value="app">Ficha anestésica</option>
+            <option value="pre_anesthetic">Pré-anestésica</option>
             <option value="coordination">Coordenação hospitalar</option>
             <option value="billing">Faturamento</option>
           </select>
@@ -371,6 +373,7 @@ function HospitalAccess({ hospital }: { hospital: InstitutionalHospital }) {
           <button type="button" disabled={!status?.status || status.status === "revoked"} onClick={() => void changeAccess("revoke")} className={button}>Revogar</button>
         </div>}
       </fieldset>
+      <p className="mt-3 text-sm text-zinc-600">Para liberar ficha e pré-anestésica, conceda os dois vínculos separadamente.</p>
       {(directoryError || linkError) && <p role="alert" className="mt-3 text-sm text-red-700">{directoryError || linkError}</p>}
       {success && <p role="status" className="mt-3 text-sm text-emerald-700">{success}</p>}
     </section>

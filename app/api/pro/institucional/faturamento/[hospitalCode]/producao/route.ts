@@ -1,6 +1,6 @@
 import { billingNameKey, isBillingDate, type BillingPlan } from "@/lib/institutional-billing";
-import { billingReply as reply, getBillingHospital } from "@/lib/institutional-billing-access";
-import { calculateProduction, summarizeProduction, type BillingSource } from "@/lib/institutional-billing-production";
+import { billingReply as reply, billingTiming, getBillingHospital } from "@/lib/institutional-billing-access";
+import { calculateProduction, productionSpreadsheet, summarizeProduction, type BillingSource } from "@/lib/institutional-billing-production";
 import { institutionalRetentionMs, institutionalUploads } from "@/lib/pro-institutional-submission";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
@@ -20,9 +20,9 @@ async function listCases(hospitalCode: string, from: string, to: string) {
   while (count === null || cases.length < count) {
     const offset = cases.length;
     const { data, count: available, error } = await supabaseAdmin.from(institutionalUploads)
-      .select("document_id,record_number,procedure_date,procedure_name,plan_name,anesthesiologist_name,crm,start_date_time,end_date_time",
+      .select("document_id,patient_name,anesthesia_type,record_number,procedure_date,procedure_name,plan_name,anesthesiologist_name,crm,start_date_time,end_date_time",
         offset === 0 ? { count: "exact" } : undefined)
-      .eq("hospital_code", hospitalCode).gt("uploaded_at", cutoff).lte("uploaded_at", now.toISOString())
+      .eq("hospital_code", hospitalCode).eq("hospital_visible", true).gt("uploaded_at", cutoff).lte("uploaded_at", now.toISOString())
       .gte("procedure_date", from).lte("procedure_date", to)
       .order("procedure_date", { ascending: false }).order("document_id").order("user_id")
       .range(offset, offset + batchSize - 1).returns<BillingSource[]>();
@@ -35,24 +35,26 @@ async function listCases(hospitalCode: string, from: string, to: string) {
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ hospitalCode: string }> }) {
+  const timing = billingTiming("producao");
+  const respond = (data: object, status = 200, records?: number) => timing.finish(reply(data, status), records);
   const { hospitalCode } = await params;
   try {
-    const hospital = await getBillingHospital(request, hospitalCode);
-    if (hospital instanceof Response) return hospital;
+    const hospital = await getBillingHospital(request, hospitalCode, timing);
+    if (hospital instanceof Response) return timing.finish(hospital);
 
     const body = await request.json().catch(() => null);
-    const { from, to, plan, professional, page = 1 } = body ?? {};
+    const { from, to, plan, professional, page = 1, exportAll = false } = body ?? {};
     if (!isBillingDate(from) || !isBillingDate(to) || from > to || !isSearch(plan) || !isSearch(professional)
-        || !Number.isSafeInteger(page) || page < 1) {
-      return reply({ error: "Confira o período e os filtros." }, 400);
+        || !Number.isSafeInteger(page) || page < 1 || typeof exportAll !== "boolean") {
+      return respond({ error: "Confira o período e os filtros." }, 400);
     }
 
     const [cases, plans] = await Promise.all([
-      listCases(hospital.code, from, to),
-      supabaseAdmin.from("institutional_billing_plans")
+      timing.measure("fichas", () => listCases(hospital.code, from, to)),
+      timing.measure("tabelas", () => supabaseAdmin.from("institutional_billing_plans")
         .select("id,plan_name,insurer_name,tables:institutional_billing_tables(starts_on,configuration)")
         .eq("hospital_code", hospital.code).lte("tables.starts_on", to)
-        .order("starts_on", { referencedTable: "tables", ascending: false }).returns<BillingPlan[]>(),
+        .order("starts_on", { referencedTable: "tables", ascending: false }).returns<BillingPlan[]>()),
     ]);
     if (plans.error) throw plans.error;
     const planKey = billingNameKey(plan);
@@ -62,18 +64,22 @@ export async function POST(request: Request, { params }: { params: Promise<{ hos
       && (!professionalKey || billingNameKey(ficha.anesthesiologist_name).includes(professionalKey)
         || billingNameKey(ficha.crm).includes(professionalKey))
     ));
-    const calculated = calculateProduction(filtered, plans.data ?? []);
+    const calculated = await timing.measure("calculo", () => calculateProduction(filtered, plans.data ?? []));
+    if (exportAll) {
+      const spreadsheet = await timing.measure("planilha", () => productionSpreadsheet(calculated));
+      return respond({ spreadsheet, count: calculated.length }, 200, cases.length);
+    }
     const lastPage = Math.max(1, Math.ceil(calculated.length / pageSize));
     const currentPage = Math.min(page, lastPage);
     const offset = (currentPage - 1) * pageSize;
-    return reply({
+    return respond({
       hospitalName: hospital.name,
       cases: calculated.slice(offset, offset + pageSize),
       summary: summarizeProduction(calculated),
       page: currentPage,
       lastPage,
-    });
+    }, 200, cases.length);
   } catch {
-    return reply({ error: "Não foi possível consultar a produção agora." }, 503);
+    return respond({ error: "Não foi possível consultar a produção agora." }, 503);
   }
 }

@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import type { BillingRule } from "@/lib/institutional-billing";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { anesthesiaTechniques, billingRuleLabel, billingTimeZones } from "@/lib/institutional-billing";
 import type { ProductionReport } from "@/lib/institutional-billing-production";
-import { billingRequest } from "./billing-request";
+import { billingRequest, RequestError } from "./billing-request";
 
 type Filters = { from: string; to: string; plan: string; professional: string };
 
-const panel = "rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm";
-const input = "mt-1 w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-zinc-950";
-const button = "rounded-xl border border-zinc-200 px-3 py-2 text-sm font-bold hover:bg-zinc-50 disabled:opacity-40";
+const panel = "min-w-0 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm sm:p-6";
+const input = "mt-2 min-h-11 w-full min-w-0 rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/15";
+const button = "min-h-11 rounded-2xl border border-zinc-300 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#b9963b]/50 hover:bg-[#fafaf7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9963b] disabled:cursor-not-allowed disabled:opacity-40";
 const integers = new Intl.NumberFormat("pt-BR");
 const minutes = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
 const bahiaDate = new Intl.DateTimeFormat("en-CA", {
@@ -24,27 +24,32 @@ function money(cents: number | string) {
   return `R$ ${integers.format(amount / scale)},${String(amount % scale).padStart(2, "0")}`;
 }
 
-function ruleLabel(rule: BillingRule) {
-  const match = rule.kind === "porte" ? rule.match : rule;
-  const criterion = match.kind === "procedure" ? match.name
-    : `Acima de ${match.aboveMinutes} min${match.upToMinutes === null ? "" : ` e até ${match.upToMinutes} min`}`;
-  if (rule.kind === "porte") return `Porte ${rule.label} · ${criterion}`;
-  return rule.kind === "procedure" ? `Cirurgia · ${criterion}` : criterion;
-}
-
-export default function ProductionClient({ hospitalCode, token }: { hospitalCode: string; token: string }) {
+export default function ProductionClient({ hospitalCode, token, active = true, configurationVersion = 0, onAccessDenied }: {
+  hospitalCode: string; token: string; active?: boolean; configurationVersion?: number; onAccessDenied?: (message: string) => void;
+}) {
   const [today] = useState(() => bahiaDate.format(new Date()));
   const [report, setReport] = useState<ProductionReport | null>(null);
   const [submitted, setSubmitted] = useState<Filters | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copying, setCopying] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState("");
   const pendingRequest = useRef<AbortController | null>(null);
+  const copyRequest = useRef<AbortController | null>(null);
+  const requestedVersion = useRef(configurationVersion);
 
-  useEffect(() => () => pendingRequest.current?.abort(), []);
-
-  async function search(filters: Filters, page = 1) {
+  useEffect(() => () => {
     pendingRequest.current?.abort();
+    copyRequest.current?.abort();
+  }, []);
+
+  const search = useCallback(async (filters: Filters, page = 1) => {
+    pendingRequest.current?.abort();
+    copyRequest.current?.abort();
+    setCopying(false);
+    setCopyFeedback("");
     const controller = new AbortController();
+    requestedVersion.current = configurationVersion;
     pendingRequest.current = controller;
     setLoading(true);
     setReport(null);
@@ -63,9 +68,54 @@ export default function ProductionClient({ hospitalCode, token }: { hospitalCode
     } catch (error) {
       if (!controller.signal.aborted) {
         setError(error instanceof Error ? error.message : "Não foi possível consultar a produção.");
+        if (error instanceof RequestError && (error.status === 401 || error.status === 403)) onAccessDenied?.(error.message);
       }
     } finally {
       if (!controller.signal.aborted) setLoading(false);
+    }
+  }, [hospitalCode, token, configurationVersion, onAccessDenied]);
+
+  useEffect(() => {
+    if (active && submitted && requestedVersion.current !== configurationVersion) void search(submitted);
+  }, [active, submitted, configurationVersion, search]);
+
+  async function copySpreadsheet() {
+    if (!submitted || copying) return;
+    const controller = new AbortController();
+    copyRequest.current = controller;
+    setCopying(true);
+    setCopyFeedback("");
+    setError("");
+    try {
+      const content = billingRequest<{ spreadsheet: string; count: number }>(
+        `/api/pro/institucional/faturamento/${hospitalCode}/producao`, token, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...submitted, exportAll: true }), signal: controller.signal,
+        },
+      ).then((result) => {
+        if (controller.signal.aborted) throw new DOMException("Busca cancelada", "AbortError");
+        return result;
+      });
+      let result: { spreadsheet: string; count: number };
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        // Safari exige iniciar a escrita no mesmo gesto do clique.
+        const item = new ClipboardItem({ "text/plain": content.then((data) => new Blob([data.spreadsheet], { type: "text/plain" })) });
+        [result] = await Promise.all([content, navigator.clipboard.write([item])]);
+      } else {
+        result = await content;
+        await navigator.clipboard.writeText(result.spreadsheet);
+      }
+      if (!controller.signal.aborted) setCopyFeedback(`${result.count} ficha(s) copiadas com os filtros da busca, incluindo todas as páginas.`);
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        setError(error instanceof Error ? error.message : "Não foi possível copiar. Tente novamente.");
+        if (error instanceof RequestError && (error.status === 401 || error.status === 403)) {
+          setReport(null);
+          onAccessDenied?.(error.message);
+        }
+      }
+    } finally {
+      if (!controller.signal.aborted) setCopying(false);
     }
   }
 
@@ -83,49 +133,87 @@ export default function ProductionClient({ hospitalCode, token }: { hospitalCode
   return (
     <>
       <form onSubmit={submit} className={panel}>
-        <fieldset className="grid items-end gap-3 text-sm font-semibold sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.2fr_auto]">
+        <fieldset className="grid min-w-0 items-end gap-4 text-sm font-bold text-zinc-700 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr_1.2fr_auto]">
           <label>Data inicial<input name="from" type="date" className={input} defaultValue={today} required /></label>
           <label>Data final<input name="to" type="date" className={input} defaultValue={today} required /></label>
           <label>Plano<input name="plan" className={input} placeholder="Todos" maxLength={120} /></label>
           <label>Anestesista<input name="professional" className={input} placeholder="Nome ou CRM" maxLength={120} /></label>
-          <button type="submit" className="rounded-xl bg-[#1a2718] px-4 py-2 font-bold text-white disabled:opacity-40" disabled={loading}>
-            {loading ? "Buscando…" : "Buscar"}
+          <button type="submit" className="min-h-12 rounded-2xl bg-[#1a2718] px-5 py-3 font-bold text-white shadow-md shadow-[#1a2718]/15 transition hover:bg-[#22331d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9963b] disabled:cursor-not-allowed disabled:opacity-40" disabled={loading}>
+            {loading ? "Buscando…" : "Buscar produção"}
           </button>
         </fieldset>
       </form>
-      {loading && <p className={panel} role="status">Calculando a produção…</p>}
-      {error && <p className={`${panel} text-red-700`} role="alert">{error}</p>}
+      {loading && <p className={`${panel} py-10 text-center text-sm text-[#506047]`} role="status">Calculando a produção…</p>}
+      {error && <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700" role="alert">{error}</p>}
+      {!submitted && <section className={`${panel} py-12 text-center sm:py-14`}>
+        <h2 className="text-lg font-bold">Busque a produção do hospital</h2>
+        <p className="mt-2 text-sm text-zinc-500">Escolha o período e os filtros para conferir as fichas e os valores.</p>
+      </section>}
       {report && <section className={panel} aria-label="Resultado da produção">
-        <h2 className="text-xl font-black">{report.hospitalName}</h2>
-        <dl className="mt-4 grid gap-4 rounded-xl bg-zinc-50 p-4 sm:grid-cols-3">
-          <div><dt className="text-sm text-zinc-600">Total calculado</dt><dd className="text-lg font-black">{money(report.summary.totalCents)}</dd></div>
-          <div><dt className="text-sm text-zinc-600">Fichas calculadas</dt><dd className="text-lg font-black">{report.summary.calculated}</dd></div>
-          <div><dt className="text-sm text-zinc-600">Pendentes de revisão</dt><dd className="text-lg font-black">{report.summary.pending}</dd></div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-black tracking-tight sm:text-2xl">{report.hospitalName}</h2>
+          <div className="flex w-full flex-wrap gap-2 sm:w-auto">
+          {submitted && <button type="button" className={button} onClick={() => void search(submitted, report.page)}>Atualizar</button>}
+          {report.cases.length > 0 && <button type="button" className="min-h-11 w-full rounded-2xl bg-[#1a2718] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#22331d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9963b] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto" disabled={copying}
+            onClick={() => void copySpreadsheet()}>{copying ? "Preparando…" : "Copiar linhas para planilha"}</button>}
+          </div>
+        </div>
+        {copyFeedback && <p role="status" className="mt-4 rounded-2xl border border-[#7a865f]/25 bg-[#f6f7f1] px-4 py-3 text-sm text-[#506047]">{copyFeedback}</p>}
+        <dl className="my-6 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-3xl border border-[#7a865f]/25 bg-[#f6f7f1] p-5">
+            <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#506047]">Total calculado</dt>
+            <dd className="mt-2 break-words text-3xl font-black tracking-tight text-[#1a2718]">{money(report.summary.totalCents)}</dd>
+          </div>
+          <div className="rounded-3xl border border-zinc-200 bg-white p-5">
+            <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500">Fichas calculadas</dt>
+            <dd className="mt-2 text-3xl font-black">{report.summary.calculated}</dd>
+          </div>
+          <div className="rounded-3xl border border-zinc-200 bg-white p-5">
+            <dt className="text-[11px] font-bold uppercase tracking-[0.16em] text-zinc-500">Pendentes de revisão</dt>
+            <dd className="mt-2 text-3xl font-black text-amber-700">{report.summary.pending}</dd>
+          </div>
         </dl>
-        {report.cases.length === 0 ? <p className="mt-4 text-zinc-600">Nenhuma ficha encontrada.</p> : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-200 text-zinc-700">
-                <tr>{["Ficha", "Plano", "Anestesista", "Duração", "Regra e vigência", "Valor"].map((label) => (
-                  <th key={label} scope="col" className="px-3 py-2">{label}</th>
+        {report.cases.length === 0 ? <p className="py-10 text-center text-sm text-zinc-500">Nenhuma ficha encontrada para os filtros escolhidos.</p> : (
+          <div role="region" aria-label="Tabela da produção" tabIndex={0} className="overflow-x-auto rounded-2xl border border-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9963b]">
+            <table className="w-full min-w-[1120px] text-left text-sm">
+              <thead className="border-b border-zinc-200 bg-zinc-50/80 text-[11px] font-bold uppercase tracking-[0.14em] text-zinc-500">
+                <tr>{["Ficha", "Plano", "Anestesista", "Técnica e turno", "Duração", "Regra e vigência", "Valor"].map((label) => (
+                  <th key={label} scope="col" className="px-4 py-4 last:text-right">{label}</th>
                 ))}</tr>
               </thead>
               <tbody className="divide-y divide-zinc-100">
                 {report.cases.map((ficha) => (
-                  <tr key={ficha.id} className="align-top">
-                    <td className="px-3 py-3">
-                      <p className="font-semibold">{ficha.procedure_name ?? "Cirurgia indisponível"}</p>
-                      <p className="text-zinc-600">{dateLabel(ficha.procedure_date)}{ficha.record_number ? ` · Prontuário ${ficha.record_number}` : ""}</p>
+                  <tr key={ficha.id} className="align-top transition-colors hover:bg-[#fafaf7]">
+                    <td className="px-4 py-4">
+                      <p className="font-bold text-zinc-950">{ficha.procedure_name ?? "Cirurgia indisponível"}</p>
+                      {ficha.patient_name && <p className="mt-1">{ficha.patient_name}</p>}
+                      <p className="mt-1 text-xs text-zinc-500">{dateLabel(ficha.procedure_date)}{ficha.record_number ? ` · Prontuário ${ficha.record_number}` : ""}</p>
                     </td>
-                    <td className="px-3 py-3">{ficha.plan_name ?? "—"}</td>
-                    <td className="px-3 py-3">{ficha.anesthesiologist_name ?? "—"}{ficha.crm && <p className="text-zinc-600">CRM {ficha.crm}</p>}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{ficha.durationMinutes === null ? "—" : `${minutes.format(ficha.durationMinutes)} min`}</td>
-                    <td className="px-3 py-3">
-                      {ficha.rule ? ruleLabel(ficha.rule) : ficha.pending}
+                    <td className="px-4 py-4"><span className="inline-block rounded-full border border-[#b9963b]/20 bg-[#f6f7f1] px-3 py-1 text-xs font-bold text-[#506047]">{ficha.plan_name ?? "—"}</span></td>
+                    <td className="px-4 py-4">{ficha.anesthesiologist_name ?? "—"}{ficha.crm && <p className="text-zinc-600">CRM {ficha.crm}</p>}</td>
+                    <td className="px-4 py-4">
+                      <p>{ficha.technique ? anesthesiaTechniques[ficha.technique] : "Técnica não identificada"}</p>
+                      {ficha.anesthesia_type && <p className="text-xs text-zinc-600">Na ficha · {ficha.anesthesia_type}</p>}
+                      <p className="text-zinc-600">{[ficha.weekday, ficha.shift].filter(Boolean).join(" · ") || "Horário indisponível"}</p>
+                      <p className="text-xs text-zinc-600">{billingTimeZones[ficha.timeZone] ?? ficha.timeZone}</p>
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-4">
+                      {ficha.durationMinutes === null ? "—" : `${minutes.format(ficha.durationMinutes)} min`}
+                      {ficha.billedMinutes !== null && ficha.billedMinutes !== ficha.durationMinutes
+                        && <p className="text-xs text-zinc-600">Cálculo · {minutes.format(ficha.billedMinutes)} min</p>}
+                    </td>
+                    <td className="px-4 py-4">
+                      <p className={ficha.rule ? "text-zinc-700" : "text-amber-800"}>{ficha.rule ? billingRuleLabel(ficha.rule) : ficha.pending}</p>
                       {ficha.startsOn && <p className="text-zinc-600">Desde {dateLabel(ficha.startsOn)}</p>}
                     </td>
-                    <td className={`px-3 py-3 font-bold ${ficha.amountCents === null ? "text-amber-800" : "whitespace-nowrap"}`}>
-                      {ficha.amountCents === null ? "Pendente de revisão" : money(ficha.amountCents)}
+                    <td className={`px-4 py-4 text-right font-bold ${ficha.amountCents === null ? "text-amber-800" : "whitespace-nowrap text-[#1a2718]"}`}>
+                      {ficha.amountCents === null
+                        ? <span className="inline-block rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs">Pendente de revisão</span>
+                        : <span className="text-base">{money(ficha.amountCents)}</span>}
+                      {ficha.additions.length > 0 && <div className="mt-1 text-xs font-normal text-zinc-600">
+                        <p>Base · {money(ficha.baseAmountCents!)}</p>
+                        {ficha.additions.map((item) => <p key={item.label}>{item.label} · +{money(item.amountCents)}</p>)}
+                      </div>}
                     </td>
                   </tr>
                 ))}

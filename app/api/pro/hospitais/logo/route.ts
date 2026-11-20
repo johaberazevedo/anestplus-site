@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isUuid } from "@/lib/admin-auth";
 import { isHospitalCode } from "@/lib/institutional-hospitals";
-import { getProHospitalLinks } from "@/lib/pro-hospital-access";
+import { getProHospitalLinks, getProHospitalModuleLinks } from "@/lib/pro-hospital-access";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
@@ -16,14 +16,16 @@ export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const code = params.get("hospitalCode");
   const version = params.get("version")?.toLowerCase();
+  const includeModules = params.get("modules");
   if (!isHospitalCode(code) || !version || !isUuid(version)) {
     return failure("Confira o código do hospital e a versão da logo.", 400);
   }
+  if (includeModules !== null && includeModules !== "1") return failure("Opção de módulos inválida.", 400);
 
-  const codes = await getProHospitalLinks(request, code);
-  if (!Array.isArray(codes)) return codes;
+  const links = includeModules === "1" ? await getProHospitalModuleLinks(request, code) : await getProHospitalLinks(request, code);
+  if (!Array.isArray(links)) return links;
   const unavailable = () => failure("Logo indisponível.", 404);
-  if (!codes.includes(code)) return unavailable();
+  if (!links.some((link) => (typeof link === "string" ? link : link.code) === code)) return unavailable();
 
   const { data: hospital, error: hospitalError } = await supabaseAdmin.from("institutional_hospitals")
     .select("code").eq("code", code).eq("is_active", true).maybeSingle();

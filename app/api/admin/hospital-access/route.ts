@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { hasValidAdminSession, isTrustedAdminMutationRequest, isUuid } from "@/lib/admin-auth";
-import { HOSPITAL_ACCESS_FEATURE, HOSPITAL_BILLING_FEATURE, HOSPITAL_COORDINATION_FEATURE, isHospitalCode,
+import { HOSPITAL_ACCESS_FEATURE, HOSPITAL_BILLING_FEATURE, HOSPITAL_COORDINATION_FEATURE,
+  HOSPITAL_PRE_ANESTHETIC_FEATURE, isHospitalCode,
   type HospitalAccessFeature } from "@/lib/institutional-hospitals";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 function accessFeature(accessType: unknown): HospitalAccessFeature | null {
   if (accessType === undefined || accessType === "app") return HOSPITAL_ACCESS_FEATURE;
+  if (accessType === "pre_anesthetic") return HOSPITAL_PRE_ANESTHETIC_FEATURE;
   if (accessType === "coordination") return HOSPITAL_COORDINATION_FEATURE;
   if (accessType === "billing") return HOSPITAL_BILLING_FEATURE;
   return null;

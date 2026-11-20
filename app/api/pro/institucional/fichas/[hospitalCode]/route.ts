@@ -96,7 +96,7 @@ async function confirm(delivery: InstitutionalDelivery) {
   const fileKey = `pro/institucional/${hospitalCode}/${userId}/${id}.pdf`;
   const findReceipt = async () => {
     const { data, error } = await supabaseAdmin.from(institutionalUploads)
-      .select("pdf_sha256,file_key,uploaded_at")
+      .select("pdf_sha256,file_key,uploaded_at,hospital_visible")
       .eq("hospital_code", hospitalCode).eq("user_id", userId).eq("document_id", id).maybeSingle();
     if (error) throw error;
     return data;
@@ -106,6 +106,25 @@ async function confirm(delivery: InstitutionalDelivery) {
     if (row.pdf_sha256 !== pdfSha256 || row.file_key !== fileKey) return "conflict";
     if (Date.parse(row.uploaded_at) + institutionalRetentionMs <= Date.now()) return "expired";
     return "already_received";
+  };
+  const acknowledge = async (row: NonNullable<typeof receipt>) => {
+    const status = checkReceipt(row);
+    if (status !== "already_received") return status;
+    if (delivery.shareWithHospital && !row.hospital_visible) {
+      if (!await hasAccess(userId, hospitalCode)) return "access_denied" as const;
+      const { data, error } = await supabaseAdmin.from(institutionalUploads)
+        .update({ hospital_visible: true }).eq("hospital_code", hospitalCode).eq("user_id", userId)
+        .eq("document_id", id).eq("pdf_sha256", pdfSha256).eq("hospital_visible", false)
+        .select("document_id");
+      if (error) throw error;
+      if (!data?.length) {
+        const current = await findReceipt();
+        if (!current || !current.hospital_visible) throw new Error("Receipt not confirmed");
+        const currentStatus = checkReceipt(current);
+        if (currentStatus !== "already_received") return currentStatus;
+      }
+    }
+    return { status: "already_received" as const, hospitalShared: delivery.shareWithHospital || row.hospital_visible === true };
   };
   const status = receipt ? checkReceipt(receipt) : null;
   if (status === "conflict" || status === "expired") return status;
@@ -119,8 +138,9 @@ async function confirm(delivery: InstitutionalDelivery) {
     return "same";
   };
   if (status === "already_received") {
+    if (!receipt) throw new Error("Receipt not found");
     const object = await checkObject();
-    return object === "same" ? status : object;
+    return object === "same" ? acknowledge(receipt) : object;
   }
 
   try {
@@ -139,14 +159,14 @@ async function confirm(delivery: InstitutionalDelivery) {
   if (!await hasAccess(userId, hospitalCode)) return "access_denied";
   const { error } = await supabaseAdmin.from(institutionalUploads).insert({
     hospital_code: hospitalCode, user_id: userId, document_id: id,
-    pdf_sha256: pdfSha256, file_key: fileKey, ...metadata,
+    pdf_sha256: pdfSha256, file_key: fileKey, hospital_visible: delivery.shareWithHospital, ...metadata,
   });
   if (error?.code === "23505") {
     const concurrentReceipt = await findReceipt();
-    if (concurrentReceipt) return checkReceipt(concurrentReceipt);
+    if (concurrentReceipt) return acknowledge(concurrentReceipt);
   }
   if (error) throw error;
-  return "created";
+  return { status: "created" as const, hospitalShared: delivery.shareWithHospital };
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ hospitalCode: string }> }) {
@@ -158,5 +178,5 @@ export async function POST(request: Request, { params }: { params: Promise<{ hos
   const { hospitalCode } = await params;
   return submitInstitutionalPDF(request, hospitalCode, {
     authenticate: authenticateProHospitalToken, hasAccess, verifyDocument, confirm,
-  });
+  }, !new URL(request.url).pathname.startsWith("/api/pro/conta/fichas-institucionais/"));
 }

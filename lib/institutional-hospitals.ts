@@ -1,8 +1,10 @@
 export const HOSPITAL_ACCESS_FEATURE = "hospital_access";
+export const HOSPITAL_PRE_ANESTHETIC_FEATURE = "hospital_pre_anesthetic";
 export const HOSPITAL_COORDINATION_FEATURE = "hospital_coordination";
 export const HOSPITAL_BILLING_FEATURE = "hospital_billing";
 export type HospitalAccessFeature = typeof HOSPITAL_ACCESS_FEATURE | typeof HOSPITAL_COORDINATION_FEATURE
-  | typeof HOSPITAL_BILLING_FEATURE;
+  | typeof HOSPITAL_BILLING_FEATURE | typeof HOSPITAL_PRE_ANESTHETIC_FEATURE;
+export type HospitalModules = { anesthetic_record: boolean; pre_anesthetic: boolean };
 export const HOSPITAL_FIELDS = "code,name,latitude,longitude,radius_meters,is_active";
 
 export function isHospitalCode(value: unknown): value is string {

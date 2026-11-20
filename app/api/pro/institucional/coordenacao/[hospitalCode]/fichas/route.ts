@@ -53,7 +53,8 @@ async function listFichas(hospital: Hospital, validAfter: string, { date, page: 
 
   const query = supabaseAdmin.from(institutionalUploads)
     .select("document_id,patient_name,record_number,procedure_date,anesthesiologist_name,crm,uploaded_at")
-    .eq("hospital_code", hospital.code).eq("procedure_date", date).gt("uploaded_at", validAfter);
+    .eq("hospital_code", hospital.code).eq("hospital_visible", true)
+    .eq("procedure_date", date).gt("uploaded_at", validAfter);
   const search = term.trim();
   if (search) {
     const pattern = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -72,7 +73,8 @@ async function downloadFicha(hospital: Hospital, validAfter: string, documentId:
   }
 
   const { data, error } = await supabaseAdmin.from(institutionalUploads).select("file_key,uploaded_at")
-    .eq("hospital_code", hospital.code).eq("document_id", documentId).gt("uploaded_at", validAfter).maybeSingle();
+    .eq("hospital_code", hospital.code).eq("hospital_visible", true)
+    .eq("document_id", documentId).gt("uploaded_at", validAfter).maybeSingle();
   if (error) throw error;
   if (!data) return reply({ error: "Ficha institucional indisponível." }, 404);
 

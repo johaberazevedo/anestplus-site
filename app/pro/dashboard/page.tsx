@@ -110,6 +110,7 @@ export default function ProDashboardPage() {
   const [dateTo, setDateTo] = useState<string>(today);
 
   const [search, setSearch] = useState<string>("");
+  const [hospitalFilter, setHospitalFilter] = useState({ value: "all", label: "Todas as fichas" });
   const [fichas, setFichas] = useState<FichaPessoal[]>([]);
   const [institucionais, setInstitucionais] = useState<FichaInstitucional[]>([]);
   const [erroInstitucional, setErroInstitucional] = useState(false);
@@ -182,6 +183,7 @@ export default function ProDashboardPage() {
         setLoading(false);
         setInstitucionais([]);
         setErroInstitucional(false);
+        setHospitalFilter({ value: "all", label: "Todas as fichas" });
         setFichaToDelete((ficha) => ficha?.hospital_code !== undefined ? null : ficha);
       }
       if (!session && !isSigningOut) {
@@ -489,10 +491,25 @@ export default function ProDashboardPage() {
     }
   }
 
+  const hospitalOptions = useMemo(() => {
+    const names = new Map(institucionais.map((ficha) => [ficha.hospital_code, ficha.hospital_name]));
+    const selectedCode = hospitalFilter.value.startsWith("hospital:") ? hospitalFilter.value.slice("hospital:".length) : null;
+    // Uma nova busca sem fichas do hospital selecionado deve continuar vazia.
+    if (selectedCode && !names.has(selectedCode)) names.set(selectedCode, hospitalFilter.label);
+    return [...names].sort((first, second) => first[1].localeCompare(second[1], "pt-BR"));
+  }, [institucionais, hospitalFilter]);
+
   const fichasFiltradas = useMemo(() => {
     const term = search.trim().toLowerCase();
 
     let result: Ficha[] = [...fichas, ...institucionais];
+
+    if (hospitalFilter.value === "personal") {
+      result = result.filter((ficha) => ficha.hospital_code === undefined);
+    } else if (hospitalFilter.value.startsWith("hospital:")) {
+      const code = hospitalFilter.value.slice("hospital:".length);
+      result = result.filter((ficha) => ficha.hospital_code === code);
+    }
 
     if (term) {
       result = result.filter((ficha) => {
@@ -512,7 +529,7 @@ export default function ProDashboardPage() {
 
       return dateB - dateA;
     });
-  }, [fichas, institucionais, search]);
+  }, [fichas, institucionais, search, hospitalFilter]);
 
   const dashboardMetrics = useMemo(() => {
     let totalMinutes = 0;
@@ -780,6 +797,17 @@ export default function ProDashboardPage() {
               </button>
             </div>
           </div>
+          {(hospitalOptions.length > 0 || hospitalFilter.value !== "all") && <div className="mt-4 max-w-md">
+            <label htmlFor="hospital-filter" className="mb-2 block text-[10px] font-bold uppercase tracking-[0.14em] text-zinc-500">Hospital / origem
+            </label>
+            <select id="hospital-filter" value={hospitalFilter.value} onChange={(event) => setHospitalFilter({
+              value: event.target.value, label: event.target.selectedOptions[0].text,
+            })} className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/10">
+              <option value="all">Todas as fichas</option>
+              <option value="personal">Fichas pessoais</option>
+              {hospitalOptions.map(([code, name]) => <option key={code} value={`hospital:${code}`}>{name}</option>)}
+            </select>
+          </div>}
         </form>
 
         {loading ? (
