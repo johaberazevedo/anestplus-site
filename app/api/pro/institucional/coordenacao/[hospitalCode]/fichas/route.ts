@@ -2,8 +2,10 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { HOSPITAL_COORDINATION_FEATURE, isHospitalCode } from "@/lib/institutional-hospitals";
 import { getProHospitalLinks } from "@/lib/pro-hospital-access";
-import { institutionalRetentionMs, institutionalStorage, institutionalUploads } from "@/lib/pro-institutional-submission";
+import { institutionalRetentionMs, institutionalStorage } from "@/lib/pro-institutional-submission";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+
+import { cycleTables, cycleUUID } from "@/lib/pro-institutional-cycles";
 
 export const runtime = "nodejs";
 
@@ -51,8 +53,8 @@ async function listFichas(hospital: Hospital, validAfter: string, { date, page: 
     return reply({ error: "Data, página ou filtro inválidos." }, 400);
   }
 
-  const query = supabaseAdmin.from(institutionalUploads)
-    .select("document_id,patient_name,record_number,procedure_date,anesthesiologist_name,crm,uploaded_at")
+  const query = supabaseAdmin.from(cycleTables.caseHospital)
+    .select("user_id,document_id,attempt_id,patient_name,record_number,procedure_date,anesthesiologist_name,crm,uploaded_at")
     .eq("hospital_code", hospital.code).eq("hospital_visible", true)
     .eq("procedure_date", date).gt("uploaded_at", validAfter);
   const search = term.trim();
@@ -61,25 +63,34 @@ async function listFichas(hospital: Hospital, validAfter: string, { date, page: 
     query.filter(field === "patient" ? "patient_name" : "record_number", "imatch", pattern);
   }
   const { data, error } = await query.order("uploaded_at", { ascending: false })
-    .order("document_id").range(offset, offset + pageSize);
+    .order("document_id").order("user_id").range(offset, offset + pageSize);
   if (error) throw error;
   const rows = data ?? [];
   return reply({ hospital, fichas: rows.slice(0, pageSize), page, hasMore: rows.length > pageSize });
 }
 
-async function downloadFicha(hospital: Hospital, validAfter: string, documentId: unknown) {
+async function downloadFicha(hospital: Hospital, validAfter: string, documentId: unknown, userId: unknown, attemptId: unknown) {
   if (typeof documentId !== "string" || !/^[0-9a-f]{64}$/.test(documentId)) {
     return reply({ error: "Identificador da ficha inválido." }, 400);
   }
+  let owner: string;
+  let attempt: string;
+  try {
+    owner = cycleUUID(userId);
+    attempt = cycleUUID(attemptId);
+  } catch {
+    return reply({ error: "Identificação da ficha incompleta. Atualize a busca." }, 400);
+  }
 
-  const { data, error } = await supabaseAdmin.from(institutionalUploads).select("file_key,uploaded_at")
+  const { data, error } = await supabaseAdmin.from(cycleTables.caseHospital).select("file_key,uploaded_at")
     .eq("hospital_code", hospital.code).eq("hospital_visible", true)
-    .eq("document_id", documentId).gt("uploaded_at", validAfter).maybeSingle();
+    .eq("user_id", owner).eq("document_id", documentId).eq("attempt_id", attempt)
+    .gt("uploaded_at", validAfter).maybeSingle();
   if (error) throw error;
-  if (!data) return reply({ error: "Ficha institucional indisponível." }, 404);
+  if (!data) return reply({ error: "Este ciclo da ficha não está mais disponível. Atualize a busca." }, 404);
 
   const remaining = Math.floor((Date.parse(data.uploaded_at) + institutionalRetentionMs - Date.now()) / 1000);
-  if (!Number.isFinite(remaining) || remaining < 1) return reply({ error: "Ficha institucional indisponível." }, 404);
+  if (!Number.isFinite(remaining) || remaining < 1) return reply({ error: "Este ciclo da ficha não está mais disponível. Atualize a busca." }, 404);
   const { bucket, client } = institutionalStorage();
   const downloadUrl = await getSignedUrl(client, new GetObjectCommand({
     Bucket: bucket, Key: data.file_key, ResponseContentType: "application/pdf",
@@ -98,7 +109,7 @@ export async function POST(request: Request, context: RouteContext) {
   return withCoordination(request, context, async (hospital, validAfter) => {
     const body = await request.json().catch(() => null);
     if (body?.action === "search") return listFichas(hospital, validAfter, body);
-    if (body?.action === "download") return downloadFicha(hospital, validAfter, body.documentId);
+    if (body?.action === "download") return downloadFicha(hospital, validAfter, body.documentId, body.userId, body.attemptId);
     return reply({ error: "Operação de coordenação inválida." }, 400);
   });
 }

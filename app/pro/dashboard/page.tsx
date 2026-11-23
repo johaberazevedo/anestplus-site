@@ -29,9 +29,14 @@ type FichaInstitucional = FichaResumo & {
   hospital_code: string;
   hospital_name: string;
   document_id: string;
+  attempt_id: string;
 };
 type Ficha = FichaPessoal | FichaInstitucional;
 const fichasInstitucionais = "/api/pro/conta/fichas-institucionais";
+
+function downloadKey(ficha: Ficha) {
+  return ficha.hospital_code !== undefined ? `${ficha.id}:${ficha.attempt_id}` : ficha.id;
+}
 
 function todayISO() {
   const now = new Date();
@@ -351,7 +356,7 @@ export default function ProDashboardPage() {
   }
 
   async function baixarFicha(ficha: Ficha) {
-    setDownloadingId(ficha.id);
+    setDownloadingId(downloadKey(ficha));
     setError("");
     setSuccess("");
 
@@ -373,7 +378,7 @@ export default function ProDashboardPage() {
           Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(ficha.hospital_code !== undefined
-          ? { hospitalCode: ficha.hospital_code, documentId: ficha.document_id }
+          ? { hospitalCode: ficha.hospital_code, documentId: ficha.document_id, attemptId: ficha.attempt_id }
           : { fileKey: ficha.file_key, fileName: ficha.file_name }),
       });
 
@@ -925,7 +930,7 @@ export default function ProDashboardPage() {
 
                   <tbody>
                     {fichasFiltradas.map((ficha, index) => {
-                      const isDownloadingThis = downloadingId === ficha.id;
+                      const isDownloadingThis = downloadingId === downloadKey(ficha);
                       const isDeletingThis = deletingId === ficha.id;
                       const expiryTone = getExpiryTone(ficha.expires_at);
                       const duration = calculateDuration(
@@ -936,7 +941,7 @@ export default function ProDashboardPage() {
 
                       return (
                         <tr
-                          key={ficha.id}
+                          key={downloadKey(ficha)}
                           className={`transition-colors hover:bg-zinc-50/50 ${
                             index !== fichasFiltradas.length - 1
                               ? "border-b border-zinc-100"

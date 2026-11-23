@@ -6,6 +6,8 @@ import { HOSPITAL_PRE_ANESTHETIC_FEATURE, HOSPITAL_COORDINATION_FEATURE, isHospi
 import { getProHospitalLinksForUser } from "@/lib/pro-hospital-access";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+import { authorizeCycle, confirmCycle, verifyCycleTicket, cycleTables, CycleFailure, cycleJSON } from "@/lib/pro-institutional-cycles";
+
 const TABLE = "pro_pre_anesthetic_uploads";
 const AUDIT = "pro_pre_anesthetic_audit_logs";
 export const institutionalPreUploads = "institutional_pro_pre_anesthetic_uploads";
@@ -119,6 +121,9 @@ async function run(request: Request, operation: (owner: string) => Promise<unkno
     const result = await operation(await userId(request));
     return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
+    if (error instanceof CycleFailure) {
+      return NextResponse.json({ error: error.code, code: error.code }, { status: error.status, headers: { "Cache-Control": "no-store" } });
+    }
     if (error instanceof Failure) {
       return NextResponse.json({ error: error.message, ...(error.code && { code: error.code }) }, { status: error.status, headers: { "Cache-Control": "no-store" } });
     }
@@ -134,42 +139,45 @@ async function authorize(request: Request, scope?: InstitutionalScope) {
     const uploadId = uuid(data.uploadId, "Identificador de envio");
     if (scope) {
       await requireHospital(owner, scope.hospitalCode);
-      const { data: previous, error } = await supabaseAdmin.from(institutionalPreUploads).select("*")
-        .eq("user_id", owner).eq("upload_id", uploadId).eq("hospital_code", scope.hospitalCode).maybeSingle();
-      if (error) throw error;
-      if (previous) {
-        if (Date.parse(previous.expires_at) <= Date.now()) fail(409, "Este envio expirou.");
-        if (scope.hospitalShared && !previous.hospital_visible) {
-          const { error } = await supabaseAdmin.from(institutionalPreUploads).update({ hospital_visible: true })
-            .eq("id", previous.id).eq("user_id", owner).eq("hospital_code", scope.hospitalCode);
-          if (error) throw error;
-        }
-        return { ok: true, id: previous.id, alreadyConfirmed: true,
-          hospital_shared: previous.hospital_visible || scope.hospitalShared };
-      }
+      return authorizeCycle({ kind: "pre", owner, hospital: scope.hospitalCode, document: uploadId,
+        attempt: data.attemptId, pdfHash: data.pdfSha256, shared: scope.hospitalShared,
+        crm: required(data.crm, "CRM", 50), fileName: safeName(data.fileName),
+        createAttempt: data.createAttempt, uploadToken: data.uploadToken });
     }
     const crm = required(data.crm, "CRM", 50);
     const fileName = safeName(data.fileName);
-    const fileKey = scope
-      ? `pro/institutional/pre-anestesicas/${scope.hospitalCode}/${owner}/${uploadId}/${randomUUID()}.pdf`
-      : `pro/pre-anestesicas/${owner}/${uploadId}/${randomUUID()}.pdf`;
+    const fileKey = `pro/pre-anestesicas/${owner}/${uploadId}/${randomUUID()}.pdf`;
     const { client, bucket } = storage();
     const uploadUrl = await getSignedUrl(client, new PutObjectCommand({
       Bucket: bucket, Key: fileKey, ContentType: "application/pdf", IfNoneMatch: "*",
     }), { expiresIn: 60 });
     return { uploadUrl, uploadId, fileKey, fileName,
       uploadHeaders: { "Content-Type": "application/pdf", "If-None-Match": "*" },
-      uploadToken: sign({ userId: owner, uploadId, crm, fileKey, fileName, expires: Date.now() + DAY,
-        ...(scope && { hospitalCode: scope.hospitalCode, hospitalShared: scope.hospitalShared }) }) };
+      uploadToken: sign({ userId: owner, uploadId, crm, fileKey, fileName, expires: Date.now() + DAY }) };
   });
 }
 
 async function confirm(request: Request, scope?: InstitutionalScope) {
   return run(request, async (owner) => {
     const data = await body(request);
+    if (scope) {
+      await requireHospital(owner, scope.hospitalCode);
+      const ticket = verifyCycleTicket(data.uploadToken, owner, "pre", scope.hospitalCode, scope.hospitalShared);
+      const exportedAt = timestamp(data.exportedAt);
+      const exportDate = dateOnly(data.exportDate);
+      if (Math.abs(Date.parse(`${exportDate}T12:00:00Z`) - Date.parse(exportedAt)) > 26 * 3_600_000) {
+        fail(400, "Data local incompatível com a exportação.");
+      }
+      const cycle = await confirmCycle(ticket, {
+        patient_name: required(data.patientName, "Paciente"),
+        record_number: data.recordNumber == null || data.recordNumber === "" ? null : required(data.recordNumber, "Prontuário", 100),
+        crm: ticket.crm, exported_at: exportedAt, export_date: exportDate,
+      });
+      if (!cycle.already_confirmed) await audit("sync_created", owner, ticket.attempt, ticket.key, true);
+      return { ...cycle, id: ticket.attempt, alreadyConfirmed: cycle.already_confirmed };
+    }
     const ticket = verify(data.uploadToken, owner);
-    if (scope) await requireHospital(owner, scope.hospitalCode);
-    if (ticket.hospitalCode !== scope?.hospitalCode || ticket.hospitalShared !== scope?.hospitalShared) {
+    if (ticket.hospitalCode !== undefined || ticket.hospitalShared !== undefined) {
       fail(403, "Autorização incompatível com o destino do envio.");
     }
     const patientName = required(data.patientName, "Paciente");
@@ -183,47 +191,38 @@ async function confirm(request: Request, scope?: InstitutionalScope) {
     }
     const row = { user_id: owner, upload_id: ticket.uploadId, crm: ticket.crm,
       patient_name: patientName, record_number: recordNumber, exported_at: exportedAt,
-      export_date: exportDate, file_key: ticket.fileKey, file_name: ticket.fileName,
-      ...(scope && { hospital_code: scope.hospitalCode }) };
+      export_date: exportDate, file_key: ticket.fileKey, file_name: ticket.fileName };
     const findExisting = async () => {
-      const { data: existing, error } = await supabaseAdmin.from(uploads(!!scope)).select("*")
+      const { data: existing, error } = await supabaseAdmin.from(TABLE).select("*")
         .eq("user_id", owner).eq("upload_id", ticket.uploadId).maybeSingle();
       if (error) throw error;
       if (!existing) return null;
-      if ((!scope && existing.deleted_at) || Date.parse(existing.expires_at) <= Date.now()) {
+      if (existing.deleted_at || Date.parse(existing.expires_at) <= Date.now()) {
         fail(409, "Este envio foi excluído ou expirou. Faça uma nova exportação.");
       }
       // Tickets concorrentes do mesmo envio lógico podem apontar para objetos distintos.
       // O primeiro confirmado é preservado; os metadados e o escopo devem coincidir.
-      const matches = Object.entries(row).every(([key, value]) => scope && key === "file_key" ? true : key === "exported_at"
+      const matches = Object.entries(row).every(([key, value]) => key === "exported_at"
         ? Date.parse(existing[key]) === Date.parse(value as string) : existing[key] === value);
       if (!matches) fail(409, "Identificador de envio já utilizado por outro documento ou conteúdo.");
-      if (scope?.hospitalShared && !existing.hospital_visible) {
-        const { error } = await supabaseAdmin.from(institutionalPreUploads).update({ hospital_visible: true })
-          .eq("id", existing.id).eq("user_id", owner).eq("hospital_code", scope.hospitalCode);
-        if (error) throw error;
-      }
-      return { ok: true, id: existing.id, alreadyConfirmed: true,
-        ...(scope && { hospital_shared: existing.hospital_visible || scope.hospitalShared }) };
+      return { ok: true, id: existing.id, alreadyConfirmed: true };
     };
     const existing = await findExisting();
     if (existing) return existing;
-    if (ticket.expires <= Date.now()) throw new Failure(403, "Autorização de envio expirada.",
-      scope ? "upload_authorization_expired" : undefined);
+    if (ticket.expires <= Date.now()) throw new Failure(403, "Autorização de envio expirada.");
     const { client, bucket } = storage();
     let head;
     try { head = await client.send(new HeadObjectCommand({ Bucket: bucket, Key: ticket.fileKey })); }
     catch (error) {
       const status = (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode;
-      if (status === 404) throw new Failure(409, "PDF ainda não encontrado. O envio não foi confirmado.", scope ? "pdf_missing" : undefined);
+      if (status === 404) throw new Failure(409, "PDF ainda não encontrado. O envio não foi confirmado.");
       throw error;
     }
     if (!head.ContentLength || head.ContentType?.split(";")[0].trim() !== "application/pdf") {
       fail(400, "Arquivo enviado vazio ou com tipo inválido.");
     }
     const now = Date.now();
-    const { data: inserted, error } = await supabaseAdmin.from(uploads(!!scope)).insert({ ...row,
-      ...(scope && { hospital_visible: scope.hospitalShared }),
+    const { data: inserted, error } = await supabaseAdmin.from(TABLE).insert({ ...row,
       uploaded_at: new Date(now).toISOString(), expires_at: new Date(now + 30 * DAY).toISOString(),
     }).select("id").single();
     if (error?.code === "23505") {
@@ -231,11 +230,14 @@ async function confirm(request: Request, scope?: InstitutionalScope) {
       if (raced) return raced;
     }
     if (error || !inserted) throw error || new Error("Insert failed");
-    await audit("sync_created", owner, inserted.id, ticket.fileKey, !!scope);
-    return { ok: true, id: inserted.id, alreadyConfirmed: false, ...(scope && { hospital_shared: scope.hospitalShared }) };
+    await audit("sync_created", owner, inserted.id, ticket.fileKey, false);
+    return { ok: true, id: inserted.id, alreadyConfirmed: false };
   });
 }
 
+type PreListing = { id: string; patient_name: string; record_number: string | null; crm: string;
+  exported_at: string; export_date: string; uploaded_at: string; expires_at: string; file_name: string;
+  hospital_code?: string; hospital_name?: string | null };
 function list(request: Request, institutional = false) {
   return run(request, async (owner) => {
     const params = new URL(request.url).searchParams;
@@ -247,16 +249,17 @@ function list(request: Request, institutional = false) {
     if (!/^\d{1,8}$/.test(rawOffset)) fail(400, "Paginação inválida.");
     const offset = Number(rawOffset);
     const limit = 100;
-    const { data, error } = await supabaseAdmin.from(uploads(institutional))
+    const { data, error } = await supabaseAdmin.from(institutional ? cycleTables.preOwner : TABLE)
       .select("id, patient_name, record_number, crm, exported_at, export_date, uploaded_at, expires_at, file_name" +
-        (institutional ? ",hospital_code,hospital:institutional_hospitals(name)" : ""))
-      .eq("user_id", owner).is(institutional ? "owner_hidden_at" : "deleted_at", null).gt("expires_at", new Date().toISOString())
+        (institutional ? ",hospital_code,hospital_name" : ""))
+      .eq("user_id", owner).is(institutional ? "document_hidden_at" : "deleted_at", null).gt("expires_at", new Date().toISOString())
       .gte("export_date", from).lte("export_date", to)
       .order("exported_at", { ascending: false }).order("id", { ascending: false })
-      .range(offset, offset + limit);
+      .range(offset, offset + limit).returns<PreListing[]>();
     if (error) throw error;
     const rows = data ?? [];
-    return { fichas: rows.slice(0, limit), nextOffset: rows.length > limit ? offset + limit : null };
+    return { fichas: rows.slice(0, limit).map(row => institutional
+      ? { ...row, hospital: { name: row.hospital_name ?? row.hospital_code } } : row), nextOffset: rows.length > limit ? offset + limit : null };
   });
 }
 
@@ -265,9 +268,9 @@ function getDownload(request: Request, institutional = false) {
     const data = await body(request);
     const id = uuid(data.fichaId, "Ficha");
     const now = new Date().toISOString();
-    const { data: row, error } = await supabaseAdmin.from(uploads(institutional))
+    const { data: row, error } = await supabaseAdmin.from(institutional ? cycleTables.preOwner : TABLE)
       .select("id, file_key, file_name, expires_at").eq("id", id).eq("user_id", owner)
-      .is(institutional ? "owner_hidden_at" : "deleted_at", null).gt("expires_at", now).maybeSingle();
+      .is(institutional ? "document_hidden_at" : "deleted_at", null).gt("expires_at", now).maybeSingle();
     if (error) throw error;
     if (!row) fail(404, "Pré-anestésica indisponível.");
     const { client, bucket } = storage();
@@ -288,9 +291,23 @@ function remove(request: Request, institutional = false) {
   return run(request, async (owner) => {
     const data = await body(request);
     const id = uuid(data.fichaId, "Ficha");
+    if (institutional) {
+      const { data: row, error } = await supabaseAdmin.from(institutionalPreUploads)
+        .select("hospital_code,upload_id,file_key").eq("id", id).eq("user_id", owner)
+        .gt("expires_at", new Date().toISOString()).maybeSingle();
+      if (error) throw error;
+      if (!row) fail(404, "Pré-anestésica indisponível.");
+      const { error: hideError } = await supabaseAdmin.from(cycleTables.identities)
+        .update({ owner_hidden_at: new Date().toISOString() }).eq("document_kind", "pre")
+        .eq("hospital_code", row.hospital_code).eq("user_id", owner).eq("document_id", row.upload_id)
+        .is("owner_hidden_at", null);
+      if (hideError) throw hideError;
+      await audit("user_deleted", owner, id, row.file_key, true);
+      return { ok: true };
+    }
     const { data: row, error } = await supabaseAdmin.from(uploads(institutional))
       .update({ [institutional ? "owner_hidden_at" : "deleted_at"]: new Date().toISOString() }).eq("id", id).eq("user_id", owner)
-      .is(institutional ? "owner_hidden_at" : "deleted_at", null).select("id, file_key").maybeSingle();
+      .is(institutional ? "document_hidden_at" : "deleted_at", null).select("id, file_key").maybeSingle();
     if (error) throw error;
     if (!row) fail(404, "Pré-anestésica indisponível ou já excluída.");
     await audit("user_deleted", owner, row.id, row.file_key, institutional);
@@ -311,7 +328,12 @@ export async function institutionalPreUpload(request: Request, hospitalCode: str
       status: 503, headers: { "Cache-Control": "no-store" },
     });
   }
-  const data = await request.clone().json().catch(() => null);
+  let data;
+  try { data = await cycleJSON(request.clone()); }
+  catch (error) {
+    if (error instanceof CycleFailure) return NextResponse.json({ error: error.code, code: error.code }, { status: error.status });
+    throw error;
+  }
   if (typeof data?.shareWithHospital !== "boolean") {
     return NextResponse.json({ error: "Informe o destino do envio." }, { status: 400 });
   }
@@ -333,7 +355,7 @@ export function institutionalPreCoordination(request: Request, hospitalCode: str
     await requireHospital(owner, hospitalCode, HOSPITAL_COORDINATION_FEATURE);
     const data = await body(request);
     const now = new Date().toISOString();
-    const base = () => supabaseAdmin.from(institutionalPreUploads).select("*")
+    const base = () => supabaseAdmin.from(cycleTables.preHospital).select("*")
       .eq("hospital_code", hospitalCode).eq("hospital_visible", true).gt("expires_at", now);
     if (data.action === "download") {
       const { data: row, error } = await base().eq("id", uuid(data.documentId, "Pré-anestésica")).maybeSingle();

@@ -1,10 +1,10 @@
-import { HeadObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { authenticateProHospitalToken, getProHospitalLinksForUser } from "@/lib/pro-hospital-access";
-import { institutionalRetentionMs, institutionalStorage, institutionalUploads,
-  submitInstitutionalPDF, type InstitutionalDelivery } from "@/lib/pro-institutional-submission";
+import { submitInstitutionalPDF, type InstitutionalDelivery } from "@/lib/pro-institutional-submission";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { extractTrustMarker } from "@/lib/trust/extractTrustMarker";
 import { verifyTrustSignature } from "@/lib/trust/verifyTrustSignature";
+
+import { authorizeCycle, confirmCycle, verifyCycleTicket, cycleJSON, CycleFailure, cycleFailureResponse } from "@/lib/pro-institutional-cycles";
 
 export const runtime = "nodejs";
 
@@ -89,84 +89,17 @@ function signedMetadata(payload: string) {
   };
 }
 
-async function confirm(delivery: InstitutionalDelivery) {
-  const { id, hospitalCode, userId, pdfSha256, signedPayload, pdf } = delivery;
-  const metadata = signedMetadata(signedPayload);
-  if (!metadata) return "invalid_metadata";
-  const fileKey = `pro/institucional/${hospitalCode}/${userId}/${id}.pdf`;
-  const findReceipt = async () => {
-    const { data, error } = await supabaseAdmin.from(institutionalUploads)
-      .select("pdf_sha256,file_key,uploaded_at,hospital_visible")
-      .eq("hospital_code", hospitalCode).eq("user_id", userId).eq("document_id", id).maybeSingle();
-    if (error) throw error;
-    return data;
-  };
-  const receipt = await findReceipt();
-  const checkReceipt = (row: NonNullable<typeof receipt>) => {
-    if (row.pdf_sha256 !== pdfSha256 || row.file_key !== fileKey) return "conflict";
-    if (Date.parse(row.uploaded_at) + institutionalRetentionMs <= Date.now()) return "expired";
-    return "already_received";
-  };
-  const acknowledge = async (row: NonNullable<typeof receipt>) => {
-    const status = checkReceipt(row);
-    if (status !== "already_received") return status;
-    if (delivery.shareWithHospital && !row.hospital_visible) {
-      if (!await hasAccess(userId, hospitalCode)) return "access_denied" as const;
-      const { data, error } = await supabaseAdmin.from(institutionalUploads)
-        .update({ hospital_visible: true }).eq("hospital_code", hospitalCode).eq("user_id", userId)
-        .eq("document_id", id).eq("pdf_sha256", pdfSha256).eq("hospital_visible", false)
-        .select("document_id");
-      if (error) throw error;
-      if (!data?.length) {
-        const current = await findReceipt();
-        if (!current || !current.hospital_visible) throw new Error("Receipt not confirmed");
-        const currentStatus = checkReceipt(current);
-        if (currentStatus !== "already_received") return currentStatus;
-      }
-    }
-    return { status: "already_received" as const, hospitalShared: delivery.shareWithHospital || row.hospital_visible === true };
-  };
-  const status = receipt ? checkReceipt(receipt) : null;
-  if (status === "conflict" || status === "expired") return status;
-
-  const { client, bucket } = institutionalStorage();
-  const checkObject = async () => {
-    const head = await client.send(new HeadObjectCommand({ Bucket: bucket, Key: fileKey }));
-    if (head.Metadata?.sha256 !== pdfSha256 || head.ContentLength !== pdf.byteLength
-        || head.ContentType !== "application/pdf") return "conflict";
-    if (head.LastModified && head.LastModified.getTime() + institutionalRetentionMs <= Date.now()) return "expired";
-    return "same";
-  };
-  if (status === "already_received") {
-    if (!receipt) throw new Error("Receipt not found");
-    const object = await checkObject();
-    return object === "same" ? acknowledge(receipt) : object;
+async function confirm(delivery: InstitutionalDelivery, token: string | null) {
+  const metadata = signedMetadata(delivery.signedPayload);
+  if (!metadata) return "invalid_metadata" as const;
+  if (!token) throw new CycleFailure(426, "institutional_client_update_required");
+  const ticket = verifyCycleTicket(token, delivery.userId, "case", delivery.hospitalCode, delivery.shareWithHospital);
+  if (ticket.document !== delivery.id || ticket.pdfHash !== delivery.pdfSha256) {
+    throw new CycleFailure(409, "document_conflict");
   }
-
-  try {
-    await client.send(new PutObjectCommand({
-      Bucket: bucket, Key: fileKey, Body: pdf, ContentType: "application/pdf",
-      CacheControl: "private, no-store", IfNoneMatch: "*", Metadata: { sha256: pdfSha256 },
-    }));
-  } catch (error) {
-    const httpStatus = (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode;
-    if (httpStatus !== 412) throw error;
-    const object = await checkObject();
-    if (object !== "same") return object;
-  }
-
-  // O vínculo pode ter sido revogado enquanto o R2 recebia o arquivo.
-  if (!await hasAccess(userId, hospitalCode)) return "access_denied";
-  const { error } = await supabaseAdmin.from(institutionalUploads).insert({
-    hospital_code: hospitalCode, user_id: userId, document_id: id,
-    pdf_sha256: pdfSha256, file_key: fileKey, hospital_visible: delivery.shareWithHospital, ...metadata,
-  });
-  if (error?.code === "23505") {
-    const concurrentReceipt = await findReceipt();
-    if (concurrentReceipt) return acknowledge(concurrentReceipt);
-  }
-  if (error) throw error;
-  return { status: "created" as const, hospitalShared: delivery.shareWithHospital };
+  const cycle = await confirmCycle(ticket, metadata, delivery.pdf);
+  return { status: cycle.already_confirmed ? "already_received" as const : "created" as const,
+    hospitalShared: cycle.hospital_shared, cycle };
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ hospitalCode: string }> }) {
@@ -176,7 +109,23 @@ export async function POST(request: Request, { params }: { params: Promise<{ hos
     });
   }
   const { hospitalCode } = await params;
+  const shared = !new URL(request.url).pathname.startsWith("/api/pro/conta/fichas-institucionais/");
+  if (request.headers.get("content-type")?.split(";")[0].trim().toLowerCase() === "application/json") {
+    try {
+      const bearer = request.headers.get("authorization")?.match(/^Bearer\s+(\S+)$/i)?.[1];
+      const owner = bearer ? await authenticateProHospitalToken(bearer) : null;
+      if (!owner) throw new CycleFailure(401, "unauthenticated");
+      if (!await hasAccess(owner, hospitalCode)) throw new CycleFailure(403, "access_denied");
+      const data = await cycleJSON(request);
+      if (data.operation !== "authorize") throw new CycleFailure(400, "invalid_operation");
+      const authorization = await authorizeCycle({ kind: "case", owner, hospital: hospitalCode,
+        document: data.documentId, attempt: data.attemptId, pdfHash: data.pdfSha256, shared,
+        createAttempt: data.createAttempt, uploadToken: data.uploadToken });
+      return Response.json(authorization, { headers: { "Cache-Control": "private, no-store" } });
+    } catch (error) { return cycleFailureResponse(error); }
+  }
   return submitInstitutionalPDF(request, hospitalCode, {
-    authenticate: authenticateProHospitalToken, hasAccess, verifyDocument, confirm,
-  }, !new URL(request.url).pathname.startsWith("/api/pro/conta/fichas-institucionais/"));
+    authenticate: authenticateProHospitalToken, hasAccess, verifyDocument,
+    confirm: delivery => confirm(delivery, request.headers.get("x-anest-upload-token")), failure: cycleFailureResponse,
+  }, shared);
 }

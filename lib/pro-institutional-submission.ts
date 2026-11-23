@@ -11,6 +11,7 @@ export type InstitutionalDelivery = {
 type VerifiedDocument = { signedPayload: string };
 
 type SubmissionServices = {
+  failure?(error: unknown): Response;
   authenticate(token: string): Promise<string | null>;
   hasAccess(userId: string, hospitalCode: string): Promise<boolean>;
   // Must extract the marker from these very bytes and verify its payload and signature.
@@ -18,7 +19,7 @@ type SubmissionServices = {
   // Must atomically deduplicate hospital/user/id and compare the PDF hash on replay.
   confirm(delivery: InstitutionalDelivery): Promise<
     "created" | "already_received" | "conflict" | "access_denied" | "expired" | "invalid_metadata"
-    | { status: "created" | "already_received"; hospitalShared: boolean }
+    | { status: "created" | "already_received"; hospitalShared: boolean; cycle?: { attempt_id: string; uploaded_at: string; expires_at: string; already_confirmed: boolean; billing_effect: string } }
   >;
 };
 
@@ -109,9 +110,10 @@ export async function submitInstitutionalPDF(request: Request, hospitalCode: str
     if (result === "invalid_metadata") return reply({ error: "invalid_metadata" }, 422);
     const status = typeof result === "string" ? result : result.status;
     const hospitalShared = typeof result === "string" ? shareWithHospital : result.hospitalShared;
-    return reply({ id, status: "received", hospital_shared: hospitalShared }, status === "created" ? 201 : 200);
-  } catch {
-    return reply({ error: "temporarily_unavailable" }, 503);
+    return reply({ id, status: "received", hospital_shared: hospitalShared,
+      ...(typeof result === "object" && result.cycle ? result.cycle : {}) }, status === "created" ? 201 : 200);
+  } catch (error) {
+    return services.failure?.(error) ?? reply({ error: "temporarily_unavailable" }, 503);
   }
 }
 import { S3Client } from "@aws-sdk/client-s3";

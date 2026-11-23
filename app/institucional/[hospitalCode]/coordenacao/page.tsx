@@ -10,10 +10,11 @@ import HospitalIdentity from "@/components/institutional/HospitalIdentity";
 
 type Hospital = { code: string; name: string };
 type Search = { kind: "fichas" | "pre-anestesicas"; date: string; field: "patient" | "record"; term: string; page: number };
-type Ficha = {
+type FichaBase = {
   document_id: string; patient_name: string; record_number: string;
   procedure_date: string; anesthesiologist_name: string | null; crm: string;
 };
+type Ficha = FichaBase & ({ user_id: string; attempt_id: string } | { user_id?: never; attempt_id?: never });
 type Listing = { fichas: Ficha[]; page: number; hasMore: boolean };
 
 const endpoint = "/api/pro/institucional/coordenacao";
@@ -87,6 +88,10 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
   const accessRevision = useRef(0);
   const hospital = hospitals?.find(({ code }) => code === hospitalCode);
 
+  function downloadKey(ficha: Ficha) {
+    return `${hospitalCode}:${submitted?.kind}:${ficha.user_id ?? ""}:${ficha.document_id}:${ficha.attempt_id ?? ""}`;
+  }
+
   useEffect(() => {
     const controller = new AbortController();
     const revision = accessRevision.current;
@@ -146,11 +151,13 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
     downloadRequest.current?.abort();
     const controller = new AbortController();
     downloadRequest.current = controller;
-    setDownloading(ficha.document_id);
+    setDownloading(downloadKey(ficha));
     setError("");
     try {
       const { downloadUrl } = await request<{ downloadUrl: string }>(`${hospitalCode}/${submitted?.kind ?? "fichas"}`, token, controller.signal,
-        { action: "download", documentId: ficha.document_id });
+        submitted?.kind === "pre-anestesicas"
+          ? { action: "download", documentId: ficha.document_id }
+          : { action: "download", documentId: ficha.document_id, userId: ficha.user_id, attemptId: ficha.attempt_id });
       if (!controller.signal.aborted) window.location.assign(downloadUrl);
     } catch (error) {
       if (!controller.signal.aborted) reportFailure(error);
@@ -242,13 +249,13 @@ function CoordinationDashboard({ hospitalCode, token }: { hospitalCode: string; 
                   </tr>
                 </thead>
                 <tbody>
-                  {list.fichas.map((ficha) => <tr key={ficha.document_id} className="border-b border-zinc-100">
+                  {list.fichas.map((ficha) => <tr key={downloadKey(ficha)} className="border-b border-zinc-100">
                     <td className="p-3 font-semibold">{ficha.patient_name}</td>
                     <td className="p-3">{ficha.record_number}</td>
                     <td className="p-3"><time dateTime={ficha.procedure_date}>{ficha.procedure_date.split("-").reverse().join("/")}</time></td>
                     <td className="p-3">{ficha.anesthesiologist_name ?? "—"}{ficha.crm && <span className="block text-zinc-500">CRM {ficha.crm}</span>}</td>
                     <td className="p-3"><button type="button" className={button} disabled={downloading !== null}
-                      onClick={() => void download(ficha)}>{downloading === ficha.document_id ? "Preparando…" : "Baixar"}</button></td>
+                      onClick={() => void download(ficha)}>{downloading === downloadKey(ficha) ? "Preparando…" : "Baixar"}</button></td>
                   </tr>)}
                 </tbody>
               </table>

@@ -1,7 +1,7 @@
 import { billingNameKey, isBillingDate, type BillingPlan } from "@/lib/institutional-billing";
 import { billingReply as reply, billingTiming, getBillingHospital } from "@/lib/institutional-billing-access";
 import { calculateProduction, productionSpreadsheet, summarizeProduction, type BillingSource } from "@/lib/institutional-billing-production";
-import { institutionalRetentionMs, institutionalUploads } from "@/lib/pro-institutional-submission";
+import { cycleTables, activeBillingMonthCutoff } from "@/lib/pro-institutional-cycles";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const pageSize = 50;
@@ -13,16 +13,17 @@ function isSearch(value: unknown): value is string {
 
 async function listCases(hospitalCode: string, from: string, to: string) {
   const now = new Date();
-  const cutoff = new Date(now.getTime() - institutionalRetentionMs).toISOString();
+  const cutoff = activeBillingMonthCutoff(now);
   const cases: BillingSource[] = [];
   let count: number | null = null;
   // PostgREST limita linhas por consulta. O resumo usa o período inteiro, inclusive se houver várias páginas.
   while (count === null || cases.length < count) {
     const offset = cases.length;
-    const { data, count: available, error } = await supabaseAdmin.from(institutionalUploads)
-      .select("document_id,patient_name,anesthesia_type,record_number,procedure_date,procedure_name,plan_name,anesthesiologist_name,crm,start_date_time,end_date_time",
+    const { data, count: available, error } = await supabaseAdmin.from(cycleTables.production)
+      .select("document_id,patient_name,anesthesia_type,record_number,procedure_date,procedure_name,plan_name,anesthesiologist_name,crm,start_date_time,end_date_time,period:institutional_billing_periods!inner(state,expires_at)",
         offset === 0 ? { count: "exact" } : undefined)
-      .eq("hospital_code", hospitalCode).eq("hospital_visible", true).gt("uploaded_at", cutoff).lte("uploaded_at", now.toISOString())
+      .eq("hospital_code", hospitalCode).gte("competence_month", cutoff)
+      .neq("period.state", "expired").gt("period.expires_at", now.toISOString())
       .gte("procedure_date", from).lte("procedure_date", to)
       .order("procedure_date", { ascending: false }).order("document_id").order("user_id")
       .range(offset, offset + batchSize - 1).returns<BillingSource[]>();
