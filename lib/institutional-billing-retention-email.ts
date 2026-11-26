@@ -3,6 +3,7 @@ import { setTimeout as wait } from "node:timers/promises";
 import { billingPath, HOSPITAL_BILLING_FEATURE } from "@/lib/institutional-hospitals";
 import { getProHospitalLinksForUser } from "@/lib/pro-hospital-access";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { retentionEmailContent } from "@/lib/institutional-billing-retention-email-template";
 
 const providerUrl = "https://api.resend.com/emails";
 const sendTimeoutMs = 8_000;
@@ -80,17 +81,16 @@ async function payload(target: Candidate, config: EmailConfig): Promise<string |
     || !user.email_confirmed_at || !user.email?.trim()) return null;
 
   const competence = monthFormat.format(new Date(`${month}T00:00:00Z`));
-  const window = stage === 1 ? "1 dia" : `${stage} dias`;
   return JSON.stringify({
     from: config.from,
     to: [user.email.trim()],
-    subject: `Anest+ · Competência de ${competence} expira em até ${window}`,
-    text: [
-      `A produção financeira de ${competence} do hospital ${hospital.data.name} estará disponível até ${dateFormat.format(expiry)}, no horário da Bahia.`,
-      "Se a competência estiver fechada, baixe e arquive os demonstrativos definitivos. Se estiver aberta, consulte a conferência no painel.",
-      `Abrir Faturamento: ${new URL(link, config.origin).href}`,
-      "Aviso automático do Anest+.",
-    ].join("\n\n"),
+    ...retentionEmailContent({
+      hospitalName: hospital.data.name,
+      competence,
+      deadline: dateFormat.format(expiry),
+      stage,
+      url: new URL(link, config.origin).href,
+    }),
   });
 }
 
