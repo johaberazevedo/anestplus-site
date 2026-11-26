@@ -2,6 +2,11 @@ import { HOSPITAL_BILLING_FEATURE, isHospitalCode } from "@/lib/institutional-ho
 import { authenticateProHospitalToken, getProHospitalLinksForUser } from "@/lib/pro-hospital-access";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+export function billingPublicationEnabled(hospitalCode: string) {
+  return isHospitalCode(hospitalCode) && (process.env.ANEST_BILLING_PUBLICATION_HOSPITALS ?? "")
+    .split(",").some((code) => code.trim() === hospitalCode);
+}
+
 export function billingReply(data: object, status = 200) {
   return Response.json(data, { status, headers: { "Cache-Control": "private, no-store" } });
 }
@@ -50,5 +55,5 @@ export async function getBillingHospital(request: Request, hospitalCode: string,
   if (hospital.status === "rejected" || hospital.value.error) {
     return billingReply({ error: "Não foi possível verificar o hospital." }, 500);
   }
-  return hospital.value.data ?? denied();
+  return hospital.value.data ? { ...hospital.value.data, actorId: userID } : denied();
 }

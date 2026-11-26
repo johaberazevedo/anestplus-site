@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { InstitutionalHospital } from "@/lib/institutional-hospitals";
 
+type AdminHospital = InstitutionalHospital & { billing_retention_emails_enabled: boolean };
 type Account = { id: string; fullName: string; email: string; crm: string; rqe: string };
 type Directory = { users: Account[]; pagination: { lastPage: number } };
 type LinkStatus = { status: string | null; active: boolean };
@@ -38,14 +39,14 @@ function message(error: unknown) {
 
 export default function HospitalsClient() {
   const router = useRouter();
-  const [hospitals, setHospitals] = useState<InstitutionalHospital[] | null>(null);
+  const [hospitals, setHospitals] = useState<AdminHospital[] | null>(null);
   const [selectedCode, setSelectedCode] = useState("");
   const [error, setError] = useState("");
   const selected = hospitals?.find((hospital) => hospital.code === selectedCode);
 
   useEffect(() => {
     const controller = new AbortController();
-    void adminRequest<{ hospitals: InstitutionalHospital[] }>("hospitals", { signal: controller.signal })
+    void adminRequest<{ hospitals: AdminHospital[] }>("hospitals", { signal: controller.signal })
       .then(({ hospitals }) => { if (!controller.signal.aborted) setHospitals(hospitals); })
       .catch((error: unknown) => { if (!controller.signal.aborted) setError(message(error)); });
     return () => controller.abort();
@@ -61,7 +62,7 @@ export default function HospitalsClient() {
     router.refresh();
   }
 
-  function updateList(hospital: InstitutionalHospital) {
+  function updateList(hospital: AdminHospital) {
     setHospitals((list) => [
       ...(list ?? []).filter((item) => item.code !== hospital.code), hospital,
     ].sort((a, b) => a.name.localeCompare(b.name, "pt-BR") || a.code.localeCompare(b.code)));
@@ -95,12 +96,13 @@ export default function HospitalsClient() {
 }
 
 function HospitalForm({ hospital, onSaved }: {
-  hospital?: InstitutionalHospital;
-  onSaved: (hospital: InstitutionalHospital) => void;
+  hospital?: AdminHospital;
+  onSaved: (hospital: AdminHospital) => void;
 }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [retentionEmails, setRetentionEmails] = useState(hospital?.billing_retention_emails_enabled ?? false);
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -109,14 +111,18 @@ function HospitalForm({ hospital, onSaved }: {
     setError("");
     setSuccess("");
     try {
-      const result = await adminRequest<{ hospital: InstitutionalHospital }>("hospitals", mutation(hospital ? "PATCH" : "POST", {
+      const result = await adminRequest<{ hospital: AdminHospital }>("hospitals", mutation(hospital ? "PATCH" : "POST", {
         code: hospital?.code ?? String(form.get("code") ?? "").trim().toLowerCase(),
         name: form.get("name"),
         latitude: Number(form.get("latitude")),
         longitude: Number(form.get("longitude")),
         radius_meters: Number(form.get("radius_meters")),
         is_active: form.get("is_active") === "on",
+        ...(hospital && hospital.billing_retention_emails_enabled !== retentionEmails
+          ? { billing_retention_emails_enabled: retentionEmails }
+          : {}),
       }));
+      setRetentionEmails(result.hospital.billing_retention_emails_enabled);
       onSaved(result.hospital);
       setSuccess("Hospital salvo.");
     } catch (error) {
@@ -142,6 +148,10 @@ function HospitalForm({ hospital, onSaved }: {
             defaultValue={hospital?.longitude} className={input} /></label>
           {hospital && <label className="flex items-center gap-2">
             <input name="is_active" type="checkbox" defaultChecked={hospital.is_active} /> Hospital ativo
+          </label>}
+          {hospital && <label className="flex items-center gap-2 sm:col-span-3">
+            <input checked={retentionEmails} type="checkbox" onChange={(event) => setRetentionEmails(event.target.checked)} />
+            Avisos de retenção financeira por e-mail
           </label>}
           <div className="sm:col-span-3">
             <button type="submit" className={button}>{saving ? "Salvando…" : "Salvar hospital"}</button>

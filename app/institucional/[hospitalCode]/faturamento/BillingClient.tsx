@@ -6,12 +6,13 @@ import {
   type BillingMatch, type BillingPlan, type BillingRule, type BillingTable,
 } from "@/lib/institutional-billing";
 import { billingRequest as request, RequestError } from "./billing-request";
+import BillingVersionedEditor from "./BillingVersionedEditor";
 
 const panel = "min-w-0 rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm sm:p-6";
 const button = "min-h-11 rounded-2xl border border-zinc-300 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#b9963b]/50 hover:bg-[#fafaf7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b9963b] disabled:cursor-not-allowed disabled:opacity-40";
 const input = "mt-2 min-h-11 w-full min-w-0 rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-900 outline-none transition hover:border-zinc-400 focus:border-[#b9963b] focus:ring-2 focus:ring-[#b9963b]/15";
 
-type Billing = { hospitalName: string; plans: BillingPlan[] };
+type Billing = { hospitalName: string; plans: BillingPlan[]; versionedPublications?: boolean };
 type PlanDetails = Omit<BillingPlan, "tables">;
 type SaveBilling = <T>(editing: boolean, body: object) => Promise<T>;
 type Mode = "procedure" | "duration" | "porte_procedure" | "porte_duration";
@@ -121,6 +122,8 @@ export default function BillingClient({ hospitalCode, token, onConfigurationSave
         {savedPlan && savedPlan === planId && <Feedback success="Plano salvo." />}
       </section>
       {plan && <TablesEditor key={plan.id} save={save} plan={plan} onSaved={(table) => updateTable(plan.id, table)} />}
+      {billing.versionedPublications && <BillingVersionedEditor hospitalCode={hospitalCode} token={token}
+        plans={billing.plans} styles={{ panel, button, input }} onAccessDenied={onAccessDenied} />}
     </>
   );
 }

@@ -34,6 +34,7 @@ type Calculation = {
 
 export type ProductionCase = Omit<BillingSource, "document_id"> & Calculation & {
   id: string; durationMinutes: number | null; technique: AnesthesiaTechnique | null;
+  publication?: { version: number; revisionId: string; ruleLabel: string | null };
 };
 export type ProductionReport = {
   hospitalName: string;
@@ -43,7 +44,7 @@ export type ProductionReport = {
   lastPage: number;
 };
 
-function elapsedMinutes(start: string | null, end: string | null) {
+export function elapsedMinutes(start: string | null, end: string | null) {
   if (start === null || end === null) return null;
   const milliseconds = Date.parse(end) - Date.parse(start);
   return Number.isFinite(milliseconds) && milliseconds > 0 ? milliseconds / 60_000 : null;
@@ -87,7 +88,7 @@ function timeMinutes(value: string) {
   return hours * 60 + minutes;
 }
 
-function timing(start: string | null, configuration: BillingConfiguration) {
+export function timing(start: string | null, configuration: Pick<BillingConfiguration, "timeZone" | "nightStart" | "nightEnd">) {
   const timeZone = configuration.timeZone ?? "America/Bahia";
   if (!start || !Number.isFinite(Date.parse(start))) return { timeZone, shift: null, weekday: null, weekend: false };
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -103,7 +104,7 @@ function timing(start: string | null, configuration: BillingConfiguration) {
     weekend: part("weekday") === "Sat" || part("weekday") === "Sun" };
 }
 
-function additionalCents(base: number, additional: BillingAdditional) {
+export function additionalCents(base: number, additional: BillingAdditional) {
   if (additional.kind === "fixed") return BigInt(additional.amountCents);
   // Arredondamento monetário em centavos, sempre sobre o valor-base.
   return (BigInt(base) * BigInt(additional.basisPoints) + BigInt(5000)) / BigInt(10000);
@@ -207,7 +208,8 @@ export function productionSpreadsheet(cases: ProductionCase[]) {
   const rows = cases.map((ficha) => [
     date(ficha.procedure_date), ficha.record_number, ficha.patient_name, ficha.anesthesiologist_name, ficha.crm,
     ficha.plan_name, ficha.procedure_name, ficha.anesthesia_type,
-    ficha.technique ? anesthesiaTechniques[ficha.technique] : "", ficha.rule ? billingRuleLabel(ficha.rule) : "",
+    ficha.technique ? anesthesiaTechniques[ficha.technique] : "",
+    ficha.publication?.ruleLabel ?? (ficha.rule ? billingRuleLabel(ficha.rule) : ""),
     decimal(ficha.durationMinutes), decimal(ficha.billedMinutes), ficha.timeZone, ficha.weekday, ficha.shift,
     money(ficha.baseAmountCents), money(ficha.amountCents === null ? null : ficha.additions.reduce((sum, item) => sum + item.amountCents, 0)),
     ficha.additions.map((item) => `${item.label} ${money(item.amountCents)}`).join(" + "),

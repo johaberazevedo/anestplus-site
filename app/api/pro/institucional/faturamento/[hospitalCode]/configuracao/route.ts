@@ -1,6 +1,6 @@
 import { isUuid } from "@/lib/admin-auth";
 import { billingText, isBillingDate, parseBillingConfiguration } from "@/lib/institutional-billing";
-import { billingReply as reply, billingTiming, getBillingHospital } from "@/lib/institutional-billing-access";
+import { billingPublicationEnabled, billingReply as reply, billingTiming, getBillingHospital } from "@/lib/institutional-billing-access";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 type Context = { params: Promise<{ hospitalCode: string }> };
@@ -20,7 +20,8 @@ export async function GET(request: Request, context: Context) {
       .select(`${planFields},tables:${tables}(${tableFields})`)
       .eq("hospital_code", hospital.code).order("plan_name").order("starts_on", { referencedTable: "tables", ascending: false }));
     if (error) return respond({ error: "Não foi possível carregar o faturamento." }, 500);
-    return respond({ hospitalName: hospital.name, plans: data ?? [] });
+    return respond({ hospitalName: hospital.name, plans: data ?? [],
+      ...(billingPublicationEnabled(hospital.code) ? { versionedPublications: true } : {}) });
   } catch {
     return respond({ error: "Não foi possível carregar o faturamento agora." }, 503);
   }

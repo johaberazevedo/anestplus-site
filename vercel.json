@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/pro-billing-retention-emails",
+      "schedule": "0 * * * *"
+    }
+  ]
+}
